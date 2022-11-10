@@ -1,10 +1,10 @@
 package src.astnodes;
 
-public class ASTPlus implements ASTNode {
+public class ASTDiv implements ASTNode{
 
     private ASTNode l, r;
 
-    public ASTPlus(ASTNode l, ASTNode r){
+    public ASTDiv(ASTNode l, ASTNode r){
         this.l = l;
         this.r = r;
     }
@@ -14,7 +14,6 @@ public class ASTPlus implements ASTNode {
         int valueL = this.l.eval();
         int valueR = this.r.eval();
 
-        return valueL + valueR;
+        return valueL / valueR;
     }
 }
-

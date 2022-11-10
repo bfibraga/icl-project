@@ -1,0 +1,9 @@
+Compile all files
+javac -d ./bin src/*.java
+
+Execute Interpreter
+./interpreter
+
+Execute Compiler
+./compiler <filename>.icl
+

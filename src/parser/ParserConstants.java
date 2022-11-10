@@ -41,6 +41,20 @@ public interface ParserConstants {
   int EQ = 18;
   /** RegularExpression Id. */
   int SEMCOL = 19;
+  /** RegularExpression Id. */
+  int COMMA = 20;
+  /** RegularExpression Id. */
+  int IF = 21;
+  /** RegularExpression Id. */
+  int ELIF = 22;
+  /** RegularExpression Id. */
+  int ELSE = 23;
+  /** RegularExpression Id. */
+  int MATCH = 24;
+  /** RegularExpression Id. */
+  int DDOT = 25;
+  /** RegularExpression Id. */
+  int DEFAULTCASE = 26;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -67,6 +81,13 @@ public interface ParserConstants {
     "\"let \"",
     "\"=\"",
     "\";\"",
+    "\",\"",
+    "\"if \"",
+    "\"elif \"",
+    "\"else \"",
+    "\"match \"",
+    "\":\"",
+    "\"_\"",
   };
 
 }

@@ -1,5 +1,7 @@
 package src.astnodes;
 
+import src.misc.Environment;
+
 public class ASTNeg implements ASTNode {
 
     private ASTNode exp;
@@ -9,7 +11,7 @@ public class ASTNeg implements ASTNode {
     }
 
     @Override
-    public int eval() {
-        return -1 * exp.eval();
+    public int eval(Environment<Integer> e) {
+        return -1 * exp.eval(e);
     }
 }

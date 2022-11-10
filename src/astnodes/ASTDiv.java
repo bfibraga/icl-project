@@ -1,5 +1,7 @@
 package src.astnodes;
 
+import src.misc.Environment;
+
 public class ASTDiv implements ASTNode{
 
     private ASTNode l, r;
@@ -10,9 +12,9 @@ public class ASTDiv implements ASTNode{
     }
 
     @Override
-    public int eval() {
-        int valueL = this.l.eval();
-        int valueR = this.r.eval();
+    public int eval(Environment<Integer> e) {
+        int valueL = this.l.eval(e);
+        int valueR = this.r.eval(e);
 
         return valueL / valueR;
     }

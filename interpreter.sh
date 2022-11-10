@@ -1,2 +1,3 @@
 #!/usr/bin/env bash
-java -cp ./bin src.Interpreter
+filename=$1
+java -cp ./bin src.Interpreter $filename

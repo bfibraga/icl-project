@@ -1,5 +1,7 @@
 package src.astnodes;
 
+import src.misc.CodeBlock;
+import src.misc.Coordinates;
 import src.misc.Environment;
 
 import java.util.Map;
@@ -20,5 +22,10 @@ public class ASTMatch implements ASTNode {
     public int eval(Environment<Integer> e) {
         int condValue = this.cond.eval(e);
         return this.cases.containsKey(condValue) ? this.cases.get(condValue).eval(e) : this.def.eval(e);
+    }
+
+    @Override
+    public void compile(CodeBlock block, Environment<Coordinates> e) {
+
     }
 }

@@ -137,8 +137,7 @@ ASTNode Fact() :
     {
         ASTNode ci, bi, be, bl;
     }
-    <IF> ci = Exp()
-    <LBRACKET>
+    <IF> ci = Exp() <LBRACKET>
         bi = Exp()
     <RBRACKET>
     /*(<ELIF>
@@ -146,8 +145,7 @@ ASTNode Fact() :
             bl = Exp()
     <RBRACKET>
     )* */
-    <ELSE>
-    <LBRACKET>
+    <ELSE> <LBRACKET>
         be = Exp()
     <RBRACKET>
     { t = new ASTIfElse(ci, bi, be);}
@@ -156,10 +154,9 @@ ASTNode Fact() :
         ASTNode cond, c, d;
         Map<Integer, ASTNode> cases = new HashMap<>();
      }
-     <MATCH> cond = Exp()
-     <LBRACKET>
-     ( v = <Num> <DDOT> c = Exp() { cases.put(Integer.parseInt(v.image), c); } <COMMA>)*
-     <DEFAULTCASE> <DDOT> d = Exp()
+     <MATCH> cond = Exp() <LBRACKET>
+         ( v = <Num> <DDOT> c = Exp() { cases.put(Integer.parseInt(v.image), c); } <COMMA>)*
+         <DEFAULTCASE> <DDOT> d = Exp()
      <RBRACKET>
      { t = new ASTMatch(cond, cases, d); }
    )

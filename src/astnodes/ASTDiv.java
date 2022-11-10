@@ -1,5 +1,8 @@
 package src.astnodes;
 
+import src.jvm.JVM;
+import src.misc.CodeBlock;
+import src.misc.Coordinates;
 import src.misc.Environment;
 
 public class ASTDiv implements ASTNode{
@@ -17,5 +20,12 @@ public class ASTDiv implements ASTNode{
         int valueR = this.r.eval(e);
 
         return valueL / valueR;
+    }
+
+    @Override
+    public void compile(CodeBlock block, Environment<Coordinates> e) {
+        this.l.compile(block, e);
+        this.r.compile(block, e);
+        block.emit(JVM.IDIV.toString());
     }
 }

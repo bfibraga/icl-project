@@ -10,6 +10,7 @@ public class Environment<V> {
 
     private Environment<V> sl;
     private Map<String, V> def;
+    private int depth;
 
     public Environment(){
         this(null);
@@ -18,6 +19,11 @@ public class Environment<V> {
     public Environment(Environment<V> sl){
         this.sl = sl;
         this.def = new HashMap<>();
+        this.depth = this.sl != null ? this.sl.getDepth() + 1 : 0;
+    }
+
+    public int getDepth() {
+        return depth;
     }
 
     public Environment<V> beginScope(){

@@ -1,5 +1,7 @@
 package src.astnodes;
 
+import src.misc.CodeBlock;
+import src.misc.Coordinates;
 import src.misc.Environment;
 
 public class ASTPow implements ASTNode{
@@ -16,5 +18,10 @@ public class ASTPow implements ASTNode{
         int valueR = this.r.eval(e);
 
         return (int) Math.pow(valueL, valueR);
+    }
+
+    @Override
+    public void compile(CodeBlock block, Environment<Coordinates> e) {
+
     }
 }

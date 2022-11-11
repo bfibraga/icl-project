@@ -14,6 +14,11 @@ public class Float implements Value {
     }
 
     @Override
+    public Object getValue() {
+        return this.value;
+    }
+
+    @Override
     public boolean isNumber() {
         return true;
     }

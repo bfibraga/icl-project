@@ -6,9 +6,6 @@ import src.misc.Coordinates;
 import src.misc.Environment;
 import src.misc.Frame;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ASTId implements ASTNode {
 
     private final String id;
@@ -39,6 +36,6 @@ public class ASTId implements ASTNode {
             previous = currFrame.getPrevious();
         }
 
-        block.emit(String.format("%s %s/%s I\n", JVM.GETFIELD, currFrame, coordinates.getId()));
+        block.emit(String.format("%s %s/%s I", JVM.GETFIELD, currFrame, coordinates.getId()));
     }
 }

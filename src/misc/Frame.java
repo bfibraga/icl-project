@@ -61,7 +61,7 @@ public class Frame {
     public void def(PrintWriter out){
         out.println(String.format(".class public %s",  this.id));
         out.println(".super java/lang/Object");
-        out.println(String.format(".field public sl L%s", this.previous.getId()));
+        out.println(String.format(".field public sl L%s;", this.previous.getId()));
 
         for (String var: this.fields) {
             out.println(String.format(".field public %s I", var));
@@ -81,7 +81,7 @@ public class Frame {
     public void pop(CodeBlock block) {
         block.emit(String.format("%s_%d", JVM.ALOAD, 3));
         block.emit(String.format("%s %s/sl L%s;", JVM.GETFIELD, this, this.previous));
-        block.emit(String.format("%s_%d\n", JVM.ASTORE, 3));
+        block.emit(String.format("%s_%d", JVM.ASTORE, 3));
     }
 
     @Override

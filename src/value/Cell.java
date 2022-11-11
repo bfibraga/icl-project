@@ -2,7 +2,7 @@ package src.value;
 
 public class Cell {
 
-    private final Value value;
+    private Value value;
 
     public Cell(Value value) {
         this.value = value;
@@ -10,6 +10,10 @@ public class Cell {
 
     public Value getValue() {
         return value;
+    }
+
+    public void setValue(Value value) {
+        this.value = value;
     }
 
     @Override

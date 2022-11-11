@@ -12,12 +12,8 @@
 .method public static main([Ljava/lang/String;)V
 
        ; set limits used by this method
-       .limit locals  10
+       .limit locals 10
        .limit stack 256
-
-       ; initialize SL variable to null value
-       aconst_null
-       astore_3
 
        ; setup local variables:
 
@@ -26,6 +22,10 @@
        getstatic java/lang/System/out Ljava/io/PrintStream;
 
        ; place bytecodes here
+
+       ; initialize SL variable to null value
+       aconst_null
+       astore_3
 
        ; START
 

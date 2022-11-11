@@ -1,6 +1,7 @@
 package src;
 
 import src.astnodes.ASTNode;
+import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
@@ -34,6 +35,8 @@ public class Compiler {
             //PrintWriter out = new PrintWriter(System.out);
 
             exp = parser.Start();
+            code.emit("aconst_null");
+            code.emit(String.format("%s_%d", JVM.ASTORE, 3));
             exp.compile(code, environment);
             
             publishCode(code, out, new Scanner(new File("./src/jvm/Dummy.j")));

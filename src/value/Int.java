@@ -14,6 +14,11 @@ public class Int implements Value {
     }
 
     @Override
+    public Object getValue() {
+        return this.value;
+    }
+
+    @Override
     public boolean isNumber() {
         return true;
     }

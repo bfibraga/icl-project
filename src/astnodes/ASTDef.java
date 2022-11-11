@@ -42,28 +42,29 @@ public class ASTDef implements ASTNode {
 
         //Define a new frame
         Frame currFrame = block.getCurrFrame();
-        Frame newFrame = currFrame.pushFrame("Frame" + (depth - 1));
+        Frame newFrame = currFrame.pushFrame("frame" + (depth - 1));
         block.setCurrFrame(newFrame);
 
         //Init recent declared frame
         block.emit(String.format("%s %s", JVM.NEW, newFrame));
         block.emit(JVM.DUP.toString());
         block.emit(String.format("%s %s/<init>()V", JVM.INVOKESPECIAL, newFrame));
-        block.emit(JVM.DUP + "\n");
+        block.emit(JVM.DUP.toString());
 
         //Init variables
         block.emit(String.format("%s_%d", JVM.ALOAD, 3));
-        block.emit(String.format("%s %s/sl L%s", JVM.PUTFIELD, newFrame, currFrame));
-        block.emit(String.format("%s_%d\n", JVM.ASTORE, 3));
+        block.emit(String.format("%s %s/sl L%s;", JVM.PUTFIELD, newFrame, currFrame));
+        block.emit(String.format("%s_%d", JVM.ASTORE, 3));
 
         Coordinates coordinates;
         for (Bind<String, ASTNode> bind: init) {
             String id = bind.getId();
             ASTNode node = bind.getValue();
 
+            block.emit(String.format("%s_%d", JVM.ALOAD, 3));
             node.compile(block, e);
             String sym = block.gensym();
-            block.emit(String.format("%s %s/%s I\n", JVM.PUTFIELD, newFrame, sym));
+            block.emit(String.format("%s %s/%s I", JVM.PUTFIELD, newFrame, sym));
 
             coordinates = new Coordinates(sym, depth);
             e.assoc(id, coordinates);

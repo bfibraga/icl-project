@@ -33,7 +33,7 @@ public class CodeBlock {
     public void dump(PrintWriter out){
         if (!code.isEmpty()){
             String op = code.remove();
-            out.println("\t" + op);
+            out.println("\t\t" + op);
             this.dump(out);
         }
     }

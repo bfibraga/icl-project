@@ -1,4 +1,4 @@
-.class public Main
+.class public Header
 .super java/lang/Object
 
 ;
@@ -12,8 +12,12 @@
 .method public static main([Ljava/lang/String;)V
 
        ; set limits used by this method
-       .limit locals  1 
+       .limit locals  10
        .limit stack 256
+
+       ; initialize SL variable to null value
+       aconst_null
+       astore_3
 
        ; setup local variables:
 

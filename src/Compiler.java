@@ -17,6 +17,7 @@ public class Compiler {
         }
 
         try {
+
             File file = new File(filename);
             InputStream in = new FileInputStream(file);
             Parser parser = new Parser(in);
@@ -24,12 +25,16 @@ public class Compiler {
             ASTNode exp;
             Environment<Coordinates> environment = new Environment<>();
             CodeBlock code = new CodeBlock();
-            PrintWriter out = new PrintWriter(System.out);
+            
+            PrintWriter out = new PrintWriter(new File("./src/jvm/result/Header.j"));
+            //PrintWriter out = new PrintWriter(System.out);
 
             exp = parser.Start();
             exp.compile(code, environment);
 
             code.dump(out);
+
+            out.close();
         } catch (Exception e) {
             e.printStackTrace();
             //parser.ReInit(System.in);

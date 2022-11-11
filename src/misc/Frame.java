@@ -2,7 +2,6 @@ package src.misc;
 
 import src.jvm.JVM;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +34,13 @@ public class Frame {
         return id;
     }
 
+    public void getNFrames(List<Frame> result, int level){
+        result.add(this);
+        if (level > 0){
+            getNFrames(result, level-1);
+        }
+    }
+
     public String addField(){
         int size = this.fields.size();
         String result = "v" + size;
@@ -43,7 +49,9 @@ public class Frame {
     }
 
     public Frame pushFrame(String id){
-        return new Frame(id, this);
+        Frame result = new Frame(id, this);
+
+        return result;
     }
 
     public Frame popFrame(){
@@ -60,17 +68,20 @@ public class Frame {
         }
 
         out.println("""
+                
                 .method	public <init>()V
-                aload_0
-                invokenonvirtual java/lang/Object/<init>()V
-                return
+                \taload_0
+                \tinvokenonvirtual java/lang/Object/<init>()V
+                \treturn
                 .end method""");
+
+        out.close();
     }
 
-    public void pop(CodeBlock block){
+    public void pop(CodeBlock block) {
         block.emit(String.format("%s_%d", JVM.ALOAD, 3));
         block.emit(String.format("%s %s/sl L%s;", JVM.GETFIELD, this, this.previous));
-        block.emit(String.format("%s_%d", JVM.ASTORE, 3));
+        block.emit(String.format("%s_%d\n", JVM.ASTORE, 3));
     }
 
     @Override

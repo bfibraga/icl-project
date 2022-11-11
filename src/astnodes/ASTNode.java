@@ -1,6 +1,5 @@
 package src.astnodes;
 
-import src.Interpreter;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;

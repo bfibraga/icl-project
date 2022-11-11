@@ -5,6 +5,7 @@ import src.misc.Coordinates;
 import src.misc.Environment;
 
 public class ASTPow implements ASTNode{
+    
     private ASTNode l, r;
 
     public ASTPow(ASTNode l, ASTNode r){

@@ -1,10 +1,8 @@
 package src.astnodes;
 
-import src.Interpreter;
 import src.jvm.JVM;
 import src.misc.*;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -40,9 +38,36 @@ public class ASTDef implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         e = e.beginScope();
+        int depth = e.getDepth();
 
+        //Define a new frame
         Frame currFrame = block.getCurrFrame();
-        Frame newFrame = currFrame.pushFrame("v");
+        Frame newFrame = currFrame.pushFrame("Frame" + (depth - 1));
+        block.setCurrFrame(newFrame);
+
+        //Init recent declared frame
+        block.emit(String.format("%s %s", JVM.NEW, newFrame));
+        block.emit(JVM.DUP.toString());
+        block.emit(String.format("%s %s/<init>()V", JVM.INVOKESPECIAL, newFrame));
+        block.emit(JVM.DUP + "\n");
+
+        //Init variables
+        block.emit(String.format("%s_%d", JVM.ALOAD, 3));
+        block.emit(String.format("%s %s/sl L%s", JVM.PUTFIELD, newFrame, currFrame));
+        block.emit(String.format("%s_%d\n", JVM.ASTORE, 3));
+
+        Coordinates coordinates;
+        for (Bind<String, ASTNode> bind: init) {
+            String id = bind.getId();
+            ASTNode node = bind.getValue();
+
+            node.compile(block, e);
+            String sym = block.gensym();
+            block.emit(String.format("%s %s/%s I\n", JVM.PUTFIELD, newFrame, sym));
+
+            coordinates = new Coordinates(sym, depth);
+            e.assoc(id, coordinates);
+        }
 
         try {
             newFrame.def(new PrintWriter("./src/jvm/result/" + newFrame + ".j"));
@@ -50,20 +75,6 @@ public class ASTDef implements ASTNode {
             throw new RuntimeException(ex);
         }
 
-        Coordinates coordinates;
-        int depth = e.getDepth();
-        for (Bind<String, ASTNode> bind: init) {
-            String id = bind.getId();
-            ASTNode node = bind.getValue();
-
-            node.compile(block, e);
-            block.emit(String.format("%s_%d", JVM.ALOAD, 3));
-            String sym = block.gensym();
-            block.emit(String.format("%s %s/%s I", JVM.PUTFIELD, newFrame, sym));
-
-            coordinates = new Coordinates(sym, depth);
-            e.assoc(id, coordinates);
-        }
         body.compile(block, e);
 
         //Generate Code to Pop the frame

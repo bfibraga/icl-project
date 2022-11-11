@@ -1,7 +1,7 @@
 package src.jvm;
 
 public enum JVM {
-    SIPUSH, ALOAD, ASTORE, IADD, IMUL, INEG, IDIV, ISUB, PUTFIELD, GETFIELD;
+    ALOAD, ASTORE, DUP, GETFIELD, IADD, IDIV, IMUL, INEG, INVOKESPECIAL, ISUB, NEW, PUTFIELD, SIPUSH;
 
     @Override
     public String toString() {

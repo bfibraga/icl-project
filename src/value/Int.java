@@ -29,6 +29,23 @@ public class Int implements Value {
     }
 
     @Override
+    public Value toInt() {
+        return this;
+    }
+
+    @Override
+    public Value toFloat() {
+        float value = ((Integer) this.getValue()).floatValue();
+        return new Float(value);
+    }
+
+    @Override
+    public Value toBool() {
+        boolean value = (int) this.getValue() != 0;
+        return new Bool(value);
+    }
+
+    @Override
     public String toString() {
         return this.show();
     }

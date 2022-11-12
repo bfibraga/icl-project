@@ -29,6 +29,23 @@ public class Float implements Value {
     }
 
     @Override
+    public Value toInt() {
+        int value = ((java.lang.Float) this.getValue()).intValue();
+        return new Int(value);
+    }
+
+    @Override
+    public Value toFloat() {
+        return this;
+    }
+
+    @Override
+    public Value toBool() {
+        boolean value = (float) this.getValue() != 0;
+        return new Bool(value);
+    }
+
+    @Override
     public String toString() {
         return this.show();
     }

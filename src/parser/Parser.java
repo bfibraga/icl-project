@@ -3,7 +3,11 @@
 /** ID lister. */
 package src.parser;
 
-import src.astnodes.*;import src.misc.*;import java.util.*;
+import src.astnodes.*;
+import src.astnodes.control.*;
+import src.astnodes.operations.arithmetic.*;
+import src.misc.*;
+import java.util.*;
 
 public class Parser implements ParserConstants {
 
@@ -45,8 +49,8 @@ public class Parser implements ParserConstants {
       }
       t2 = Term();
 if (op.kind == PLUS)
-                         t1 = new ASTPlus(t1,t2);
-                     else  t1 = new ASTSub(t1,t2);
+             t1 = new ASTPlus(t1,t2);
+         else  t1 = new ASTSub(t1,t2);
     }
 {if ("" != null) return t1;}
     throw new Error("Missing return statement in function");
@@ -154,17 +158,17 @@ t = new ASTDef(l, b);
       break;
       }
     case IF:{
-ASTNode ci, bi, be, bl;
+ASTNode ci, bt, be;
       jj_consume_token(IF);
       ci = Exp();
       jj_consume_token(LBRACKET);
-      bi = Exp();
+      bt = Exp();
       jj_consume_token(RBRACKET);
       jj_consume_token(ELSE);
       jj_consume_token(LBRACKET);
       be = Exp();
       jj_consume_token(RBRACKET);
-t = new ASTIfElse(ci, bi, be);
+t = new ASTIfElse(ci, bt, be);
       break;
       }
     case MATCH:{

@@ -1,15 +1,14 @@
-package src.astnodes;
+package src.astnodes.operations.relational;
 
-import src.jvm.JVM;
+import src.astnodes.ASTNode;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 
-public class ASTDiv implements ASTNode{
-
+public class ASTOr implements ASTNode {
     private ASTNode l, r;
 
-    public ASTDiv(ASTNode l, ASTNode r){
+    public ASTOr(ASTNode l, ASTNode r){
         this.l = l;
         this.r = r;
     }
@@ -19,13 +18,11 @@ public class ASTDiv implements ASTNode{
         int valueL = this.l.eval(e);
         int valueR = this.r.eval(e);
 
-        return valueL / valueR;
+        return valueL + valueR != 0 ? 1 : 0;
     }
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
-        this.l.compile(block, e);
-        this.r.compile(block, e);
-        block.emit(JVM.IDIV.toString());
+
     }
 }

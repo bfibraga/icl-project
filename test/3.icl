@@ -1,8 +1,11 @@
 {
-    let x = 1;
-    match x-2 {
-        0: x,
-        1: x+1,
-        _: x+2
+    let x = 2;
+    let y = x + 2;
+    {
+        let z = 3;
+        {
+            let y = x + 1;
+            y % x + z
+        }
     }
 };

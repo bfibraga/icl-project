@@ -1,5 +1,6 @@
-package src.astnodes;
+package src.astnodes.control;
 
+import src.astnodes.ASTNode;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;

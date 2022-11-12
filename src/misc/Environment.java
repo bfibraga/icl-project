@@ -54,4 +54,8 @@ public class Environment<V> {
             this.def.put(id, value);
         }
     }
+
+    public void alter(String id, V value){
+        this.def.put(id, value);
+    }
 }

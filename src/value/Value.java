@@ -9,4 +9,10 @@ public interface Value {
     boolean isNumber();
 
     boolean isBoolean();
+
+    Value toInt();
+
+    Value toFloat();
+
+    Value toBool();
 }

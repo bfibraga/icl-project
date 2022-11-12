@@ -1,25 +1,29 @@
-package src.astnodes;
+package src.astnodes.control;
 
+import src.astnodes.ASTNode;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 
-public class ASTIfElse implements ASTNode {
+public class ASTWhile implements ASTNode {
 
     private ASTNode cond;
-    private ASTNode thenBody;
-    private ASTNode elseBody;
+    private ASTNode body;
 
-    public ASTIfElse(ASTNode cond, ASTNode thenBody, ASTNode elseBody){
+    public ASTWhile(ASTNode cond, ASTNode body){
+        this.body = body;
         this.cond = cond;
-        this.thenBody = thenBody;
-        this.elseBody = elseBody;
     }
 
     @Override
     public int eval(Environment<Integer> e) {
         int condValue = this.cond.eval(e);
-        return condValue != 0 ? this.thenBody.eval(e) : this.elseBody.eval(e);
+        if (condValue != 0){
+            body.eval(e);
+            return this.eval(e);
+        } else {
+            return condValue;
+        }
     }
 
     @Override

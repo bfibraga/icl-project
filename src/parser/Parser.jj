@@ -4,7 +4,11 @@ PARSER_BEGIN(Parser)
 /** ID lister. */
 package src.parser;
 
-import src.astnodes.*;import src.misc.*;import java.util.*;
+import src.astnodes.*;
+import src.astnodes.control.*;
+import src.astnodes.operations.arithmetic.*;
+import src.misc.*;
+import java.util.*;
 
 public class Parser {}
 
@@ -82,10 +86,10 @@ ASTNode Exp() :
 {
      t1=Term() ( ( op=<PLUS> | op=<MINUS> ) t2=Term() 
                  {
-                     if (op.kind == PLUS)
-                         t1 = new ASTPlus(t1,t2);
-                     else  t1 = new ASTSub(t1,t2);
-                 } 
+         if (op.kind == PLUS)
+             t1 = new ASTPlus(t1,t2);
+         else  t1 = new ASTSub(t1,t2);
+     }
                ) *
      { return t1; } 
 }
@@ -135,20 +139,12 @@ ASTNode Fact() :
       <RBRACKET>
     |
     {
-        ASTNode ci, bi, be, bl;
+        ASTNode ci, bt, be;
     }
     <IF> ci = Exp() <LBRACKET>
-        bi = Exp()
-    <RBRACKET>
-    /*(<ELIF>
-    <LBRACKET>
-            bl = Exp()
-    <RBRACKET>
-    )* */
-    <ELSE> <LBRACKET>
-        be = Exp()
-    <RBRACKET>
-    { t = new ASTIfElse(ci, bi, be);}
+        bt = Exp()
+    <RBRACKET> <ELSE> <LBRACKET> be = Exp() <RBRACKET>
+    { t = new ASTIfElse(ci, bt, be);}
    | {
         Token v;
         ASTNode cond, c, d;

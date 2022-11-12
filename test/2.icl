@@ -2,12 +2,12 @@
     let x = 2;
     let y = 1;
     {
-        let x = x + y;
-        let k = x + 1;
+        let z = 5;
+        let k = 9 + y;
         {
-            let y = k / 2;
-            let w = x * 3;
-            -w / y + k + x + y
+            let w = 1;
+            let p = 6;
+            x + y + z + k + w + p
         }
-    } + 1
+    } + x
 };

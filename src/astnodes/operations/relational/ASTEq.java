@@ -1,13 +1,14 @@
-package src.astnodes;
+package src.astnodes.operations.relational;
 
+import src.astnodes.ASTNode;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 
-public class ASTMod implements ASTNode {
+public class ASTEq implements ASTNode {
     private ASTNode l, r;
 
-    public ASTMod(ASTNode l, ASTNode r){
+    public ASTEq(ASTNode l, ASTNode r){
         this.l = l;
         this.r = r;
     }
@@ -17,7 +18,7 @@ public class ASTMod implements ASTNode {
         int valueL = this.l.eval(e);
         int valueR = this.r.eval(e);
 
-        return valueL % valueR;
+        return valueL == valueR ? 1 : 0;
     }
 
     @Override

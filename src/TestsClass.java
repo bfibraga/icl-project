@@ -34,6 +34,7 @@ public class TestsClass {
         System.out.println("Value: " + value.getValue());
         System.out.println("isNumber: " + value.isNumber());
         System.out.println("isBoolean: " + value.isBoolean() + "\n");
+        System.out.println(value.toInt());
         System.out.println(value.toBool());
         System.out.println(value.toFloat());
         System.out.println();

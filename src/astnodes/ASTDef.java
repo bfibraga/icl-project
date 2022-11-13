@@ -51,11 +51,12 @@ public class ASTDef implements ASTNode {
         block.emit(String.format("%s %s/<init>()V", JVM.INVOKESPECIAL, newFrame));
         block.emit(JVM.DUP.toString());
 
-        //Init variables
+        //Init static link of current frame
         block.emit(String.format("%s_%d", JVM.ALOAD, 3));
         block.emit(String.format("%s %s/sl L%s;", JVM.PUTFIELD, newFrame, currFrame));
         block.emit(String.format("%s_%d", JVM.ASTORE, 3));
 
+        //Init variables
         Coordinates coordinates;
         for (Bind<String, ASTNode> bind: init) {
             String id = bind.getId();

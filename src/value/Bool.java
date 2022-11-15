@@ -13,8 +13,7 @@ public class Bool implements Value {
         return String.valueOf(this.value);
     }
 
-    @Override
-    public Object getValue() {
+    public boolean getValue() {
         return this.value;
     }
 
@@ -29,15 +28,14 @@ public class Bool implements Value {
     }
 
     @Override
-    public Value toInt() {
-        int value = (boolean) this.getValue() ? 1 : 0;
-        return new Int(value);
+    public boolean isCell() {
+        return false;
     }
 
     @Override
-    public Value toFloat() {
-        float value = (boolean) this.getValue() ? 1.0f : 0.0f;
-        return new Float(value);
+    public Value toInt() {
+        int value = (boolean) this.getValue() ? 1 : 0;
+        return new Int(value);
     }
 
     @Override

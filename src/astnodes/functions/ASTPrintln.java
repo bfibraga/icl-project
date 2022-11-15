@@ -11,11 +11,11 @@ import src.value.Value;
 
 import java.util.List;
 
-public class ASTPrint implements ASTNode {
+public class ASTPrintln implements ASTNode {
 
     private List<ASTNode> args;
 
-    public ASTPrint(List<ASTNode> args){
+    public ASTPrintln(List<ASTNode> args){
         this.args = args;
     }
 
@@ -24,8 +24,9 @@ public class ASTPrint implements ASTNode {
         StringBuilder result = new StringBuilder();
         for (ASTNode arg: args) {
             Value value = arg.eval(e);
-            result.append(value.show()).append(" ");
+            result.append(value.show()).append("\n");
         }
+        result.deleteCharAt(result.length()-1);
         System.out.print(result);
         return new Str(result.toString());
     }

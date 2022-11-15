@@ -1,9 +1,13 @@
 package src.astnodes.operations.relational;
 
 import src.astnodes.ASTNode;
+import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.value.Bool;
+import src.value.Int;
+import src.value.Value;
 
 public class ASTGrtEq implements ASTNode {
     private ASTNode l, r;
@@ -14,11 +18,18 @@ public class ASTGrtEq implements ASTNode {
     }
 
     @Override
-    public int eval(Environment<Integer> e) {
-        int valueL = this.l.eval(e);
-        int valueR = this.r.eval(e);
+    public Value eval(Environment<Value> e) {
+        Value valueL = this.l.eval(e);
+        if (!valueL.isNumber() || valueL.isBoolean()){
+            throw new InvalidTypes(valueL.show());
+        }
 
-        return valueL >= valueR ? 1 : 0;
+        Value valueR = this.r.eval(e);
+        if (!valueR.isNumber() || valueR.isBoolean()){
+            throw new InvalidTypes(valueR.show());
+        }
+
+        return new Bool(((Int)valueL).getValue() >= ((Int)valueR).getValue()) ;
     }
 
     @Override

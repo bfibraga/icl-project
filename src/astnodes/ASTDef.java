@@ -2,6 +2,7 @@ package src.astnodes;
 
 import src.jvm.JVM;
 import src.misc.*;
+import src.value.Value;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -18,10 +19,10 @@ public class ASTDef implements ASTNode {
     }
 
     @Override
-    public int eval(Environment<Integer> e) {
+    public Value eval(Environment<Value> e) {
         e = e.beginScope();
 
-        int value;
+        Value value;
         for (Bind<String, ASTNode> bind: init) {
             String id = bind.getId();
             ASTNode node = bind.getValue();

@@ -2,30 +2,17 @@ package src.value;
 
 import src.exceptions.InvalidTypeConvertion;
 
-public class Cell implements Value{
+public class Str implements Value {
 
-    private Value value;
+    private final String value;
 
-    public Cell(Value value) {
+    public Str(String value){
         this.value = value;
-    }
-
-    public Value get() {
-        return value;
-    }
-
-    public void set(Value value) {
-        this.value = value;
-    }
-
-    @Override
-    public String toString() {
-        return this.show();
     }
 
     @Override
     public String show() {
-        return this.get().show();
+        return this.value;
     }
 
     @Override
@@ -40,7 +27,7 @@ public class Cell implements Value{
 
     @Override
     public boolean isCell() {
-        return true;
+        return false;
     }
 
     @Override
@@ -51,5 +38,10 @@ public class Cell implements Value{
     @Override
     public Value toBool() {
         throw new InvalidTypeConvertion(this.getClass().getName(), Bool.class.getName());
+    }
+
+    @Override
+    public String toString() {
+        return this.show();
     }
 }

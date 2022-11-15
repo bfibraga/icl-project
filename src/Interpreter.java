@@ -3,18 +3,27 @@ package src;
 import src.astnodes.ASTNode;
 import src.misc.Environment;
 import src.parser.Parser;
+import src.value.Value;
+
+import java.io.InputStream;
+import java.io.PrintStream;
 
 public class Interpreter {
     /** Main entry point. */
     public static void main(String[] args) {
-        Parser parser = new Parser(System.in);
+        InputStream in = System.in;
+        PrintStream out = System.out;
+
+        Parser parser = new Parser(in);
         ASTNode exp;
-        Environment<Integer> environment = new Environment<>();
+        Environment<Value> environment = new Environment<>();
 
         while (true) {
             try {
+                out.print("> ");
                 exp = parser.Start();
-                System.out.println( exp.eval(environment) );
+                exp.eval(environment);
+                out.println();
             } catch (Exception e) {
                 e.printStackTrace();
                 parser.ReInit(System.in);

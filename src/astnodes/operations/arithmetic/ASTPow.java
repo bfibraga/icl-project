@@ -1,9 +1,12 @@
 package src.astnodes.operations.arithmetic;
 
 import src.astnodes.ASTNode;
+import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.value.Int;
+import src.value.Value;
 
 public class ASTPow implements ASTNode {
     
@@ -15,11 +18,18 @@ public class ASTPow implements ASTNode {
     }
 
     @Override
-    public int eval(Environment<Integer> e) {
-        int valueL = this.l.eval(e);
-        int valueR = this.r.eval(e);
+    public Value eval(Environment<Value> e) {
+        Value valueL = this.l.eval(e);
+        if (!valueL.isNumber() || valueL.isBoolean()){
+            throw new InvalidTypes(valueL.show());
+        }
 
-        return (int) Math.pow(valueL, valueR);
+        Value valueR = this.r.eval(e);
+        if (!valueR.isNumber() || valueR.isBoolean()){
+            throw new InvalidTypes(valueL.show());
+        }
+
+        return new Int((int) Math.pow(((Int)valueL).getValue(), ((Int)valueR).getValue()));
     }
 
     @Override

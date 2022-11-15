@@ -1,27 +1,26 @@
 package src.astnodes;
 
-import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.value.Int;
+import src.value.Str;
 import src.value.Value;
 
-public class ASTNum implements ASTNode {
-    private int val;
+public class ASTStr implements ASTNode {
 
-    public ASTNum(int val){
-        this.val = val;
+    private final String value;
+
+    public ASTStr(String value) {
+        this.value = value;
     }
 
     @Override
     public Value eval(Environment<Value> e) {
-        return new Int(this.val);
+        return new Str(this.value);
     }
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
-        block.emit(String.format("%s %d", JVM.SIPUSH, this.val));
+
     }
 }
-

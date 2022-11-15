@@ -1,27 +1,28 @@
 package src.astnodes;
 
-import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.value.Int;
 import src.value.Value;
 
-public class ASTNum implements ASTNode {
-    private int val;
+public class ASTSeq implements ASTNode {
 
-    public ASTNum(int val){
-        this.val = val;
+    private final ASTNode l, r;
+
+    public ASTSeq(ASTNode l, ASTNode r){
+        this.l = l;
+        this.r = r;
     }
 
     @Override
     public Value eval(Environment<Value> e) {
-        return new Int(this.val);
+        //TODO Test
+        this.l.eval(e);
+        return this.r.eval(e);
     }
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
-        block.emit(String.format("%s %d", JVM.SIPUSH, this.val));
+
     }
 }
-

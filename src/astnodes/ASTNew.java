@@ -1,27 +1,27 @@
 package src.astnodes;
 
-import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.value.Int;
+import src.value.Cell;
 import src.value.Value;
 
-public class ASTNum implements ASTNode {
-    private int val;
+public class ASTNew implements ASTNode {
 
-    public ASTNum(int val){
-        this.val = val;
+    private final ASTNode arg;
+
+    public ASTNew(ASTNode arg){
+        this.arg = arg;
     }
 
     @Override
     public Value eval(Environment<Value> e) {
-        return new Int(this.val);
+        Value valueArg = this.arg.eval(e);
+        return new Cell(valueArg);
     }
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
-        block.emit(String.format("%s %d", JVM.SIPUSH, this.val));
+
     }
 }
-

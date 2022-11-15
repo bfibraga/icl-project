@@ -5,6 +5,7 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.misc.Frame;
+import src.value.Value;
 
 public class ASTId implements ASTNode {
 
@@ -15,7 +16,7 @@ public class ASTId implements ASTNode {
     }
 
     @Override
-    public int eval(Environment<Integer> e) {
+    public Value eval(Environment<Value> e) {
         return e.find(this.id);
     }
 

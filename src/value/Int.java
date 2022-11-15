@@ -2,7 +2,7 @@ package src.value;
 
 public class Int implements Value {
 
-    private final int value;
+    private int value;
 
     public Int(int value){
         this.value = value;
@@ -13,8 +13,7 @@ public class Int implements Value {
         return String.valueOf(this.value);
     }
 
-    @Override
-    public Object getValue() {
+    public int getValue() {
         return this.value;
     }
 
@@ -29,14 +28,13 @@ public class Int implements Value {
     }
 
     @Override
-    public Value toInt() {
-        return this;
+    public boolean isCell() {
+        return false;
     }
 
     @Override
-    public Value toFloat() {
-        float value = ((Integer) this.getValue()).floatValue();
-        return new Float(value);
+    public Value toInt() {
+        return this;
     }
 
     @Override

@@ -4,15 +4,13 @@ public interface Value {
 
     String show();
 
-    Object getValue();
-
     boolean isNumber();
 
     boolean isBoolean();
 
+    boolean isCell();
+
     Value toInt();
-
-    Value toFloat();
-
+    
     Value toBool();
 }

@@ -1,9 +1,12 @@
 package src.astnodes.control;
 
 import src.astnodes.ASTNode;
+import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.value.Bool;
+import src.value.Value;
 
 public class ASTWhile implements ASTNode {
 
@@ -16,9 +19,14 @@ public class ASTWhile implements ASTNode {
     }
 
     @Override
-    public int eval(Environment<Integer> e) {
-        int condValue = this.cond.eval(e);
-        if (condValue != 0){
+    public Value eval(Environment<Value> e) {
+        Value condValue = this.cond.eval(e);
+
+        if (!condValue.isBoolean()){
+            throw new InvalidTypes(condValue.show());
+        }
+
+        if (((Bool)condValue).getValue()){
             body.eval(e);
             return this.eval(e);
         } else {

@@ -1,39 +1,39 @@
-package src.astnodes.operations.relational;
+package src.astnodes;
 
-import src.astnodes.ASTNode;
 import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.value.Bool;
-import src.value.Int;
+import src.value.Cell;
 import src.value.Value;
 
-public class ASTLwtEq implements ASTNode {
+public class ASTAssign implements ASTNode {
+
     private ASTNode l, r;
 
-    public ASTLwtEq(ASTNode l, ASTNode r){
-        this.l = l;
+    public ASTAssign(ASTNode l, ASTNode r){
         this.r = r;
+        this.l = l;
     }
 
     @Override
     public Value eval(Environment<Value> e) {
         Value valueL = this.l.eval(e);
-        if (!valueL.isNumber() || valueL.isBoolean()){
+        if (!valueL.isCell()){
             throw new InvalidTypes(valueL.show());
         }
 
         Value valueR = this.r.eval(e);
-        if (!valueR.isNumber() || valueR.isBoolean()){
+        if (!valueR.isCell()){
             throw new InvalidTypes(valueR.show());
         }
 
-        return new Bool(((Int)valueL).getValue() <= ((Int)valueR).getValue()) ;
+        ((Cell) valueL).set(valueR);
+        return valueR;
     }
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
-        //TODO Implement compilation code for this astnode
+
     }
 }

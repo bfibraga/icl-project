@@ -1,10 +1,13 @@
 package src.astnodes.operations.arithmetic;
 
 import src.astnodes.ASTNode;
+import src.exceptions.InvalidTypes;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.value.Int;
+import src.value.Value;
 
 public class ASTNeg implements ASTNode {
 
@@ -15,8 +18,13 @@ public class ASTNeg implements ASTNode {
     }
 
     @Override
-    public int eval(Environment<Integer> e) {
-        return -1 * exp.eval(e);
+    public Value eval(Environment<Value> e) {
+        Value valueExp = this.exp.eval(e);
+        if (!valueExp.isNumber() || valueExp.isBoolean()){
+            throw new InvalidTypes(valueExp.show());
+        }
+
+        return new Int(-1 * ((Int) valueExp).getValue());
     }
 
     @Override

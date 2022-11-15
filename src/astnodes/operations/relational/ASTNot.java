@@ -1,9 +1,12 @@
 package src.astnodes.operations.relational;
 
 import src.astnodes.ASTNode;
+import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.value.Bool;
+import src.value.Value;
 
 public class ASTNot implements ASTNode {
     private ASTNode body;
@@ -13,10 +16,13 @@ public class ASTNot implements ASTNode {
     }
 
     @Override
-    public int eval(Environment<Integer> e) {
-        int value = this.body.eval(e);
+    public Value eval(Environment<Value> e) {
+        Value valueBody = this.body.eval(e);
+        if (!valueBody.isBoolean() || valueBody.isNumber()){
+            throw new InvalidTypes(valueBody.show());
+        }
 
-        return value != 0 ? 0 : 1;
+        return new Bool( !((Bool)valueBody).getValue()) ;
     }
 
     @Override

@@ -7,7 +7,10 @@ package src.parser;
 import src.astnodes.*;
 import src.astnodes.control.*;
 import src.astnodes.operations.arithmetic.*;
+import src.astnodes.functions.*;
+import src.astnodes.operations.relational.*;
 import src.misc.*;
+import src.value.*;
 import java.util.*;
 
 public class Parser {}
@@ -24,9 +27,17 @@ SKIP :
 
 TOKEN :
 {
-  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
+  < INT : (["0"-"9"]) + >
   |
-  < Num: (["0"-"9"]) + >
+  < FLOAT : <INT> "." (["0"-"9"])* | "." <INT> >
+  |
+  < Num: <INT> | <FLOAT>>
+  |
+  < BOOL : ("true" | "false") >
+  |
+  < SETVAL : "->">
+  |
+  < QUOTE : "'">
   |
   < PLUS : "+" >
   |
@@ -48,7 +59,7 @@ TOKEN :
   |
   < RBRACKET : "}">
   |
-  < LET : "let ">
+  < LET : "let">
   |
   < EQ : "=">
   |
@@ -56,17 +67,38 @@ TOKEN :
   |
   < COMMA : "," >
   |
-  < IF : "if ">
+  < IF : "if">
   |
-  < ELIF : "elif ">
+  < ELIF : "elif">
   |
-  < ELSE : "else ">
+  < ELSE : "else">
   |
-  < MATCH : "match ">
+  < MATCH : "match">
   |
   < DDOT : ":">
   |
   < DEFAULTCASE : "_">
+  |
+  < GT : ">">
+  |
+  < GEQT : ">=">
+  |
+  < LT : "<">
+  |
+  < LEQT : "<=">
+  |
+  < AND : "and">
+  |
+  < OR : "or">
+  |
+  < PRINT : "print">
+  |
+  < PRINTLN : "println">
+  |
+  < EXIT : "exit">
+  |
+  < Id: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"] )* >
+
 }
 
 ASTNode Start():
@@ -74,8 +106,70 @@ ASTNode Start():
     ASTNode t;
 }
 {
-   t = Exp() <SEMCOL>
+   t = Seq() <SEMCOL>
    { return t; }
+}
+
+ASTNode Seq():
+{
+    Token n;
+    ASTNode t1, t2;
+}
+{
+    t1 = SeqE() (<COMMA> t2 = SeqE() { t1 = new ASTSeq(t1,t2); })*
+    { return t1; }
+}
+
+ASTNode SeqE():
+{
+    Token n;
+    ASTNode t1, t2;
+}
+{
+    t1 = BoolAdd() (<SETVAL> t2 = BoolAdd() { t1 = new ASTAssign(t1,t2); })*
+    { return t1; }
+}
+
+ASTNode BoolAdd() :
+{
+    Token n;
+    ASTNode t1, t2;
+}
+{
+    t1 = BoolMult() (<OR> t2 = BoolMult() { t1 = new ASTOr(t1,t2); })*
+    { return t1; }
+}
+
+ASTNode BoolMult() :
+{
+    Token n;
+    ASTNode t1, t2;
+}
+{
+    t1 = RelOps() (<AND> t2 = RelOps() { t1 = new ASTAnd(t1,t2); })*
+    { return t1; }
+}
+
+ASTNode RelOps() :
+{
+    Token op;
+    ASTNode t1, t2;
+}
+{
+    t1 = Exp() (( op= <GT> | op = <GEQT> | op = <LT> | op = <LEQT> | op = <EQ> ) t2 = Exp()
+    {
+        if (op.kind == GT)
+            t1 = new ASTGrt(t1,t2);
+        else if (op.kind == GEQT)
+            t1 = new ASTGrtEq(t1,t2);
+        else if (op.kind == LT)
+            t1 = new ASTLwt(t1,t2);
+        else if (op.kind == LEQT)
+            t1 = new ASTLwtEq(t1,t2);
+        else if (op.kind == EQ)
+            t1 = new ASTEq(t1,t2);
+    })?
+    { return t1; }
 }
 
 ASTNode Exp() :
@@ -124,37 +218,45 @@ ASTNode Fact() :
 }
 {
    (
-      n=<Num> { t = new ASTNum(Integer.parseInt(n.image)); }
+      n=<INT> { t = new ASTNum(Integer.parseInt(n.image)); }
+    | n=<BOOL> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
+    | { StringBuilder result = new StringBuilder(); } <QUOTE> ( n=<Id> { result.append(n.image).append(" "); })+ <QUOTE>
+    {
+        result.deleteCharAt(result.length()-1);
+        t = new ASTStr(result.toString());
+    }
     | n=<Id> { t = new ASTId(n.image); }
     | ("-" t = Fact() { t = new ASTNeg(t); })
-    | <LPAR> t=Exp() <RPAR>
+    | <LPAR> t=BoolAdd() <RPAR>
     | <LBRACKET>
         {
             List<Bind<String, ASTNode>> l = new ArrayList<>();
             ASTNode b;
         }
-        ( <LET> n = <Id> <EQ> t = Exp() <SEMCOL> { l.add(new Bind<>(n.image, t)); })*
-            b = Exp()
+        ( <LET> n = <Id> <EQ> t = BoolAdd() <SEMCOL> { l.add(new Bind<>(n.image, t)); })*
+            b = Seq()
             { t = new ASTDef(l, b); }
       <RBRACKET>
     |
     {
         ASTNode ci, bt, be;
     }
-    <IF> ci = Exp() <LBRACKET>
-        bt = Exp()
-    <RBRACKET> <ELSE> <LBRACKET> be = Exp() <RBRACKET>
-    { t = new ASTIfElse(ci, bt, be);}
+    <IF> ci = BoolAdd() <LBRACKET>
+        bt = Seq()
+    <RBRACKET> <ELSE> <LBRACKET> be = Seq() <RBRACKET>
+    { t = new ASTIfElse(ci, bt, be); }
    | {
         Token v;
         ASTNode cond, c, d;
-        Map<Integer, ASTNode> cases = new HashMap<>();
+        Map<Value, ASTNode> cases = new HashMap<>();
      }
-     <MATCH> cond = Exp() <LBRACKET>
-         ( v = <Num> <DDOT> c = Exp() { cases.put(Integer.parseInt(v.image), c); } <COMMA>)*
-         <DEFAULTCASE> <DDOT> d = Exp()
+     <MATCH> cond = BoolAdd() <LBRACKET>
+         ( v = <INT> <DDOT> c = Seq() { cases.put(new Int(Integer.parseInt(v.image)), c); } <SEMCOL> )*
+         <DEFAULTCASE> <DDOT> d = Seq()
      <RBRACKET>
      { t = new ASTMatch(cond, cases, d); }
+   | { List<ASTNode> l = new ArrayList<>(); }<PRINT> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrint(l); }
+   | { List<ASTNode> l = new ArrayList<>(); }<PRINTLN> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrintln(l); }
    )
    { return t; }
 }

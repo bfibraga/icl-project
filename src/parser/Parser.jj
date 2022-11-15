@@ -59,6 +59,10 @@ TOKEN :
   |
   < RBRACKET : "}">
   |
+  < LSBRACKET : "[">
+  |
+  < RSBRACKET : "]">
+  |
   < LET : "let">
   |
   < EQ : "=">
@@ -67,6 +71,8 @@ TOKEN :
   |
   < COMMA : "," >
   |
+  < DOT : ".">
+  |
   < IF : "if">
   |
   < ELIF : "elif">
@@ -74,6 +80,8 @@ TOKEN :
   < ELSE : "else">
   |
   < MATCH : "match">
+  |
+  < WHILE : "while">
   |
   < DDOT : ":">
   |
@@ -87,9 +95,15 @@ TOKEN :
   |
   < LEQT : "<=">
   |
+  < DIFF : "!=">
+  |
   < AND : "and">
   |
   < OR : "or">
+  |
+  < NEW : "new">
+  |
+  < REF : "val">
   |
   < PRINT : "print">
   |
@@ -156,7 +170,7 @@ ASTNode RelOps() :
     ASTNode t1, t2;
 }
 {
-    t1 = Exp() (( op= <GT> | op = <GEQT> | op = <LT> | op = <LEQT> | op = <EQ> ) t2 = Exp()
+    t1 = Exp() (( op= <GT> | op = <GEQT> | op = <LT> | op = <LEQT> | op = <EQ> | op = <DIFF> ) t2 = Exp()
     {
         if (op.kind == GT)
             t1 = new ASTGrt(t1,t2);
@@ -168,6 +182,8 @@ ASTNode RelOps() :
             t1 = new ASTLwtEq(t1,t2);
         else if (op.kind == EQ)
             t1 = new ASTEq(t1,t2);
+        else if (op.kind == DIFF)
+            t1 = new ASTDiff(t1,t2);
     })?
     { return t1; }
 }
@@ -220,7 +236,8 @@ ASTNode Fact() :
    (
       n=<INT> { t = new ASTNum(Integer.parseInt(n.image)); }
     | n=<BOOL> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
-    | { StringBuilder result = new StringBuilder(); } <QUOTE> ( n=<Id> { result.append(n.image).append(" "); })+ <QUOTE>
+    | { StringBuilder result = new StringBuilder(); }
+    <QUOTE> ( n=<Id> { result.append(n.image).append(" "); })+ <QUOTE>
     {
         result.deleteCharAt(result.length()-1);
         t = new ASTStr(result.toString());
@@ -237,6 +254,7 @@ ASTNode Fact() :
             b = Seq()
             { t = new ASTDef(l, b); }
       <RBRACKET>
+    | <NEW> <LPAR> t = Seq() <RPAR> { t = new ASTNew(t); }
     |
     {
         ASTNode ci, bt, be;
@@ -255,6 +273,13 @@ ASTNode Fact() :
          <DEFAULTCASE> <DDOT> d = Seq()
      <RBRACKET>
      { t = new ASTMatch(cond, cases, d); }
+   | {
+    ASTNode b;
+    } <WHILE> t = BoolAdd() <LBRACKET>
+            b = Seq()
+            <RBRACKET>
+            { t = new ASTWhile(t, b); }
+   | <REF> <LPAR> n=<Id> <RPAR> { t = new ASTRef(n.image); }
    | { List<ASTNode> l = new ArrayList<>(); }<PRINT> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrint(l); }
    | { List<ASTNode> l = new ArrayList<>(); }<PRINTLN> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrintln(l); }
    )

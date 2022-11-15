@@ -52,37 +52,47 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int COMMA = 24;
   /** RegularExpression Id. */
-  int IF = 25;
+  int DOT = 25;
   /** RegularExpression Id. */
-  int ELIF = 26;
+  int IF = 26;
   /** RegularExpression Id. */
-  int ELSE = 27;
+  int ELIF = 27;
   /** RegularExpression Id. */
-  int MATCH = 28;
+  int ELSE = 28;
   /** RegularExpression Id. */
-  int DDOT = 29;
+  int MATCH = 29;
   /** RegularExpression Id. */
-  int DEFAULTCASE = 30;
+  int WHILE = 30;
   /** RegularExpression Id. */
-  int GT = 31;
+  int DDOT = 31;
   /** RegularExpression Id. */
-  int GEQT = 32;
+  int DEFAULTCASE = 32;
   /** RegularExpression Id. */
-  int LT = 33;
+  int GT = 33;
   /** RegularExpression Id. */
-  int LEQT = 34;
+  int GEQT = 34;
   /** RegularExpression Id. */
-  int AND = 35;
+  int LT = 35;
   /** RegularExpression Id. */
-  int OR = 36;
+  int LEQT = 36;
   /** RegularExpression Id. */
-  int PRINT = 37;
+  int DIFF = 37;
   /** RegularExpression Id. */
-  int PRINTLN = 38;
+  int AND = 38;
   /** RegularExpression Id. */
-  int EXIT = 39;
+  int OR = 39;
   /** RegularExpression Id. */
-  int Id = 40;
+  int NEW = 40;
+  /** RegularExpression Id. */
+  int REF = 41;
+  /** RegularExpression Id. */
+  int PRINT = 42;
+  /** RegularExpression Id. */
+  int PRINTLN = 43;
+  /** RegularExpression Id. */
+  int EXIT = 44;
+  /** RegularExpression Id. */
+  int Id = 45;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -114,18 +124,23 @@ public interface ParserConstants {
     "\"=\"",
     "\";\"",
     "\",\"",
+    "\".\"",
     "\"if\"",
     "\"elif\"",
     "\"else\"",
     "\"match\"",
+    "\"while\"",
     "\":\"",
     "\"_\"",
     "\">\"",
     "\">=\"",
     "\"<\"",
     "\"<=\"",
+    "\"!=\"",
     "\"and\"",
     "\"or\"",
+    "\"new\"",
+    "\"val\"",
     "\"print\"",
     "\"println\"",
     "\"exit\"",

@@ -1,6 +1,7 @@
 package src.astnodes.functions;
 
 import src.astnodes.ASTNode;
+import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
@@ -24,6 +25,9 @@ public class ASTPrint implements ASTNode {
         StringBuilder result = new StringBuilder();
         for (ASTNode arg: args) {
             Value value = arg.eval(e);
+            if (value.isCell())
+                throw new InvalidTypes(value.show());
+
             result.append(value.show()).append(" ");
         }
         System.out.print(result);

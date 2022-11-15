@@ -117,7 +117,8 @@ t1 = new ASTAnd(t1,t2);
     case GT:
     case GEQT:
     case LT:
-    case LEQT:{
+    case LEQT:
+    case DIFF:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case GT:{
         op = jj_consume_token(GT);
@@ -139,6 +140,10 @@ t1 = new ASTAnd(t1,t2);
         op = jj_consume_token(EQ);
         break;
         }
+      case DIFF:{
+        op = jj_consume_token(DIFF);
+        break;
+        }
       default:
         jj_la1[4] = jj_gen;
         jj_consume_token(-1);
@@ -155,6 +160,8 @@ if (op.kind == GT)
             t1 = new ASTLwtEq(t1,t2);
         else if (op.kind == EQ)
             t1 = new ASTEq(t1,t2);
+        else if (op.kind == DIFF)
+            t1 = new ASTDiff(t1,t2);
       break;
       }
     default:
@@ -331,6 +338,14 @@ t = new ASTDef(l, b);
       jj_consume_token(RBRACKET);
       break;
       }
+    case NEW:{
+      jj_consume_token(NEW);
+      jj_consume_token(LPAR);
+      t = Seq();
+      jj_consume_token(RPAR);
+t = new ASTNew(t);
+      break;
+      }
     case IF:{
 ASTNode ci, bt, be;
       jj_consume_token(IF);
@@ -374,6 +389,24 @@ cases.put(new Int(Integer.parseInt(v.image)), c);
       d = Seq();
       jj_consume_token(RBRACKET);
 t = new ASTMatch(cond, cases, d);
+      break;
+      }
+    case WHILE:{
+ASTNode b;
+      jj_consume_token(WHILE);
+      t = BoolAdd();
+      jj_consume_token(LBRACKET);
+      b = Seq();
+      jj_consume_token(RBRACKET);
+t = new ASTWhile(t, b);
+      break;
+      }
+    case REF:{
+      jj_consume_token(REF);
+      jj_consume_token(LPAR);
+      n = jj_consume_token(Id);
+      jj_consume_token(RPAR);
+t = new ASTRef(n.image);
       break;
       }
     case PRINT:{
@@ -453,10 +486,10 @@ t = new ASTPrintln(l);
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x1000000,0x200,0x0,0x0,0x80400000,0x80400000,0x1800,0x1800,0x1e000,0x1e000,0x0,0x200000,0x20,0x1000000,0x1000000,0x120a1520,};
+	   jj_la1_0 = new int[] {0x1000000,0x200,0x0,0x0,0x400000,0x400000,0x1800,0x1800,0x1e000,0x1e000,0x0,0x200000,0x20,0x1000000,0x1000000,0x640a1520,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x0,0x10,0x8,0x7,0x7,0x0,0x0,0x0,0x0,0x100,0x0,0x0,0x0,0x0,0x160,};
+	   jj_la1_1 = new int[] {0x0,0x0,0x80,0x40,0x3e,0x3e,0x0,0x0,0x0,0x0,0x2000,0x0,0x0,0x0,0x0,0x2f00,};
 	}
 
   /** Constructor with InputStream. */
@@ -602,7 +635,7 @@ t = new ASTPrintln(l);
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[41];
+	 boolean[] la1tokens = new boolean[46];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -619,7 +652,7 @@ t = new ASTPrintln(l);
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 41; i++) {
+	 for (int i = 0; i < 46; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;

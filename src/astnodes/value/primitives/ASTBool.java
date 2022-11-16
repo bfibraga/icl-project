@@ -1,22 +1,23 @@
-package src.astnodes;
+package src.astnodes.value.primitives;
 
+import src.astnodes.ASTNode;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.value.Str;
+import src.value.Bool;
 import src.value.Value;
 
-public class ASTStr implements ASTNode {
+public class ASTBool implements ASTNode {
 
-    private final String value;
+    private final boolean val;
 
-    public ASTStr(String value) {
-        this.value = value;
+    public ASTBool(boolean val){
+        this.val = val;
     }
 
     @Override
     public Value eval(Environment<Value> e) {
-        return new Str(this.value);
+        return new Bool(this.val);
     }
 
     @Override

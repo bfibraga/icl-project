@@ -10,6 +10,8 @@ public interface Value {
 
     boolean isCell();
 
+    boolean isString();
+
     Value toInt();
     
     Value toBool();

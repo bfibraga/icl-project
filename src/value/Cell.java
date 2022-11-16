@@ -25,7 +25,7 @@ public class Cell implements Value{
 
     @Override
     public String show() {
-        return this.get().show();
+        return String.format("Cell(%s)", this.get().show());
     }
 
     @Override
@@ -41,6 +41,11 @@ public class Cell implements Value{
     @Override
     public boolean isCell() {
         return true;
+    }
+
+    @Override
+    public boolean isString() {
+        return false;
     }
 
     @Override

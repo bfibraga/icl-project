@@ -7,6 +7,7 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.value.Int;
+import src.value.Str;
 import src.value.Value;
 
 public class ASTPlus implements ASTNode {
@@ -21,16 +22,49 @@ public class ASTPlus implements ASTNode {
     @Override
     public Value eval(Environment<Value> e) {
         Value valueL = this.l.eval(e);
-        if (!valueL.isNumber() || valueL.isBoolean()){
+        if ((!valueL.isNumber() && !valueL.isString() && !valueL.isBoolean())){
             throw new InvalidTypes(valueL.show());
         }
 
         Value valueR = this.r.eval(e);
-        if (!valueR.isNumber() || valueR.isBoolean()){
-            throw new InvalidTypes(valueL.show());
+        if ((!valueR.isNumber() && !valueR.isString() && !valueR.isBoolean())){
+            throw new InvalidTypes(valueR.show());
         }
 
-        return new Int( ((Int) valueL).getValue() + ((Int) valueR).getValue());
+        if (valueL.isBoolean() && valueR.isBoolean()){
+            throw new InvalidTypes(valueL.show());
+        } else {
+            if (valueL.isString()){
+                String resultL = valueL.show();
+                return new Str(resultL + valueR);
+            }
+
+            if (valueR.isString()){
+                String resultR = valueR.show();
+                return new Str(valueL + resultR);
+            }
+        }
+
+        if (valueL.isString()){
+            String resultL = valueL.show();
+            if (valueR.isString()){
+                String resultR = valueR.show();
+                return new Str(resultL + resultR);
+            } else {
+                int resultR = ((Int) valueR).getValue();
+                return new Str(resultL + resultR);
+            }
+        } else {
+            int resultL = ((Int) valueL).getValue();
+            if (valueR.isString()){
+                String resultR = valueR.show();
+                return new Str(resultL + resultR);
+            } else {
+                int resultR = ((Int) valueR).getValue();
+                return new Int(resultL + resultR);
+            }
+        }
+
     }
 
     @Override

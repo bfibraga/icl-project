@@ -1,5 +1,6 @@
-package src.astnodes;
+package src.astnodes.binding;
 
+import src.astnodes.ASTNode;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;

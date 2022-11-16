@@ -1,5 +1,6 @@
-package src.astnodes;
+package src.astnodes.binding;
 
+import src.astnodes.ASTNode;
 import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
@@ -9,20 +10,20 @@ import src.value.Value;
 
 public class ASTRef implements ASTNode {
 
-    private final String id;
+    private final ASTNode node;
 
-    public ASTRef(String id) {
-        this.id = id;
+    public ASTRef(ASTNode node) {
+        this.node = node;
     }
 
     @Override
     public Value eval(Environment<Value> e) {
-        Value valueExp = e.find(id);
-        if (!valueExp.isCell()){
-            throw new InvalidTypes(valueExp.show());
+        Value value = this.node.eval(e);
+        if (!value.isCell()){
+            throw new InvalidTypes(value.show());
         }
 
-        return ((Cell) valueExp).get();
+        return ((Cell) value).get();
     }
 
     @Override

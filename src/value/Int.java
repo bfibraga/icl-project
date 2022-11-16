@@ -33,6 +33,11 @@ public class Int implements Value {
     }
 
     @Override
+    public boolean isString() {
+        return false;
+    }
+
+    @Override
     public Value toInt() {
         return this;
     }

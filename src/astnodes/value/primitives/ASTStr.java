@@ -1,24 +1,23 @@
-package src.astnodes;
+package src.astnodes.value.primitives;
 
+import src.astnodes.ASTNode;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.value.Str;
 import src.value.Value;
 
-public class ASTSeq implements ASTNode {
+public class ASTStr implements ASTNode {
 
-    private final ASTNode l, r;
+    private final String value;
 
-    public ASTSeq(ASTNode l, ASTNode r){
-        this.l = l;
-        this.r = r;
+    public ASTStr(String value) {
+        this.value = value;
     }
 
     @Override
     public Value eval(Environment<Value> e) {
-        //TODO Test
-        this.l.eval(e);
-        return this.r.eval(e);
+        return new Str(this.value);
     }
 
     @Override

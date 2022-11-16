@@ -44,55 +44,63 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int RBRACKET = 20;
   /** RegularExpression Id. */
-  int LET = 21;
+  int LSBRACKET = 21;
   /** RegularExpression Id. */
-  int EQ = 22;
+  int RSBRACKET = 22;
   /** RegularExpression Id. */
-  int SEMCOL = 23;
+  int LET = 23;
   /** RegularExpression Id. */
-  int COMMA = 24;
+  int EQ = 24;
   /** RegularExpression Id. */
-  int DOT = 25;
+  int SEMCOL = 25;
   /** RegularExpression Id. */
-  int IF = 26;
+  int COMMA = 26;
   /** RegularExpression Id. */
-  int ELIF = 27;
+  int DOT = 27;
   /** RegularExpression Id. */
-  int ELSE = 28;
+  int IF = 28;
   /** RegularExpression Id. */
-  int MATCH = 29;
+  int ELIF = 29;
   /** RegularExpression Id. */
-  int WHILE = 30;
+  int ELSE = 30;
   /** RegularExpression Id. */
-  int DDOT = 31;
+  int MATCH = 31;
   /** RegularExpression Id. */
-  int DEFAULTCASE = 32;
+  int WHILE = 32;
   /** RegularExpression Id. */
-  int GT = 33;
+  int DDOT = 33;
   /** RegularExpression Id. */
-  int GEQT = 34;
+  int DEFAULTCASE = 34;
   /** RegularExpression Id. */
-  int LT = 35;
+  int GT = 35;
   /** RegularExpression Id. */
-  int LEQT = 36;
+  int GEQT = 36;
   /** RegularExpression Id. */
-  int DIFF = 37;
+  int LT = 37;
   /** RegularExpression Id. */
-  int AND = 38;
+  int LEQT = 38;
   /** RegularExpression Id. */
-  int OR = 39;
+  int DIFF = 39;
   /** RegularExpression Id. */
-  int NEW = 40;
+  int NOT = 40;
   /** RegularExpression Id. */
-  int REF = 41;
+  int AND = 41;
   /** RegularExpression Id. */
-  int PRINT = 42;
+  int OR = 42;
   /** RegularExpression Id. */
-  int PRINTLN = 43;
+  int NEW = 43;
   /** RegularExpression Id. */
-  int EXIT = 44;
+  int REF = 44;
   /** RegularExpression Id. */
-  int Id = 45;
+  int LEN = 45;
+  /** RegularExpression Id. */
+  int PRINT = 46;
+  /** RegularExpression Id. */
+  int PRINTLN = 47;
+  /** RegularExpression Id. */
+  int EXIT = 48;
+  /** RegularExpression Id. */
+  int Id = 49;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -120,6 +128,8 @@ public interface ParserConstants {
     "\")\"",
     "\"{\"",
     "\"}\"",
+    "\"[\"",
+    "\"]\"",
     "\"let\"",
     "\"=\"",
     "\";\"",
@@ -137,10 +147,12 @@ public interface ParserConstants {
     "\"<\"",
     "\"<=\"",
     "\"!=\"",
+    "\"!\"",
     "\"and\"",
     "\"or\"",
     "\"new\"",
     "\"val\"",
+    "\"#\"",
     "\"print\"",
     "\"println\"",
     "\"exit\"",

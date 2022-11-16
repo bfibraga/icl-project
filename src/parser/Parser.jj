@@ -5,11 +5,11 @@ PARSER_BEGIN(Parser)
 package src.parser;
 
 import src.astnodes.*;
-import src.astnodes.control.*;
+import src.astnodes.binding.*;import src.astnodes.control.*;
 import src.astnodes.operations.arithmetic.*;
 import src.astnodes.functions.*;
 import src.astnodes.operations.relational.*;
-import src.misc.*;
+import src.astnodes.value.primitives.ASTBool;import src.astnodes.value.primitives.ASTNum;import src.astnodes.value.primitives.ASTStr;import src.astnodes.value.record.ASTRecord;import src.astnodes.value.record.ASTRecordField;import src.misc.*;
 import src.value.*;
 import java.util.*;
 
@@ -31,7 +31,7 @@ TOKEN :
   |
   < FLOAT : <INT> "." (["0"-"9"])* | "." <INT> >
   |
-  < Num: <INT> | <FLOAT>>
+  < Num: (<INT> | <FLOAT>)>
   |
   < BOOL : ("true" | "false") >
   |
@@ -97,6 +97,8 @@ TOKEN :
   |
   < DIFF : "!=">
   |
+  < NOT : "!">
+  |
   < AND : "and">
   |
   < OR : "or">
@@ -104,6 +106,8 @@ TOKEN :
   < NEW : "new">
   |
   < REF : "val">
+  |
+  < LEN : "#">
   |
   < PRINT : "print">
   |
@@ -239,12 +243,19 @@ ASTNode Fact() :
     | { StringBuilder result = new StringBuilder(); }
     <QUOTE> ( n=<Id> { result.append(n.image).append(" "); })+ <QUOTE>
     {
-        result.deleteCharAt(result.length()-1);
-        t = new ASTStr(result.toString());
+    result.deleteCharAt(result.length()-1);
+    t = new ASTStr(result.toString());
     }
-    | n=<Id> { t = new ASTId(n.image); }
+    | { Map<String, ASTNode> m = new HashMap<>(); }
+    <LSBRACKET>
+    n=<Id> <DDOT> t = BoolAdd() { m.put(n.image, t); }
+    ( <COMMA> n=<Id> <DDOT> t = BoolAdd() { m.put(n.image, t); })*
+    <RSBRACKET>
+    { t = new ASTRecord(m); }
+    | n=<Id> { t = new ASTId(n.image); } ({ Token n2; } <DOT> n2=<Id> { t = new ASTRecordField(t, n.image, n2.image); })*
     | ("-" t = Fact() { t = new ASTNeg(t); })
     | <LPAR> t=BoolAdd() <RPAR>
+    | <NOT> t=Fact() { t = new ASTNot(t); }
     | <LBRACKET>
         {
             List<Bind<String, ASTNode>> l = new ArrayList<>();
@@ -254,7 +265,7 @@ ASTNode Fact() :
             b = Seq()
             { t = new ASTDef(l, b); }
       <RBRACKET>
-    | <NEW> <LPAR> t = Seq() <RPAR> { t = new ASTNew(t); }
+    | <NEW> <LPAR> t = BoolAdd() <RPAR> { t = new ASTNew(t); }
     |
     {
         ASTNode ci, bt, be;
@@ -279,7 +290,7 @@ ASTNode Fact() :
             b = Seq()
             <RBRACKET>
             { t = new ASTWhile(t, b); }
-   | <REF> <LPAR> n=<Id> <RPAR> { t = new ASTRef(n.image); }
+   | <REF> <LPAR> t=BoolAdd() <RPAR> { t = new ASTRef(t); }
    | { List<ASTNode> l = new ArrayList<>(); }<PRINT> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrint(l); }
    | { List<ASTNode> l = new ArrayList<>(); }<PRINTLN> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrintln(l); }
    )

@@ -12,7 +12,7 @@ import src.value.Value;
 public class ASTTimes implements ASTNode {
     private ASTNode l, r;
 
-    public ASTTimes(ASTNode l, ASTNode r){
+    public ASTTimes(ASTNode l, ASTNode r) {
         this.l = l;
         this.r = r;
     }

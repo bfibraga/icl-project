@@ -5,11 +5,14 @@ PARSER_BEGIN(Parser)
 package src.parser;
 
 import src.astnodes.*;
-import src.astnodes.binding.*;import src.astnodes.control.*;
+import src.astnodes.binding.*;
+import src.astnodes.control.*;
+import src.astnodes.functions.io.out.*;
 import src.astnodes.operations.arithmetic.*;
-import src.astnodes.functions.*;
 import src.astnodes.operations.relational.*;
-import src.astnodes.value.primitives.ASTBool;import src.astnodes.value.primitives.ASTNum;import src.astnodes.value.primitives.ASTStr;import src.astnodes.value.record.ASTRecord;import src.astnodes.value.record.ASTRecordField;import src.misc.*;
+import src.astnodes.value.primitives.*;
+import src.astnodes.value.record.*;
+import src.misc.*;
 import src.value.*;
 import java.util.*;
 
@@ -36,6 +39,8 @@ TOKEN :
   < BOOL : ("true" | "false") >
   |
   < SETVAL : "->">
+  |
+  < GETVAL : "<-">
   |
   < QUOTE : "'">
   |
@@ -64,6 +69,8 @@ TOKEN :
   < RSBRACKET : "]">
   |
   < LET : "let">
+  |
+  < MUT : "mut">
   |
   < EQ : "=">
   |
@@ -124,7 +131,7 @@ ASTNode Start():
     ASTNode t;
 }
 {
-   t = Seq() <SEMCOL>
+   t = Seq() <SEMCOL><SEMCOL>
    { return t; }
 }
 
@@ -224,11 +231,11 @@ ASTNode Term() :
            t1 = new ASTMod(t1,t2);
        else if (op.kind == POW)
            t1 = new ASTPow(t1,t2);
-
-}
+        }
 		)?
      { return t1; } 
 }
+
 
 
 ASTNode Fact() :
@@ -246,12 +253,28 @@ ASTNode Fact() :
     result.deleteCharAt(result.length()-1);
     t = new ASTStr(result.toString());
     }
-    | { Map<String, ASTNode> m = new HashMap<>(); }
+    |
     <LSBRACKET>
-    n=<Id> <DDOT> t = BoolAdd() { m.put(n.image, t); }
-    ( <COMMA> n=<Id> <DDOT> t = BoolAdd() { m.put(n.image, t); })*
+    { Token mut = new Token(); }
+                 (mut=<MUT>)? n=<Id> <DDOT> t = BoolAdd()
+                 {
+                Map<String, ASTNode> m = new HashMap<>();
+                if (mut.image != null && !mut.image.trim().equals("")){
+                    t = new ASTNew(t);
+                }
+                m.put(n.image, t);
+                }
+                 ( { mut = new Token(); } <COMMA> (mut=<MUT>)? n=<Id> <DDOT> t = BoolAdd()
+                 {
+                if (mut.image != null && !mut.image.trim().equals("")){
+                    t = new ASTNew(t);
+                }
+                 m.put(n.image, t);
+                 })*
+                 { t = new ASTRecord(m); }
     <RSBRACKET>
-    { t = new ASTRecord(m); }
+                     { return t; }
+
     | n=<Id> { t = new ASTId(n.image); } ({ Token n2; } <DOT> n2=<Id> { t = new ASTRecordField(t, n.image, n2.image); })*
     | ("-" t = Fact() { t = new ASTNeg(t); })
     | <LPAR> t=BoolAdd() <RPAR>
@@ -261,9 +284,16 @@ ASTNode Fact() :
             List<Bind<String, ASTNode>> l = new ArrayList<>();
             ASTNode b;
         }
-        ( <LET> n = <Id> <EQ> t = BoolAdd() <SEMCOL> { l.add(new Bind<>(n.image, t)); })*
+        ( <LET> { Token mut = new Token(); } (mut=<MUT>)? n = <Id> <EQ> t = BoolAdd() <SEMCOL> {
+                if (mut.image != null && !mut.image.trim().equals("")){
+                    t = new ASTNew(t);
+                }
+                l.add(new Bind<>(n.image, t));
+                })+
             b = Seq()
-            { t = new ASTDef(l, b); }
+            {
+                t = new ASTDef(l, b);
+            }
       <RBRACKET>
     | <NEW> <LPAR> t = BoolAdd() <RPAR> { t = new ASTNew(t); }
     |
@@ -272,7 +302,9 @@ ASTNode Fact() :
     }
     <IF> ci = BoolAdd() <LBRACKET>
         bt = Seq()
-    <RBRACKET> <ELSE> <LBRACKET> be = Seq() <RBRACKET>
+    <RBRACKET> <ELSE> <LBRACKET>
+        be = Seq()
+         <RBRACKET>
     { t = new ASTIfElse(ci, bt, be); }
    | {
         Token v;

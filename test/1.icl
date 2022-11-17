@@ -1,8 +1,10 @@
 {
-    let x = 2;
-    let y = 3;
-    {
-        let k = x + y ;
-        x + y + k
-    }
-};
+    let MAX = 10;
+    let mut x = MAX;
+    let s = new(0);
+    while val(x) > 0 {
+        s -> val(s) + val(x),
+        x -> val(x) - 1
+    },
+    val(s)
+};;

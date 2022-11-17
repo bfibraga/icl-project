@@ -1,4 +1,4 @@
-package src.astnodes.functions;
+package src.astnodes.functions.io.out;
 
 import src.astnodes.ASTNode;
 import src.exceptions.InvalidTypes;

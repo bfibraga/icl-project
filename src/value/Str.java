@@ -49,4 +49,17 @@ public class Str implements Value {
     public String toString() {
         return this.show();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj){
+            return true;
+        }
+
+        if (obj instanceof Str){
+            return ((Str)obj).show().equals(this.show());
+        }
+
+        return false;
+    }
 }

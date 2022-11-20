@@ -1,20 +1,28 @@
 {
-    let const = 10;
-    let mut name = 'Braga';
+    let const = 6;
+    let mut name = 'L';
     let x = new([
-        mut id: 0,
-        name: name
+        mut id: const,
+        name: match const {
+            0: 'I',
+            1 | 4 | 6: 'C',
+            2 | 7: 'L',
+            _: 'P'
+        }
     ]);
-    println(const),
-    if val(x.id) != 0 {
-        println('Displaying name'),
-        name -> 'Bruno'
+    if val(name) = x.name {
+        x.id -> val(x.id) * 2
+    } else if val(x.id) = 0 {
+        {
+            let mut c = 0;
+            while val(c) < const {
+                x.id -> val(x.id) + 3;
+                c -> val(c) + 1
+            };
+            val(x.id)
+        }
     } else {
-        println('Error'),
-        while val(x.id) < 5 {
-            name -> val(name) + val(x.id),
-            x.id -> val(x.id) + 1
-        },
-        val(x)
-    }
-};;
+        x.id -> val(x.id) * 4
+    };
+    val(x)
+},,

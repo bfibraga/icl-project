@@ -49,6 +49,19 @@ public class Cell implements Value{
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (this == obj){
+            return true;
+        }
+
+        if (obj instanceof Cell){
+            return ((Cell)obj).get().equals(this.get());
+        }
+
+        return false;
+    }
+
+    @Override
     public Value toInt() {
         throw new InvalidTypeConvertion(this.getClass().getName(), Int.class.getName());
     }

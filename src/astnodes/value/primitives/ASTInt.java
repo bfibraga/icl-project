@@ -8,10 +8,10 @@ import src.misc.Environment;
 import src.value.Int;
 import src.value.Value;
 
-public class ASTNum implements ASTNode {
+public class ASTInt implements ASTNode {
     private int val;
 
-    public ASTNum(int val){
+    public ASTInt(int val){
         this.val = val;
     }
 

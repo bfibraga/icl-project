@@ -7,15 +7,16 @@ import src.misc.Coordinates;
 import src.misc.Environment;
 import src.value.Value;
 
+import java.util.List;
 import java.util.Map;
 
 public class ASTMatch implements ASTNode {
 
     private ASTNode cond;
-    private Map<Value, ASTNode> cases;
+    private Map<List<Value>, ASTNode> cases;
     private ASTNode def;
 
-    public ASTMatch(ASTNode cond, Map<Value, ASTNode> cases, ASTNode def) {
+    public ASTMatch(ASTNode cond, Map<List<Value>, ASTNode> cases, ASTNode def) {
         this.cond = cond;
         this.cases = cases;
         this.def = def;
@@ -29,7 +30,16 @@ public class ASTMatch implements ASTNode {
             throw new InvalidTypes(condValue.show());
         }
 
-        return this.cases.containsKey(condValue) ? this.cases.get(condValue).eval(e) : this.def.eval(e);
+        for (Map.Entry<List<Value>, ASTNode> entry : this.cases.entrySet()) {
+            List<Value> valueList = entry.getKey();
+            ASTNode caseNode = entry.getValue();
+
+            if (valueList.contains(condValue)){
+                return caseNode.eval(e);
+            }
+        }
+
+        return this.def.eval(e);
     }
 
     @Override

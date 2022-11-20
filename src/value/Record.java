@@ -18,6 +18,10 @@ public class Record implements Value {
         return this.fields.get(field);
     }
 
+    public Map<String, Value> getFields() {
+        return fields;
+    }
+
     public void set(String field, Value value){
         this.fields.put(field, value);
     }
@@ -69,5 +73,27 @@ public class Record implements Value {
     @Override
     public String toString() {
         return this.show();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj){
+            return true;
+        }
+
+        if (obj instanceof Record){
+            for (Map.Entry<String, Value> entry: this.getFields().entrySet()) {
+                String id = entry.getKey();
+                Value value = entry.getValue();
+                Value valueObj = ((Record) obj).get(id);
+
+                if (!valueObj.equals(value)){
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
     }
 }

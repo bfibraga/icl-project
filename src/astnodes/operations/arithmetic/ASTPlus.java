@@ -35,13 +35,11 @@ public class ASTPlus implements ASTNode {
             throw new InvalidTypes(valueL.show());
         } else {
             if (valueL.isString()){
-                String resultL = valueL.show();
-                return new Str(resultL + valueR);
+                return new Str(valueL.toString() + valueR);
             }
 
             if (valueR.isString()){
-                String resultR = valueR.show();
-                return new Str(valueL + resultR);
+                return new Str(valueL + valueR.toString());
             }
         }
 

@@ -52,4 +52,17 @@ public class Int implements Value {
     public String toString() {
         return this.show();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj){
+            return true;
+        }
+
+        if (obj instanceof Int){
+            return ((Int)obj).getValue() == this.getValue();
+        }
+
+        return false;
+    }
 }

@@ -20,16 +20,28 @@ public class ASTDiff implements ASTNode {
     @Override
     public Value eval(Environment<Value> e) {
         Value valueL = this.l.eval(e);
-        if (!valueL.isNumber() || valueL.isBoolean()){
+        if (!valueL.isNumber() && !valueL.isBoolean() && !valueL.isString()){
             throw new InvalidTypes(valueL.show());
         }
 
         Value valueR = this.r.eval(e);
-        if (!valueR.isNumber() || valueR.isBoolean()){
+        if (!valueR.isNumber() && !valueR.isBoolean() && !valueL.isString()){
             throw new InvalidTypes(valueR.show());
         }
 
-        return new Bool(((Int)valueL).getValue() != ((Int)valueR).getValue()) ;
+        if (valueL.isBoolean() && valueR.isBoolean()){
+            return new Bool( ((Bool)valueL).getValue() != ((Bool)valueL).getValue() );
+        }
+
+        if (valueL.isNumber() && valueR.isNumber()){
+            return new Bool(((Int)valueL).getValue() != ((Int)valueR).getValue()) ;
+        }
+
+        if (valueL.isString() && valueR.isString()){
+            return new Bool(!valueL.show().equals(valueR.show())) ;
+        }
+
+        throw new InvalidTypes(valueL.getClass().getSimpleName());
     }
 
     @Override

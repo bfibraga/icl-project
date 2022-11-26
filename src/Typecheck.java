@@ -33,9 +33,8 @@ public class Typecheck {
 
         do {
             try {
-                out.print("> ");
                 exp = parser.Start();
-                out.println(exp.typecheck(environment).show());
+                out.println(exp.typecheck(environment));
             } catch (LanguageException | ParseException e) {
                 out.println(e.getMessage());
                 parser.ReInit(System.in);

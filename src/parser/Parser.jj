@@ -10,7 +10,7 @@ import src.astnodes.control.*;
 import src.astnodes.functions.ASTFunction;import src.astnodes.functions.io.out.*;
 import src.astnodes.operations.arithmetic.*;
 import src.astnodes.operations.relational.*;
-import src.astnodes.value.array.ASTArray;import src.astnodes.value.primitives.*;
+import src.astnodes.value.array.ASTArray;import src.astnodes.value.array.ASTArrayIndex;import src.astnodes.value.primitives.*;
 import src.astnodes.value.record.*;
 import src.misc.*;
 import src.value.*;
@@ -37,6 +37,10 @@ TOKEN :
   < Num: (<INT> | <FLOAT>)>
   |
   < BOOL : ("true" | "false") >
+  |
+  < ARR : "arr">
+  |
+  < GET : "get">
   |
   < SETVAL : "->">
   |
@@ -260,16 +264,22 @@ ASTNode IfElse():
 
 Bind<String, ASTNode> DefEq():
 {
-    Token n, mut;
+    Token n, mut, type;
     ASTNode t;
 }
 {
-    { mut = new Token(); } (mut=<MUT>)? n = <Id> <EQ> t = BoolAdd()
+    { mut = new Token(); type = new Token(); }
+    (mut=<MUT>)? n = <Id> (<DDOT> type = <Id>)? <EQ> t = BoolAdd()
     {
         if (mut.image != null && !mut.image.trim().equals("")){
             t = new ASTNew(t);
         }
-        return new Bind<>(n.image, t);
+
+        if (type.image != null && !type.image.trim().equals("")){
+            return new Bind<>(n.image, type.image, t);
+        } else {
+            return new Bind<>(n.image, t);
+        }
     }
 }
 
@@ -340,7 +350,11 @@ ASTNode Fact() :
     | n=<BOOL> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
     | n=<STR> { t = new ASTStr(n.image); }
     | <LSBRACKET> t = Record() <RSBRACKET>
-    | n=<Id> { t = new ASTId(n.image); } ({ Token n2; } <DOT> n2=<Id> { t = new ASTRecordField(t, n.image, n2.image); })*
+    | <ARR><LSBRACKET> t = Array() <RSBRACKET>
+    | n=<Id> { t = new ASTId(n.image); }
+
+     ({ Token n2; } <DOT> (n2=<Id> { t = new ASTRecordField(t, n2.image); } | <GET><LPAR> n2=<INT> <RPAR> { t = new ASTArrayIndex(t, Integer.parseInt(n2.image)); }))*
+
     | ("-" t = Fact() { t = new ASTNeg(t); })
     | <LPAR> t=BoolAdd() <RPAR>
     | <NOT> t=Fact() { t = new ASTNot(t); }
@@ -369,11 +383,6 @@ ASTNode Fact() :
             b = Seq()
             <RBRACKET>
     { t = new ASTWhile(t, b); }
-   | { Token v; ASTNode b;}
-    <FOR> n = <INT> <IN> v=<INT> <LBRACKET>
-        b = Seq()
-    <RBRACKET>
-    { t = new ASTFor(Integer.parseInt(v.image) - Integer.parseInt(n.image), b); }
    | <REF> <LPAR> t=BoolAdd() <RPAR> { t = new ASTRef(t); }
    | <FUN> n = <Id> <LPAR> { Token n2; } n2 = <Id> <RPAR> <RBRACKET> t=Seq() <LBRACKET> { t = new ASTFunction(n.image, t); }
    | { List<ASTNode> l = new ArrayList<>(); }<PRINT> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrint(l); }

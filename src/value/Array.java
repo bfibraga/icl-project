@@ -89,7 +89,7 @@ public class Array implements Value {
             result.append(value).append(", ");
         }
         result.delete(result.length()-2, result.length()-1);
-        result.append(" ]");
+        result.append("]");
         return result.toString();
     }
 }

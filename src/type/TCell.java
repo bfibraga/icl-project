@@ -6,6 +6,7 @@ public class TCell extends Type{
 
     public TCell(){
         super("Cell");
+        this.setType(new TVoid());
     }
 
     public TCell(Type type){

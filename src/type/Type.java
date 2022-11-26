@@ -1,8 +1,6 @@
 package src.type;
 
-import src.astnodes.ASTNode;
 import src.exceptions.InvalidTypeConvertion;
-import src.misc.Environment;
 
 public abstract class Type {
 
@@ -21,15 +19,15 @@ public abstract class Type {
         return this.show();
     }
 
-    public static Type validType(Type nodeType, Environment<Type> e, Type requestType){
-        if (!nodeType.equals(requestType))
+    public static Type validType(Type nodeType, Type requestType){
+        if (!nodeType.equals(new TVoid()) ||  !nodeType.equals(requestType))
             throw new InvalidTypeConvertion(nodeType.show(), requestType.show());
 
         return nodeType;
     }
 
-    public boolean sameType(Type type2){
-        return this.show().equals(type2.show());
+    public boolean sameType(Type type){
+        return this.show().equals(type.show());
     }
 
     @Override
@@ -38,11 +36,33 @@ public abstract class Type {
             return true;
 
         if (obj instanceof Type){
-            System.out.println("Aqui " + this.show() + ", " + ((Type) obj).show());
-            boolean equal = ((Type) obj).show().equals(this.show());
-            System.out.println(equal);
-            return equal;
+            return ((Type) obj).show().equals(this.show());
         }
         return false;
+    }
+
+    public static Type getType(String name){
+        if (name.equals("array")){
+            return new TArray();
+        }
+        if (name.equals("bool")){
+            return new TBool();
+        }
+        if (name.equals("cell")){
+            return new TCell();
+        }
+        if (name.equals("func")){
+            return new TClosure();
+        }
+        if (name.equals("int")){
+            return new TInt();
+        }
+        if (name.equals("rec")){
+            return new TRecord();
+        }
+        if (name.equals("str")){
+            return new TStr();
+        }
+        return new TVoid();
     }
 }

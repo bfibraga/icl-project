@@ -13,12 +13,10 @@ import src.value.Value;
 public class ASTRecordField implements ASTNode {
 
     private final ASTNode node;
-    private final String id;
     private final String field;
 
-    public ASTRecordField(ASTNode node, String id, String field) {
+    public ASTRecordField(ASTNode node, String field) {
         this.node = node;
-        this.id = id;
         this.field = field;
     }
 

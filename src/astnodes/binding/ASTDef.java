@@ -1,8 +1,12 @@
 package src.astnodes.binding;
 
 import src.astnodes.ASTNode;
+import src.exceptions.InvalidTypeConvertion;
 import src.jvm.JVM;
 import src.misc.*;
+import src.type.TCell;
+import src.type.TClosure;
+import src.type.TVoid;
 import src.type.Type;
 import src.value.Value;
 
@@ -96,9 +100,17 @@ public class ASTDef implements ASTNode {
         Type type;
         for (Bind<String, ASTNode> bind: init) {
             String id = bind.getId();
+            Type defaultType = bind.getType();
             ASTNode node = bind.getValue();
 
             type = node.typecheck(e);
+            Type contentType = type.sameType(new TCell()) ?
+                    ((TCell) type).getType() :
+                    type ;
+
+            if (!defaultType.sameType(new TVoid()) && !defaultType.sameType(contentType))
+                throw new InvalidTypeConvertion(defaultType.show(), contentType.show(), this.getClass().getSimpleName());
+
             e.assoc(id, type);
         }
 

@@ -9,6 +9,6 @@ public class InvalidTypeConvertion extends LanguageException {
     }
 
     public InvalidTypeConvertion(String from, String to, String in){
-        super(String.format(DEFAULT_MSG + "\tError in %s", from, to, in));
+        super(String.format(DEFAULT_MSG + " Error in %s", from, to, in));
     }
 }

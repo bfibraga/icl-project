@@ -38,7 +38,7 @@ public class Interpreter {
             try {
                 out.print("> ");
                 exp = parser.Start();
-                out.println(exp.typecheck(environmentType));
+                exp.typecheck(environmentType);
                 out.println(exp.eval(environmentValue));
             } catch (ParseException e) {
                 e.printStackTrace();

@@ -6,6 +6,7 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.misc.Frame;
+import src.type.Type;
 import src.value.Value;
 
 public class ASTId implements ASTNode {
@@ -39,5 +40,10 @@ public class ASTId implements ASTNode {
         }
 
         block.emit(String.format("%s %s/%s I", JVM.GETFIELD, currFrame, coordinates.getId()));
+    }
+
+    @Override
+    public Type typecheck(Environment<Type> e) {
+        return e.find(this.id);
     }
 }

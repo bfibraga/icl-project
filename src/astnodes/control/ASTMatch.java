@@ -1,10 +1,13 @@
 package src.astnodes.control;
 
 import src.astnodes.ASTNode;
+import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.type.TBool;
+import src.type.Type;
 import src.value.Value;
 
 import java.util.List;
@@ -13,11 +16,13 @@ import java.util.Map;
 public class ASTMatch implements ASTNode {
 
     private ASTNode cond;
-    private Map<List<Value>, ASTNode> cases;
+    private Map<List<ASTNode>, ASTNode> cases;
     private ASTNode def;
 
-    public ASTMatch(ASTNode cond, Map<List<Value>, ASTNode> cases, ASTNode def) {
+    public ASTMatch(ASTNode cond, Map<List<ASTNode>, ASTNode> cases, ASTNode def) {
         this.cond = cond;
+        //TODO Check multiple equal cases.
+
         this.cases = cases;
         this.def = def;
     }
@@ -30,12 +35,16 @@ public class ASTMatch implements ASTNode {
             throw new InvalidTypes(condValue.show());
         }
 
-        for (Map.Entry<List<Value>, ASTNode> entry : this.cases.entrySet()) {
-            List<Value> valueList = entry.getKey();
+        for (Map.Entry<List<ASTNode>, ASTNode> entry : this.cases.entrySet()) {
+            List<ASTNode> astNodeList = entry.getKey();
             ASTNode caseNode = entry.getValue();
 
-            if (valueList.contains(condValue)){
-                return caseNode.eval(e);
+            for (ASTNode node: astNodeList) {
+                Value value = node.eval(e);
+
+                if (value.equals(condValue)){
+                    return caseNode.eval(e);
+                }
             }
         }
 
@@ -45,5 +54,31 @@ public class ASTMatch implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         //TODO Implement compilation code for this astnode
+    }
+
+    @Override
+    public Type typecheck(Environment<Type> e) {
+        Type targetType = new TBool();
+        Type condType = this.cond.typecheck(e);
+
+        if (!condType.sameType(new TBool()))
+            throw new InvalidTypeConvertion(condType.show(), targetType.show(), this.getClass().getSimpleName());
+
+        Type defType = this.def.typecheck(e);
+        for (Map.Entry<List<ASTNode>, ASTNode> entry : this.cases.entrySet()) {
+            List<ASTNode> astNodeList = entry.getKey();
+            ASTNode caseNode = entry.getValue();
+
+
+            for (ASTNode node: astNodeList) {
+                Type type = node.typecheck(e);
+
+                if (type.sameType(defType)){
+                    return type;
+                }
+            }
+        }
+
+        return this.def.typecheck(e);
     }
 }

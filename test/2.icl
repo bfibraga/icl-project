@@ -4,7 +4,7 @@
     if val(a) = 0 {
         a
     } else {
-        b
-    } -> 2,
+        true
+    } -> 2;
     val(a) + val(b)
-};;
+},,

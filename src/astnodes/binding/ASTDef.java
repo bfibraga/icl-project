@@ -3,6 +3,7 @@ package src.astnodes.binding;
 import src.astnodes.ASTNode;
 import src.jvm.JVM;
 import src.misc.*;
+import src.type.Type;
 import src.value.Value;
 
 import java.io.FileNotFoundException;
@@ -86,5 +87,23 @@ public class ASTDef implements ASTNode {
         block.setCurrFrame(currFrame);
 
         e = e.endScope();
+    }
+
+    @Override
+    public Type typecheck(Environment<Type> e) {
+        e = e.beginScope();
+
+        Type type;
+        for (Bind<String, ASTNode> bind: init) {
+            String id = bind.getId();
+            ASTNode node = bind.getValue();
+
+            type = node.typecheck(e);
+            e.assoc(id, type);
+        }
+
+        type = body.typecheck(e);
+        e = e.endScope();
+        return type;
     }
 }

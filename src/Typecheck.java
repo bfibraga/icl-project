@@ -6,15 +6,13 @@ import src.misc.Environment;
 import src.parser.ParseException;
 import src.parser.Parser;
 import src.type.Type;
-import src.value.Value;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.PrintStream;
 
-public class Interpreter {
-    /** Main entry point. */
+public class Typecheck {
     public static void main(String[] args) throws FileNotFoundException {
         InputStream in;
         boolean loop;
@@ -31,21 +29,18 @@ public class Interpreter {
 
         Parser parser = new Parser(in);
         ASTNode exp;
-        Environment<Type> environmentType = new Environment<>();
-        Environment<Value> environmentValue = new Environment<>();
+        Environment<Type> environment = new Environment<>();
 
         do {
             try {
                 out.print("> ");
                 exp = parser.Start();
-                out.println(exp.typecheck(environmentType));
-                out.println(exp.eval(environmentValue));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            } catch (LanguageException e){
+                out.println(exp.typecheck(environment).show());
+            } catch (LanguageException | ParseException e) {
                 out.println(e.getMessage());
-                parser.ReInit(in);
+                parser.ReInit(System.in);
             }
         } while (loop);
     }
+
 }

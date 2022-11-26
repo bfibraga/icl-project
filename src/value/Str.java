@@ -6,6 +6,10 @@ public class Str implements Value {
 
     private final String value;
 
+    public Str(){
+        this.value = "";
+    }
+
     public Str(String value){
         this.value = value;
     }

@@ -4,6 +4,7 @@ import src.astnodes.ASTNode;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.type.Type;
 import src.value.Value;
 
 public class ASTSeq implements ASTNode {
@@ -17,7 +18,6 @@ public class ASTSeq implements ASTNode {
 
     @Override
     public Value eval(Environment<Value> e) {
-        //TODO Test
         this.l.eval(e);
         return this.r.eval(e);
     }
@@ -25,5 +25,10 @@ public class ASTSeq implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
 
+    }
+
+    @Override
+    public Type typecheck(Environment<Type> e) {
+        return this.r.typecheck(e);
     }
 }

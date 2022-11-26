@@ -6,6 +6,10 @@ public class Cell implements Value{
 
     private Value value;
 
+    public Cell() {
+        this.value = new Bool();
+    }
+
     public Cell(Value value) {
         this.value = value;
     }

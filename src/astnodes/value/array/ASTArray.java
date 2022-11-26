@@ -4,10 +4,11 @@ import src.astnodes.ASTNode;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.type.TArray;
+import src.type.Type;
 import src.value.Array;
 import src.value.Value;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ASTArray implements ASTNode {
@@ -33,5 +34,10 @@ public class ASTArray implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
 
+    }
+
+    @Override
+    public Type typecheck(Environment<Type> e) {
+        return new TArray();
     }
 }

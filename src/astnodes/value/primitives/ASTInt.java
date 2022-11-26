@@ -5,6 +5,8 @@ import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.type.TInt;
+import src.type.Type;
 import src.value.Int;
 import src.value.Value;
 
@@ -23,6 +25,11 @@ public class ASTInt implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         block.emit(String.format("%s %d", JVM.SIPUSH, this.val));
+    }
+
+    @Override
+    public Type typecheck(Environment<Type> e) {
+        return new TInt();
     }
 }
 

@@ -1,25 +1,19 @@
-package src.astnodes.value.primitives;
+package src.astnodes.functions;
 
 import src.astnodes.ASTNode;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.type.TStr;
 import src.type.Type;
-import src.value.Str;
 import src.value.Value;
 
-public class ASTStr implements ASTNode {
+public class ASTApplyFunc implements ASTNode {
 
-    private final String value;
 
-    public ASTStr(String value) {
-        this.value = value;
-    }
 
     @Override
     public Value eval(Environment<Value> e) {
-        return new Str(this.value);
+        return null;
     }
 
     @Override
@@ -29,6 +23,6 @@ public class ASTStr implements ASTNode {
 
     @Override
     public Type typecheck(Environment<Type> e) {
-        return new TStr();
+        return null;
     }
 }

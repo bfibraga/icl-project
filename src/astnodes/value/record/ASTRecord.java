@@ -4,6 +4,8 @@ import src.astnodes.ASTNode;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.type.TRecord;
+import src.type.Type;
 import src.value.Record;
 import src.value.Value;
 
@@ -34,5 +36,16 @@ public class ASTRecord implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
 
+    }
+
+    @Override
+    public Type typecheck(Environment<Type> e) {
+        for (Map.Entry<String, ASTNode> entry: this.fields.entrySet()) {
+            String id = entry.getKey();
+            ASTNode node = entry.getValue();
+
+            node.typecheck(e);
+        }
+        return new TRecord();
     }
 }

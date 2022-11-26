@@ -1,12 +1,13 @@
 {
-    let const = 0;
+    let const = 8;
+    let def = 1;
     let mut name = 'L';
     let x = new([
         mut id: const,
         name: match const {
             0: 'I',
-            1 | 4 | 6: 'C',
-            2 | 12: 'L',
+            def + 2 | 2^3: 'C',
+            2 | def + 3: 'L',
             _: 'P'
         },
         mut active: if val(name) != 'L' or val(name) = 'C' {
@@ -14,7 +15,7 @@
         } else if val(name) = 'P' or val(name) = 'A' and val(name) = 'I' or val(name) = 'B' {
             false
         } else {
-            const < 10
+            const > 10
         }
     ]);
     if val(name) = x.name {

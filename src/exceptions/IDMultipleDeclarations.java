@@ -1,6 +1,6 @@
 package src.exceptions;
 
-public class IDMultipleDeclarations extends RuntimeException {
+public class IDMultipleDeclarations extends LanguageException {
 
     private static final String DEFAULT_MSG = "%s declared multiple times.";
 

@@ -5,6 +5,7 @@ import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.type.Type;
 import src.value.Cell;
 import src.value.Record;
 import src.value.Value;
@@ -36,5 +37,10 @@ public class ASTRecordField implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
 
+    }
+
+    @Override
+    public Type typecheck(Environment<Type> e) {
+        return this.node.typecheck(e);
     }
 }

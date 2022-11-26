@@ -4,6 +4,10 @@ public class Bool implements Value {
 
     private final boolean value;
 
+    public Bool() {
+        this.value = true;
+    }
+
     public Bool(boolean value){
         this.value = value;
     }

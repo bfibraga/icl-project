@@ -1,10 +1,13 @@
 package src.astnodes.operations.relational;
 
 import src.astnodes.ASTNode;
+import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.type.TBool;
+import src.type.Type;
 import src.value.Bool;
 import src.value.Int;
 import src.value.Value;
@@ -47,5 +50,16 @@ public class ASTDiff implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         //TODO Implement compilation code for this astnode
+    }
+
+    @Override
+    public Type typecheck(Environment<Type> e) {
+        Type lType = this.l.typecheck(e);
+        Type rType = this.r.typecheck(e);
+
+        if (!lType.sameType(rType))
+            throw new InvalidTypeConvertion(lType.show(), rType.show(), this.getClass().getSimpleName());
+
+        return new TBool();
     }
 }

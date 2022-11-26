@@ -1,10 +1,13 @@
 package src.astnodes.operations.arithmetic;
 
 import src.astnodes.ASTNode;
+import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.type.TInt;
+import src.type.Type;
 import src.value.Int;
 import src.value.Value;
 
@@ -35,5 +38,20 @@ public class ASTPow implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
 
+    }
+
+    @Override
+    public Type typecheck(Environment<Type> e) {
+        Type targetType = new TInt();
+        Type lType = this.l.typecheck(e);
+        if (!lType.sameType(targetType))
+            throw new InvalidTypeConvertion(lType.show(), targetType.show(), this.getClass().getSimpleName());
+
+
+        Type rType = this.r.typecheck(e);
+        if (!rType.sameType(targetType))
+            throw new InvalidTypeConvertion(rType.show(), targetType.show(), this.getClass().getSimpleName());
+
+        return targetType;
     }
 }

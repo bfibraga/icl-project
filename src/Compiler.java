@@ -1,10 +1,12 @@
 package src;
 
 import src.astnodes.ASTNode;
+import src.exceptions.LanguageException;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.parser.ParseException;
 import src.parser.Parser;
 
 import java.io.*;
@@ -35,15 +37,15 @@ public class Compiler {
             //PrintWriter out = new PrintWriter(System.out);
 
             exp = parser.Start();
-            //code.emit("aconst_null");
-            //code.emit(String.format("%s_%d", JVM.ASTORE, 3));
             exp.compile(code, environment);
             
             publishCode(code, out, new Scanner(new File("./src/jvm/Dummy.j")));
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (LanguageException e) {
+            System.out.println(e.getMessage());
             //parser.ReInit(System.in);
+        } catch (ParseException | IOException e)  {
+            e.printStackTrace();
         }
     }
 

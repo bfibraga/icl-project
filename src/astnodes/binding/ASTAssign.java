@@ -1,10 +1,14 @@
 package src.astnodes.binding;
 
 import src.astnodes.ASTNode;
+import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.type.TBool;
+import src.type.TCell;
+import src.type.Type;
 import src.value.Cell;
 import src.value.Value;
 
@@ -36,5 +40,17 @@ public class ASTAssign implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
 
+    }
+
+    @Override
+    public Type typecheck(Environment<Type> e) {
+        Type targetType = new TCell();
+        Type lType = this.l.typecheck(e);
+
+        if (!lType.sameType(targetType)){
+            throw new InvalidTypeConvertion(lType.show(), targetType.show(), this.getClass().getSimpleName());
+        }
+
+        return this.r.typecheck(e);
     }
 }

@@ -1,10 +1,13 @@
 package src.astnodes.control;
 
 import src.astnodes.ASTNode;
+import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.type.TBool;
+import src.type.Type;
 import src.value.Bool;
 import src.value.Value;
 
@@ -37,5 +40,16 @@ public class ASTWhile implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         //TODO Implement compilation code for this astnode
+    }
+
+    @Override
+    public Type typecheck(Environment<Type> e) {
+        Type targetType = new TBool();
+        Type condType = this.cond.typecheck(e);
+
+        if (!condType.sameType(targetType))
+            throw new InvalidTypeConvertion(condType.show(), targetType.show(), this.getClass().getSimpleName());
+
+        return this.body.typecheck(e);
     }
 }

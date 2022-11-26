@@ -1,10 +1,13 @@
 package src.astnodes.operations.relational;
 
 import src.astnodes.ASTNode;
+import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.type.TBool;
+import src.type.Type;
 import src.value.Bool;
 import src.value.Value;
 
@@ -28,5 +31,16 @@ public class ASTNot implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         //TODO Implement compilation code for this astnode
+    }
+
+    @Override
+    public Type typecheck(Environment<Type> e) {
+        Type targetType = new TBool();
+        Type bodyType = this.body.typecheck(e);
+
+        if (!bodyType.sameType(targetType))
+            throw new InvalidTypeConvertion(bodyType.show(), targetType.show(), this.getClass().getSimpleName());
+
+        return targetType;
     }
 }

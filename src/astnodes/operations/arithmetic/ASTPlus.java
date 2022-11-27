@@ -8,7 +8,7 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TInt;
-import src.type.Type;
+import src.type.AbstractType;
 import src.value.Int;
 import src.value.Str;
 import src.value.Value;
@@ -76,18 +76,18 @@ public class ASTPlus implements ASTNode {
     }
 
     @Override
-    public Type typecheck(Environment<Type> e) {
-        Type targetType = new TInt();
-        Type lType = this.l.typecheck(e);
-        if (!lType.sameType(targetType))
-            throw new InvalidTypeConvertion(lType.show(), targetType.show(), this.getClass().getSimpleName());
+    public AbstractType typecheck(Environment<AbstractType> e) {
+        AbstractType targetAbstractType = new TInt();
+        AbstractType lAbstractType = this.l.typecheck(e);
+        if (!lAbstractType.sameType(targetAbstractType))
+            throw new InvalidTypeConvertion(lAbstractType.show(), targetAbstractType.show(), this.getClass().getSimpleName());
 
 
-        Type rType = this.r.typecheck(e);
-        if (!rType.sameType(targetType))
-            throw new InvalidTypeConvertion(rType.show(), targetType.show(), this.getClass().getSimpleName());
+        AbstractType rAbstractType = this.r.typecheck(e);
+        if (!rAbstractType.sameType(targetAbstractType))
+            throw new InvalidTypeConvertion(rAbstractType.show(), targetAbstractType.show(), this.getClass().getSimpleName());
 
-        return targetType;
+        return targetAbstractType;
     }
 }
 

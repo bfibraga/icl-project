@@ -5,7 +5,8 @@ package src.parser;
 import src.astnodes.*;
 import src.astnodes.binding.*;
 import src.astnodes.control.*;
-import src.astnodes.functions.ASTFunction;
+import src.astnodes.value.function.ASTApplyFunc;
+import src.astnodes.value.function.ASTFunction;
 import src.astnodes.functions.io.out.*;
 import src.astnodes.operations.arithmetic.*;
 import src.astnodes.operations.relational.*;
@@ -14,7 +15,6 @@ import src.astnodes.value.array.ASTArrayIndex;
 import src.astnodes.value.primitives.*;
 import src.astnodes.value.record.*;
 import src.misc.*;
-import src.value.*;
 import java.util.*;
 
 /** Token Manager. */

@@ -42,6 +42,11 @@ public class Bool implements Value {
     }
 
     @Override
+    public boolean isFunc() {
+        return false;
+    }
+
+    @Override
     public Value toInt() {
         int value = (boolean) this.getValue() ? 1 : 0;
         return new Int(value);

@@ -53,6 +53,11 @@ public class Cell implements Value{
     }
 
     @Override
+    public boolean isFunc() {
+        return false;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj){
             return true;

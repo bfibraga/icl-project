@@ -5,9 +5,8 @@ import src.exceptions.InvalidTypeConvertion;
 import src.jvm.JVM;
 import src.misc.*;
 import src.type.TCell;
-import src.type.TClosure;
 import src.type.TVoid;
-import src.type.Type;
+import src.type.AbstractType;
 import src.value.Value;
 
 import java.io.FileNotFoundException;
@@ -94,28 +93,28 @@ public class ASTDef implements ASTNode {
     }
 
     @Override
-    public Type typecheck(Environment<Type> e) {
+    public AbstractType typecheck(Environment<AbstractType> e) {
         e = e.beginScope();
 
-        Type type;
+        AbstractType abstractType;
         for (Bind<String, ASTNode> bind: init) {
             String id = bind.getId();
-            Type defaultType = bind.getType();
+            AbstractType defaultAbstractType = bind.getType();
             ASTNode node = bind.getValue();
 
-            type = node.typecheck(e);
-            Type contentType = type.sameType(new TCell()) ?
-                    ((TCell) type).getType() :
-                    type ;
+            abstractType = node.typecheck(e);
+            AbstractType contentAbstractType = abstractType.sameType(new TCell()) ?
+                    ((TCell) abstractType).getType() :
+                    abstractType;
 
-            if (!defaultType.sameType(new TVoid()) && !defaultType.sameType(contentType))
-                throw new InvalidTypeConvertion(defaultType.show(), contentType.show(), this.getClass().getSimpleName());
+            if (!defaultAbstractType.sameType(new TVoid()) && !defaultAbstractType.sameType(contentAbstractType))
+                throw new InvalidTypeConvertion(defaultAbstractType.show(), contentAbstractType.show(), this.getClass().getSimpleName());
 
-            e.assoc(id, type);
+            e.assoc(id, abstractType);
         }
 
-        type = body.typecheck(e);
+        abstractType = body.typecheck(e);
         e = e.endScope();
-        return type;
+        return abstractType;
     }
 }

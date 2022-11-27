@@ -1,24 +1,30 @@
 package src.misc;
 
 import src.type.TVoid;
-import src.type.Type;
+import src.type.AbstractType;
 
 public class Bind<I, V> {
 
     private final I id;
-    private final Type type;
+    private final AbstractType abstractType;
     private final V value;
 
     public Bind(I id, V value){
         this.id = id;
-        this.type = new TVoid();
+        this.abstractType = new TVoid();
         this.value = value;
     }
 
     public Bind(I id, String typename, V value){
         this.id = id;
-        this.type = Type.getType(typename);
+        this.abstractType = AbstractType.getType(typename);
         this.value = value;
+    }
+
+    public Bind(I id, String typename){
+        this.id = id;
+        this.abstractType = AbstractType.getType(typename);
+        this.value = null;
     }
 
     public I getId() {
@@ -29,7 +35,7 @@ public class Bind<I, V> {
         return value;
     }
 
-    public Type getType() {
-        return type;
+    public AbstractType getType() {
+        return abstractType;
     }
 }

@@ -6,9 +6,8 @@ import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.type.TBool;
 import src.type.TCell;
-import src.type.Type;
+import src.type.AbstractType;
 import src.value.Cell;
 import src.value.Value;
 
@@ -43,12 +42,12 @@ public class ASTAssign implements ASTNode {
     }
 
     @Override
-    public Type typecheck(Environment<Type> e) {
-        Type targetType = new TCell();
-        Type lType = this.l.typecheck(e);
+    public AbstractType typecheck(Environment<AbstractType> e) {
+        AbstractType targetAbstractType = new TCell();
+        AbstractType lAbstractType = this.l.typecheck(e);
 
-        if (!lType.sameType(targetType)){
-            throw new InvalidTypeConvertion(lType.show(), targetType.show(), this.getClass().getSimpleName());
+        if (!lAbstractType.sameType(targetAbstractType)){
+            throw new InvalidTypeConvertion(lAbstractType.show(), targetAbstractType.show(), this.getClass().getSimpleName());
         }
 
         return this.r.typecheck(e);

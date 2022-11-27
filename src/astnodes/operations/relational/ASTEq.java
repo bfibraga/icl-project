@@ -7,7 +7,7 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TBool;
-import src.type.Type;
+import src.type.AbstractType;
 import src.value.Bool;
 import src.value.Int;
 import src.value.Value;
@@ -53,12 +53,12 @@ public class ASTEq implements ASTNode {
     }
 
     @Override
-    public Type typecheck(Environment<Type> e) {
-        Type lType = this.l.typecheck(e);
-        Type rType = this.r.typecheck(e);
+    public AbstractType typecheck(Environment<AbstractType> e) {
+        AbstractType lAbstractType = this.l.typecheck(e);
+        AbstractType rAbstractType = this.r.typecheck(e);
 
-        if (!lType.sameType(rType))
-            throw new InvalidTypeConvertion(lType.show(), rType.show(), this.getClass().getSimpleName());
+        if (!lAbstractType.sameType(rAbstractType))
+            throw new InvalidTypeConvertion(lAbstractType.show(), rAbstractType.show(), this.getClass().getSimpleName());
 
         return new TBool();
     }

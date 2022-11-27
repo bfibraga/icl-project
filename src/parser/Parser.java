@@ -6,13 +6,12 @@ package src.parser;
 import src.astnodes.*;
 import src.astnodes.binding.*;
 import src.astnodes.control.*;
-import src.astnodes.functions.ASTFunction;import src.astnodes.functions.io.out.*;
+import src.astnodes.value.function.ASTApplyFunc;import src.astnodes.value.function.ASTFunction;import src.astnodes.functions.io.out.*;
 import src.astnodes.operations.arithmetic.*;
 import src.astnodes.operations.relational.*;
 import src.astnodes.value.array.ASTArray;import src.astnodes.value.array.ASTArrayIndex;import src.astnodes.value.primitives.*;
 import src.astnodes.value.record.*;
 import src.misc.*;
-import src.value.*;
 import java.util.*;
 
 public class Parser implements ParserConstants {
@@ -455,6 +454,7 @@ t = new ASTId(n.image);
       label_8:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+        case LPAR:
         case DOT:{
           ;
           break;
@@ -463,24 +463,83 @@ t = new ASTId(n.image);
           jj_la1[17] = jj_gen;
           break label_8;
         }
-Token n2;
-        jj_consume_token(DOT);
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-        case Id:{
-          n2 = jj_consume_token(Id);
+        case DOT:{
+Token n2;
+          jj_consume_token(DOT);
+          switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+          case Id:{
+            n2 = jj_consume_token(Id);
 t = new ASTRecordField(t, n2.image);
+            break;
+            }
+          case GET:{
+            jj_consume_token(GET);
+            jj_consume_token(LPAR);
+            n2 = jj_consume_token(INT);
+            jj_consume_token(RPAR);
+t = new ASTArrayIndex(t, Integer.parseInt(n2.image));
+            break;
+            }
+          default:
+            jj_la1[18] = jj_gen;
+            jj_consume_token(-1);
+            throw new ParseException();
+          }
           break;
           }
-        case GET:{
-          jj_consume_token(GET);
+        case LPAR:{
+List<ASTNode> a = new ArrayList<>();
           jj_consume_token(LPAR);
-          n2 = jj_consume_token(INT);
+          switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+          case INT:
+          case BOOL:
+          case ARR:
+          case MINUS:
+          case LPAR:
+          case LBRACKET:
+          case LSBRACKET:
+          case IF:
+          case MATCH:
+          case WHILE:
+          case NOT:
+          case NEW:
+          case REF:
+          case FUN:
+          case PRINT:
+          case PRINTLN:
+          case STR:
+          case Id:{
+ASTNode aux;
+            aux = BoolAdd();
+a.add(aux);
+            label_9:
+            while (true) {
+              switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+              case COMMA:{
+                ;
+                break;
+                }
+              default:
+                jj_la1[19] = jj_gen;
+                break label_9;
+              }
+              jj_consume_token(COMMA);
+              aux = BoolAdd();
+a.add(aux);
+            }
+            break;
+            }
+          default:
+            jj_la1[20] = jj_gen;
+            ;
+          }
           jj_consume_token(RPAR);
-t = new ASTArrayIndex(t, Integer.parseInt(n2.image));
+t = new ASTApplyFunc(t, a);
           break;
           }
         default:
-          jj_la1[18] = jj_gen;
+          jj_la1[21] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -534,7 +593,7 @@ t = new ASTNew(t);
       jj_consume_token(MATCH);
       cond = BoolAdd();
       jj_consume_token(LBRACKET);
-      label_9:
+      label_10:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case INT:
@@ -559,13 +618,13 @@ t = new ASTNew(t);
           break;
           }
         default:
-          jj_la1[19] = jj_gen;
-          break label_9;
+          jj_la1[22] = jj_gen;
+          break label_10;
         }
 List<ASTNode> p = new ArrayList<>();
         v = BoolAdd();
 p.add(v);
-        label_10:
+        label_11:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
           case VB:{
@@ -573,8 +632,8 @@ p.add(v);
             break;
             }
           default:
-            jj_la1[20] = jj_gen;
-            break label_10;
+            jj_la1[23] = jj_gen;
+            break label_11;
           }
           jj_consume_token(VB);
           v = BoolAdd();
@@ -611,16 +670,44 @@ t = new ASTRef(t);
       break;
       }
     case FUN:{
+List<Pair<String,String>> p = new ArrayList<>();
       jj_consume_token(FUN);
-      n = jj_consume_token(Id);
       jj_consume_token(LPAR);
-Token n2;
-      n2 = jj_consume_token(Id);
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case Id:{
+Token n2, type;
+        n2 = jj_consume_token(Id);
+        jj_consume_token(DDOT);
+        type = jj_consume_token(Id);
+p.add(new Pair<>(n2.image, type.image));
+        label_12:
+        while (true) {
+          switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+          case COMMA:{
+            ;
+            break;
+            }
+          default:
+            jj_la1[24] = jj_gen;
+            break label_12;
+          }
+          jj_consume_token(COMMA);
+          n2 = jj_consume_token(Id);
+          jj_consume_token(DDOT);
+          type = jj_consume_token(Id);
+p.add(new Pair<>(n2.image, type.image));
+        }
+        break;
+        }
+      default:
+        jj_la1[25] = jj_gen;
+        ;
+      }
       jj_consume_token(RPAR);
-      jj_consume_token(RBRACKET);
-      t = Seq();
       jj_consume_token(LBRACKET);
-t = new ASTFunction(n.image, t);
+      t = Seq();
+      jj_consume_token(RBRACKET);
+t = new ASTFunction(p, t);
       break;
       }
     case PRINT:{
@@ -629,7 +716,7 @@ List<ASTNode> l = new ArrayList<>();
       jj_consume_token(LPAR);
       t = BoolAdd();
 l.add(t);
-      label_11:
+      label_13:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case COMMA:{
@@ -637,8 +724,8 @@ l.add(t);
           break;
           }
         default:
-          jj_la1[21] = jj_gen;
-          break label_11;
+          jj_la1[26] = jj_gen;
+          break label_13;
         }
         jj_consume_token(COMMA);
         t = BoolAdd();
@@ -654,7 +741,7 @@ List<ASTNode> l = new ArrayList<>();
       jj_consume_token(LPAR);
       t = BoolAdd();
 l.add(t);
-      label_12:
+      label_14:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case COMMA:{
@@ -662,8 +749,8 @@ l.add(t);
           break;
           }
         default:
-          jj_la1[22] = jj_gen;
-          break label_12;
+          jj_la1[27] = jj_gen;
+          break label_14;
         }
         jj_consume_token(COMMA);
         t = BoolAdd();
@@ -674,7 +761,7 @@ t = new ASTPrintln(l);
       break;
       }
     default:
-      jj_la1[23] = jj_gen;
+      jj_la1[28] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -692,7 +779,7 @@ t = new ASTPrintln(l);
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[24];
+  static final private int[] jj_la1 = new int[29];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -700,10 +787,10 @@ t = new ASTPrintln(l);
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x20000000,0x800,0x0,0x0,0x10000000,0x10000000,0xc000,0xc000,0xf0000,0xf0000,0x400000,0x8000000,0x0,0x8000000,0x4000000,0x40000000,0x40000000,0x80000000,0x400,0x1508320,0x0,0x40000000,0x40000000,0x1508320,};
+	   jj_la1_0 = new int[] {0x20000000,0x800,0x0,0x0,0x10000000,0x10000000,0xc000,0xc000,0xf0000,0xf0000,0x400000,0x8000000,0x0,0x8000000,0x4000000,0x40000000,0x40000000,0x80100000,0x400,0x40000000,0x1508320,0x80100000,0x1508320,0x0,0x40000000,0x0,0x40000000,0x40000000,0x1508320,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x0,0x20000,0x10000,0x7c00,0x7c00,0x0,0x0,0x0,0x0,0x1,0x0,0x100,0x0,0x0,0x0,0x0,0x0,0x4000000,0x6dc8029,0x10,0x0,0x0,0x6dc8029,};
+	   jj_la1_1 = new int[] {0x0,0x0,0x20000,0x10000,0x7c00,0x7c00,0x0,0x0,0x0,0x0,0x1,0x0,0x100,0x0,0x0,0x0,0x0,0x0,0x4000000,0x0,0x6dc8029,0x0,0x6dc8029,0x10,0x0,0x4000000,0x0,0x0,0x6dc8029,};
 	}
 
   /** Constructor with InputStream. */
@@ -724,7 +811,7 @@ t = new ASTPrintln(l);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 29; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -738,7 +825,7 @@ t = new ASTPrintln(l);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 29; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -755,7 +842,7 @@ t = new ASTPrintln(l);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 29; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -773,7 +860,7 @@ t = new ASTPrintln(l);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 29; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -789,7 +876,7 @@ t = new ASTPrintln(l);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 29; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -798,7 +885,7 @@ t = new ASTPrintln(l);
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 29; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -854,7 +941,7 @@ t = new ASTPrintln(l);
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
 	 }
-	 for (int i = 0; i < 24; i++) {
+	 for (int i = 0; i < 29; i++) {
 	   if (jj_la1[i] == jj_gen) {
 		 for (int j = 0; j < 32; j++) {
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {

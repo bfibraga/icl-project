@@ -7,7 +7,7 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TBool;
-import src.type.Type;
+import src.type.AbstractType;
 import src.value.Bool;
 import src.value.Value;
 
@@ -34,13 +34,13 @@ public class ASTNot implements ASTNode {
     }
 
     @Override
-    public Type typecheck(Environment<Type> e) {
-        Type targetType = new TBool();
-        Type bodyType = this.body.typecheck(e);
+    public AbstractType typecheck(Environment<AbstractType> e) {
+        AbstractType targetAbstractType = new TBool();
+        AbstractType bodyAbstractType = this.body.typecheck(e);
 
-        if (!bodyType.sameType(targetType))
-            throw new InvalidTypeConvertion(bodyType.show(), targetType.show(), this.getClass().getSimpleName());
+        if (!bodyAbstractType.sameType(targetAbstractType))
+            throw new InvalidTypeConvertion(bodyAbstractType.show(), targetAbstractType.show(), this.getClass().getSimpleName());
 
-        return targetType;
+        return targetAbstractType;
     }
 }

@@ -5,6 +5,7 @@ import src.exceptions.LanguageException;
 import src.misc.Environment;
 import src.parser.ParseException;
 import src.parser.Parser;
+import src.type.AbstractType;
 import src.type.Type;
 import src.value.Value;
 
@@ -31,7 +32,7 @@ public class Interpreter {
 
         Parser parser = new Parser(in);
         ASTNode exp;
-        Environment<Type> environmentType = new Environment<>();
+        Environment<AbstractType> environmentType = new Environment<>();
         Environment<Value> environmentValue = new Environment<>();
 
         do {

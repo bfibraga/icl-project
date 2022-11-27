@@ -33,7 +33,7 @@ public class Compiler {
             Environment<Coordinates> environment = new Environment<>();
             CodeBlock code = new CodeBlock();
             
-            PrintWriter out = new PrintWriter(new File("./src/jvm/result/Header.j"));
+            PrintWriter out = new PrintWriter("./src/jvm/result/Header.j");
             //PrintWriter out = new PrintWriter(System.out);
 
             exp = parser.Start();

@@ -42,6 +42,11 @@ public class Int implements Value {
     }
 
     @Override
+    public boolean isFunc() {
+        return false;
+    }
+
+    @Override
     public Value toInt() {
         return this;
     }

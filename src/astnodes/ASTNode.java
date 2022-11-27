@@ -3,7 +3,7 @@ package src.astnodes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.type.Type;
+import src.type.AbstractType;
 import src.value.Value;
 
 public interface ASTNode {
@@ -12,7 +12,7 @@ public interface ASTNode {
 
     void compile(CodeBlock block, Environment<Coordinates> e);
 
-    Type typecheck(Environment<Type> e);
+    AbstractType typecheck(Environment<AbstractType> e);
 	
 }
 

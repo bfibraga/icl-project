@@ -1,15 +1,15 @@
 package src.astnodes.value.array;
 
 import src.astnodes.ASTNode;
+import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.type.TVoid;
-import src.type.Type;
+import src.type.TArray;
+import src.type.AbstractType;
 import src.value.Array;
 import src.value.Cell;
-import src.value.Record;
 import src.value.Value;
 
 public class ASTArrayIndex implements ASTNode {
@@ -40,7 +40,12 @@ public class ASTArrayIndex implements ASTNode {
     }
 
     @Override
-    public Type typecheck(Environment<Type> e) {
-        return this.node.typecheck(e);
+    public AbstractType typecheck(Environment<AbstractType> e) {
+        AbstractType targetAbstractType = new TArray();
+        AbstractType nodeAbstractType = this.node.typecheck(e);
+        if (!nodeAbstractType.sameType(targetAbstractType))
+            throw new InvalidTypeConvertion(nodeAbstractType.show(), targetAbstractType.show(), this.getClass().getSimpleName());
+
+        return nodeAbstractType;
     }
 }

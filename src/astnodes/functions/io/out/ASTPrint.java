@@ -6,7 +6,7 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TVoid;
-import src.type.Type;
+import src.type.AbstractType;
 import src.value.Str;
 import src.value.Value;
 
@@ -40,7 +40,7 @@ public class ASTPrint implements ASTNode {
     }
 
     @Override
-    public Type typecheck(Environment<Type> e) {
+    public AbstractType typecheck(Environment<AbstractType> e) {
         return new TVoid();
     }
 }

@@ -40,6 +40,11 @@ public class Str implements Value {
     }
 
     @Override
+    public boolean isFunc() {
+        return false;
+    }
+
+    @Override
     public Value toInt() {
         throw new InvalidTypeConvertion(this.getClass().getName(), Int.class.getName());
     }

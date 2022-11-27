@@ -3,13 +3,16 @@
     let mut x : int = MAX;
     let y : str = new('Hello world');
     let mut w = arr[MAX, x, y];
-    let mut p : rec = [
-        id: x,
-        list: w,
-        mut active: false
-    ];
-    val(w);
-    x -> MAX + 1;
-    y -> new('world Hello');
-    val(p.list.get(1))
+    let a = fn(x : int){
+        x^2
+    };
+    let b = fn(x : int){
+    {
+        let y = x + 3;
+        y
+    }};
+    let comp = fn(f : func, g : func, x : int) {
+        f(g(x))
+    };
+    comp(a, b, 2)
 },,

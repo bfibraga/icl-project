@@ -2,34 +2,38 @@ package src.value;
 
 import src.astnodes.ASTNode;
 import src.misc.Environment;
+import src.misc.Pair;
+import src.type.AbstractType;
 
-public class Closure implements Value {
+import java.util.List;
 
-    private final String id;
+public class Closure<T> implements Value {
+
+    private final List<Pair<String, AbstractType>> paramNames;
     private final ASTNode body;
-    private final Environment<Value> environment;
+    private final Environment<T> environment;
 
-    public Closure(String id, ASTNode body, Environment<Value> environment) {
-        this.id = id;
+    public Closure(List<Pair<String, AbstractType>> paramNames, ASTNode body, Environment<T> environment) {
+        this.paramNames = paramNames;
         this.body = body;
         this.environment = environment;
     }
 
-    public String getId() {
-        return id;
+    public List<Pair<String, AbstractType>> getParamNames() {
+        return paramNames;
     }
 
     public ASTNode getBody() {
         return body;
     }
 
-    public Environment<Value> getEnvironment() {
+    public Environment<T> getEnvironment() {
         return environment;
     }
 
     @Override
     public String show() {
-        return String.format("[%s, %s, %s]", this.id, this.body, this.environment);
+        return String.format("[%s, %s, %s]", this.paramNames, this.body.getClass().getSimpleName(), "e" + this.environment.getDepth());
     }
 
     @Override
@@ -53,6 +57,11 @@ public class Closure implements Value {
     }
 
     @Override
+    public boolean isFunc() {
+        return true;
+    }
+
+    @Override
     public Value toInt() {
         return null;
     }
@@ -60,5 +69,10 @@ public class Closure implements Value {
     @Override
     public Value toBool() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return this.show();
     }
 }

@@ -5,10 +5,11 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TRecord;
-import src.type.Type;
+import src.type.AbstractType;
 import src.value.Record;
 import src.value.Value;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ASTRecord implements ASTNode {
@@ -39,13 +40,15 @@ public class ASTRecord implements ASTNode {
     }
 
     @Override
-    public Type typecheck(Environment<Type> e) {
+    public AbstractType typecheck(Environment<AbstractType> e) {
+        Map<String, AbstractType> fields = new HashMap<>();
         for (Map.Entry<String, ASTNode> entry: this.fields.entrySet()) {
             String id = entry.getKey();
             ASTNode node = entry.getValue();
 
-            node.typecheck(e);
+            fields.put(id, node.typecheck(e));
         }
-        return new TRecord();
+
+        return new TRecord(fields);
     }
 }

@@ -7,7 +7,7 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TCell;
-import src.type.Type;
+import src.type.AbstractType;
 import src.value.Cell;
 import src.value.Value;
 
@@ -35,12 +35,12 @@ public class ASTRef implements ASTNode {
     }
 
     @Override
-    public Type typecheck(Environment<Type> e) {
-        Type targetType = new TCell();
-        Type nodeType = this.node.typecheck(e);
-        if (!nodeType.sameType(targetType))
-            throw new InvalidTypeConvertion(nodeType.show(), targetType.show(), this.getClass().getSimpleName());
+    public AbstractType typecheck(Environment<AbstractType> e) {
+        AbstractType targetAbstractType = new TCell();
+        AbstractType nodeAbstractType = this.node.typecheck(e);
+        if (!nodeAbstractType.sameType(targetAbstractType))
+            throw new InvalidTypeConvertion(nodeAbstractType.show(), targetAbstractType.show(), this.getClass().getSimpleName());
 
-        return ((TCell) nodeType).getType();
+        return ((TCell) nodeAbstractType).getType();
     }
 }

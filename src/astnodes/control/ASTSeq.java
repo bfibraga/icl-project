@@ -4,7 +4,7 @@ import src.astnodes.ASTNode;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.type.Type;
+import src.type.AbstractType;
 import src.value.Value;
 
 public class ASTSeq implements ASTNode {
@@ -28,7 +28,7 @@ public class ASTSeq implements ASTNode {
     }
 
     @Override
-    public Type typecheck(Environment<Type> e) {
+    public AbstractType typecheck(Environment<AbstractType> e) {
         this.l.typecheck(e);
         return this.r.typecheck(e);
     }

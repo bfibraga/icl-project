@@ -5,7 +5,7 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TStr;
-import src.type.Type;
+import src.type.AbstractType;
 import src.value.Str;
 import src.value.Value;
 
@@ -28,7 +28,7 @@ public class ASTStr implements ASTNode {
     }
 
     @Override
-    public Type typecheck(Environment<Type> e) {
+    public AbstractType typecheck(Environment<AbstractType> e) {
         return new TStr();
     }
 }

@@ -7,13 +7,12 @@ package src.parser;
 import src.astnodes.*;
 import src.astnodes.binding.*;
 import src.astnodes.control.*;
-import src.astnodes.functions.ASTFunction;import src.astnodes.functions.io.out.*;
+import src.astnodes.value.function.ASTApplyFunc;import src.astnodes.value.function.ASTFunction;import src.astnodes.functions.io.out.*;
 import src.astnodes.operations.arithmetic.*;
 import src.astnodes.operations.relational.*;
 import src.astnodes.value.array.ASTArray;import src.astnodes.value.array.ASTArrayIndex;import src.astnodes.value.primitives.*;
 import src.astnodes.value.record.*;
 import src.misc.*;
-import src.value.*;
 import java.util.*;
 
 public class Parser {}
@@ -352,8 +351,11 @@ ASTNode Fact() :
     | <LSBRACKET> t = Record() <RSBRACKET>
     | <ARR><LSBRACKET> t = Array() <RSBRACKET>
     | n=<Id> { t = new ASTId(n.image); }
-
-     ({ Token n2; } <DOT> (n2=<Id> { t = new ASTRecordField(t, n2.image); } | <GET><LPAR> n2=<INT> <RPAR> { t = new ASTArrayIndex(t, Integer.parseInt(n2.image)); }))*
+     ({ Token n2; } <DOT> (n2=<Id> { t = new ASTRecordField(t, n2.image); }
+     | <GET><LPAR> n2=<INT> <RPAR> { t = new ASTArrayIndex(t, Integer.parseInt(n2.image)); })
+     | { List<ASTNode> a = new ArrayList<>(); }
+       <LPAR> ({ ASTNode aux; } aux = BoolAdd() { a.add(aux); } (<COMMA> aux = BoolAdd() { a.add(aux); })*)? <RPAR> { t = new ASTApplyFunc(t, a); }
+     )*
 
     | ("-" t = Fact() { t = new ASTNeg(t); })
     | <LPAR> t=BoolAdd() <RPAR>
@@ -384,7 +386,9 @@ ASTNode Fact() :
             <RBRACKET>
     { t = new ASTWhile(t, b); }
    | <REF> <LPAR> t=BoolAdd() <RPAR> { t = new ASTRef(t); }
-   | <FUN> n = <Id> <LPAR> { Token n2; } n2 = <Id> <RPAR> <RBRACKET> t=Seq() <LBRACKET> { t = new ASTFunction(n.image, t); }
+   | { List<Pair<String,String>> p = new ArrayList<>(); }
+    <FUN> <LPAR> ({ Token n2, type; } n2 = <Id> <DDOT> type = <Id> { p.add(new Pair<>(n2.image, type.image)); } (<COMMA> n2 = <Id> <DDOT> type = <Id> { p.add(new Pair<>(n2.image, type.image)); })*)? <RPAR> <LBRACKET> t=Seq() <RBRACKET> { t = new ASTFunction(p, t); }
+
    | { List<ASTNode> l = new ArrayList<>(); }<PRINT> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrint(l); }
    | { List<ASTNode> l = new ArrayList<>(); }<PRINTLN> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrintln(l); }
    )

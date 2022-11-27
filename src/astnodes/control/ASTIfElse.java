@@ -7,7 +7,7 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TBool;
-import src.type.Type;
+import src.type.AbstractType;
 import src.value.Bool;
 import src.value.Value;
 
@@ -40,19 +40,19 @@ public class ASTIfElse implements ASTNode {
     }
 
     @Override
-    public Type typecheck(Environment<Type> e) {
-        Type targetType = new TBool();
-        Type condType = this.cond.typecheck(e);
+    public AbstractType typecheck(Environment<AbstractType> e) {
+        AbstractType targetAbstractType = new TBool();
+        AbstractType condAbstractType = this.cond.typecheck(e);
 
-        if (!condType.sameType(targetType))
-            throw new InvalidTypeConvertion(condType.show(), targetType.show(), this.getClass().getSimpleName());
+        if (!condAbstractType.sameType(targetAbstractType))
+            throw new InvalidTypeConvertion(condAbstractType.show(), targetAbstractType.show(), this.getClass().getSimpleName());
 
-        Type thenType = this.thenBody.typecheck(e);
-        Type elseType = this.elseBody.typecheck(e);
+        AbstractType thenAbstractType = this.thenBody.typecheck(e);
+        AbstractType elseAbstractType = this.elseBody.typecheck(e);
 
-        if (!thenType.sameType(elseType))
-            throw new InvalidTypeConvertion(thenType.show(), elseType.show(), this.getClass().getSimpleName());
+        if (!thenAbstractType.sameType(elseAbstractType))
+            throw new InvalidTypeConvertion(thenAbstractType.show(), elseAbstractType.show(), this.getClass().getSimpleName());
 
-        return elseType; //Or elseType
+        return elseAbstractType; //Or elseType
     }
 }

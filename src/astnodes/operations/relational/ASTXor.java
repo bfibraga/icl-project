@@ -6,18 +6,17 @@ import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.type.TBool;
-import src.type.TInt;
 import src.misc.TypeFunctions;
+import src.type.TBool;
 import src.type.Type;
 import src.value.Bool;
-import src.value.Int;
 import src.value.Value;
 
-public class ASTLwtEq implements ASTNode {
-    private ASTNode l, r;
+public class ASTXor implements ASTNode {
 
-    public ASTLwtEq(ASTNode l, ASTNode r){
+    private final ASTNode l, r;
+
+    public ASTXor(ASTNode l, ASTNode r) {
         this.l = l;
         this.r = r;
     }
@@ -25,16 +24,19 @@ public class ASTLwtEq implements ASTNode {
     @Override
     public Value eval(Environment<Value> e) {
         Value valueL = this.l.eval(e);
-        if (!valueL.isNumber() || valueL.isBoolean()){
+        if (!valueL.isBoolean() || valueL.isNumber()){
             throw new InvalidTypes(valueL.show());
         }
 
         Value valueR = this.r.eval(e);
-        if (!valueR.isNumber() || valueR.isBoolean()){
+        if (!valueR.isBoolean() || valueR.isNumber()){
             throw new InvalidTypes(valueR.show());
         }
 
-        return new Bool(((Int)valueL).getValue() <= ((Int)valueR).getValue()) ;
+        Bool lBool = (Bool)valueL;
+        Bool rBool = (Bool)valueR;
+
+        return new Bool(( (lBool.getValue() && !rBool.getValue()) || (!lBool.getValue() && rBool.getValue())));
     }
 
     @Override
@@ -44,7 +46,7 @@ public class ASTLwtEq implements ASTNode {
 
     @Override
     public Type typecheck(Environment<Type> e) {
-        Type targetType = new TInt();
+        Type targetType = new TBool();
         Type lType = this.l.typecheck(e);
         if (!TypeFunctions.sameType(lType, targetType))
             throw new InvalidTypeConvertion(lType.show(), targetType.show(), this.getClass().getSimpleName());
@@ -54,6 +56,6 @@ public class ASTLwtEq implements ASTNode {
         if (!TypeFunctions.sameType(rType, targetType))
             throw new InvalidTypeConvertion(rType.show(), targetType.show(), this.getClass().getSimpleName());
 
-        return new TBool();
+        return targetType;
     }
 }

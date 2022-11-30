@@ -1,16 +1,15 @@
 package src.value;
 
-import src.astnodes.ASTNode;
 import src.exceptions.InvalidTypeConvertion;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Record implements Value {
+public class Struct implements Value {
 
     private Map<String, Value> fields;
 
-    public Record(){
+    public Struct(){
         this.fields = new HashMap<>();
     }
 
@@ -28,15 +27,15 @@ public class Record implements Value {
 
     @Override
     public String show() {
-        StringBuilder result = new StringBuilder("[ ");
+        StringBuilder result = new StringBuilder("{ ");
         for (Map.Entry<String, Value> entry: this.fields.entrySet()) {
             String id = entry.getKey();
             Value value = entry.getValue();
 
-            result.append(id).append(": ").append(value.show()).append(", ");
+            result.append(id).append(" = ").append(value.show()).append(", ");
         }
         result.delete(result.length()-2, result.length()-1);
-        result.append("]");
+        result.append("}");
         return result.toString();
     }
 
@@ -86,11 +85,11 @@ public class Record implements Value {
             return true;
         }
 
-        if (obj instanceof Record){
+        if (obj instanceof Struct){
             for (Map.Entry<String, Value> entry: this.getFields().entrySet()) {
                 String id = entry.getKey();
                 Value value = entry.getValue();
-                Value valueObj = ((Record) obj).get(id);
+                Value valueObj = ((Struct) obj).get(id);
 
                 if (!valueObj.equals(value)){
                     return false;

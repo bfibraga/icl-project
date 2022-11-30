@@ -5,7 +5,7 @@ import src.exceptions.LanguageException;
 import src.misc.Environment;
 import src.parser.ParseException;
 import src.parser.Parser;
-import src.type.AbstractType;
+import src.misc.TypeFunctions;
 import src.type.Type;
 
 import java.io.FileInputStream;
@@ -30,7 +30,7 @@ public class Typecheck {
 
         Parser parser = new Parser(in);
         ASTNode exp;
-        Environment<AbstractType> environment = new Environment<>();
+        Environment<Type> environment = new Environment<>();
 
         do {
             try {

@@ -1,10 +1,13 @@
 package src.type;
 
-public class TVoid extends AbstractType implements Type{
+public class TVoid implements Type{
 
     //TODO Maybe add default value to this type...
 
-    public TVoid() {
-        super("Void");
+    private static final String TYPE_NAME = "Void";
+
+    @Override
+    public String show() {
+        return TYPE_NAME;
     }
 }

@@ -5,7 +5,7 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TArray;
-import src.type.AbstractType;
+import src.type.Type;
 import src.value.Array;
 import src.value.Value;
 
@@ -37,7 +37,7 @@ public class ASTArray implements ASTNode {
     }
 
     @Override
-    public AbstractType typecheck(Environment<AbstractType> e) {
+    public Type typecheck(Environment<Type> e) {
         return new TArray();
     }
 }

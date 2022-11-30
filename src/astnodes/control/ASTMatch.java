@@ -7,7 +7,9 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TBool;
-import src.type.AbstractType;
+import src.misc.TypeFunctions;
+import src.type.TVoid;
+import src.type.Type;
 import src.value.Value;
 
 import java.util.List;
@@ -57,24 +59,24 @@ public class ASTMatch implements ASTNode {
     }
 
     @Override
-    public AbstractType typecheck(Environment<AbstractType> e) {
-        AbstractType targetAbstractType = new TBool();
-        AbstractType condAbstractType = this.cond.typecheck(e);
+    public Type typecheck(Environment<Type> e) {
+        Type targetType = new TBool();
+        Type condType = this.cond.typecheck(e);
 
-        if (!condAbstractType.sameType(new TBool()))
-            throw new InvalidTypeConvertion(condAbstractType.show(), targetAbstractType.show(), this.getClass().getSimpleName());
+        if (!TypeFunctions.sameType(condType, targetType))
+            throw new InvalidTypeConvertion(condType.show(), targetType.show(), this.getClass().getSimpleName());
 
-        AbstractType defAbstractType = this.def.typecheck(e);
+        Type defType = this.def.typecheck(e);
         for (Map.Entry<List<ASTNode>, ASTNode> entry : this.cases.entrySet()) {
             List<ASTNode> astNodeList = entry.getKey();
             ASTNode caseNode = entry.getValue();
 
 
             for (ASTNode node: astNodeList) {
-                AbstractType abstractType = node.typecheck(e);
+                Type nodeType = node.typecheck(e);
 
-                if (abstractType.sameType(defAbstractType)){
-                    return abstractType;
+                if (TypeFunctions.sameType(nodeType, defType)){
+                    return new TVoid();
                 }
             }
         }

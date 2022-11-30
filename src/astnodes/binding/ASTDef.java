@@ -4,9 +4,11 @@ import src.astnodes.ASTNode;
 import src.exceptions.InvalidTypeConvertion;
 import src.jvm.JVM;
 import src.misc.*;
+import src.misc.frame.DefFrame;
 import src.type.TCell;
 import src.type.TVoid;
-import src.type.AbstractType;
+import src.misc.TypeFunctions;
+import src.type.Type;
 import src.value.Value;
 
 import java.io.FileNotFoundException;
@@ -47,19 +49,19 @@ public class ASTDef implements ASTNode {
         int depth = e.getDepth();
 
         //Define a new frame
-        Frame currFrame = block.getCurrFrame();
-        Frame newFrame = currFrame.pushFrame("frame" + (depth - 1));
-        block.setCurrFrame(newFrame);
+        DefFrame currDefFrame = block.getCurrFrame();
+        DefFrame newDefFrame = currDefFrame.pushFrame("frame" + (depth - 1));
+        block.setCurrFrame(newDefFrame);
 
         //Init recent declared frame
-        block.emit(String.format("%s %s", JVM.NEW, newFrame));
+        block.emit(String.format("%s %s", JVM.NEW, newDefFrame));
         block.emit(JVM.DUP.toString());
-        block.emit(String.format("%s %s/<init>()V", JVM.INVOKESPECIAL, newFrame));
+        block.emit(String.format("%s %s/<init>()V", JVM.INVOKESPECIAL, newDefFrame));
         block.emit(JVM.DUP.toString());
 
         //Init static link of current frame
         block.emit(String.format("%s_%d", JVM.ALOAD, 3));
-        block.emit(String.format("%s %s/sl L%s;", JVM.PUTFIELD, newFrame, currFrame));
+        block.emit(String.format("%s %s/sl L%s;", JVM.PUTFIELD, newDefFrame, currDefFrame));
         block.emit(String.format("%s_%d", JVM.ASTORE, 3));
 
         //Init variables
@@ -71,14 +73,14 @@ public class ASTDef implements ASTNode {
             block.emit(String.format("%s_%d", JVM.ALOAD, 3));
             node.compile(block, e);
             String sym = block.gensym();
-            block.emit(String.format("%s %s/%s I", JVM.PUTFIELD, newFrame, sym));
+            block.emit(String.format("%s %s/%s I", JVM.PUTFIELD, newDefFrame, sym));
 
             coordinates = new Coordinates(sym, depth);
             e.assoc(id, coordinates);
         }
 
         try {
-            newFrame.def(new PrintWriter("./src/jvm/result/" + newFrame + ".j"));
+            newDefFrame.def(new PrintWriter("./src/jvm/result/" + newDefFrame + ".j"));
         } catch (FileNotFoundException ex) {
             throw new RuntimeException(ex);
         }
@@ -86,35 +88,35 @@ public class ASTDef implements ASTNode {
         body.compile(block, e);
 
         //Generate Code to Pop the frame
-        newFrame.pop(block);
-        block.setCurrFrame(currFrame);
+        newDefFrame.pop(block);
+        block.setCurrFrame(currDefFrame);
 
         e = e.endScope();
     }
 
     @Override
-    public AbstractType typecheck(Environment<AbstractType> e) {
+    public Type typecheck(Environment<Type> e) {
         e = e.beginScope();
 
-        AbstractType abstractType;
+        Type nodeType;
         for (Bind<String, ASTNode> bind: init) {
             String id = bind.getId();
-            AbstractType defaultAbstractType = bind.getType();
+            Type defaultType = bind.getType();
             ASTNode node = bind.getValue();
 
-            abstractType = node.typecheck(e);
-            AbstractType contentAbstractType = abstractType.sameType(new TCell()) ?
-                    ((TCell) abstractType).getType() :
-                    abstractType;
+            nodeType = node.typecheck(e);
+            Type contentType = TypeFunctions.sameType(nodeType, new TCell()) ?
+                    ((TCell) nodeType).getType() :
+                    nodeType;
 
-            if (!defaultAbstractType.sameType(new TVoid()) && !defaultAbstractType.sameType(contentAbstractType))
-                throw new InvalidTypeConvertion(defaultAbstractType.show(), contentAbstractType.show(), this.getClass().getSimpleName());
+            if (!TypeFunctions.sameType(defaultType, new TVoid()) && !TypeFunctions.sameType(contentType, defaultType))
+                throw new InvalidTypeConvertion(contentType.show(), defaultType.show(), this.getClass().getSimpleName());
 
-            e.assoc(id, abstractType);
+            e.assoc(id, nodeType);
         }
 
-        abstractType = body.typecheck(e);
+        nodeType = body.typecheck(e);
         e = e.endScope();
-        return abstractType;
+        return nodeType;
     }
 }

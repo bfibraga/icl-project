@@ -8,7 +8,8 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TInt;
-import src.type.AbstractType;
+import src.misc.TypeFunctions;
+import src.type.Type;
 import src.value.Int;
 import src.value.Value;
 
@@ -37,12 +38,12 @@ public class ASTNeg implements ASTNode {
     }
 
     @Override
-    public AbstractType typecheck(Environment<AbstractType> e) {
-        AbstractType targetAbstractType = new TInt();
-        AbstractType expAbstractType = this.exp.typecheck(e);
-        if (!expAbstractType.sameType(targetAbstractType))
-            throw new InvalidTypeConvertion(expAbstractType.show(), targetAbstractType.show(), this.getClass().getSimpleName());
+    public Type typecheck(Environment<Type> e) {
+        Type targetType = new TInt();
+        Type expType = this.exp.typecheck(e);
+        if (!TypeFunctions.sameType(expType, targetType))
+            throw new InvalidTypeConvertion(expType.show(), targetType.show(), this.getClass().getSimpleName());
 
-        return targetAbstractType;
+        return targetType;
     }
 }

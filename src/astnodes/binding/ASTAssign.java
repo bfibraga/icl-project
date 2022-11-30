@@ -7,7 +7,8 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TCell;
-import src.type.AbstractType;
+import src.misc.TypeFunctions;
+import src.type.Type;
 import src.value.Cell;
 import src.value.Value;
 
@@ -42,12 +43,12 @@ public class ASTAssign implements ASTNode {
     }
 
     @Override
-    public AbstractType typecheck(Environment<AbstractType> e) {
-        AbstractType targetAbstractType = new TCell();
-        AbstractType lAbstractType = this.l.typecheck(e);
+    public Type typecheck(Environment<Type> e) {
+        Type targetType = new TCell();
+        Type lType = this.l.typecheck(e);
 
-        if (!lAbstractType.sameType(targetAbstractType)){
-            throw new InvalidTypeConvertion(lAbstractType.show(), targetAbstractType.show(), this.getClass().getSimpleName());
+        if (!TypeFunctions.sameType(lType, targetType)){
+            throw new InvalidTypeConvertion(lType.show(), targetType.show(), this.getClass().getSimpleName());
         }
 
         return this.r.typecheck(e);

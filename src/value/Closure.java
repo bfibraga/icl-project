@@ -3,23 +3,24 @@ package src.value;
 import src.astnodes.ASTNode;
 import src.misc.Environment;
 import src.misc.Pair;
-import src.type.AbstractType;
+import src.misc.TypeFunctions;
+import src.type.Type;
 
 import java.util.List;
 
 public class Closure<T> implements Value {
 
-    private final List<Pair<String, AbstractType>> paramNames;
+    private final List<Pair<String, Type>> paramNames;
     private final ASTNode body;
     private final Environment<T> environment;
 
-    public Closure(List<Pair<String, AbstractType>> paramNames, ASTNode body, Environment<T> environment) {
+    public Closure(List<Pair<String, Type>> paramNames, ASTNode body, Environment<T> environment) {
         this.paramNames = paramNames;
         this.body = body;
         this.environment = environment;
     }
 
-    public List<Pair<String, AbstractType>> getParamNames() {
+    public List<Pair<String, Type>> getParamNames() {
         return paramNames;
     }
 

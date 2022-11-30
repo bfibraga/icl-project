@@ -5,7 +5,7 @@ import src.exceptions.LanguageException;
 import src.misc.Environment;
 import src.parser.ParseException;
 import src.parser.Parser;
-import src.type.AbstractType;
+import src.misc.TypeFunctions;
 import src.type.Type;
 import src.value.Value;
 
@@ -32,7 +32,7 @@ public class Interpreter {
 
         Parser parser = new Parser(in);
         ASTNode exp;
-        Environment<AbstractType> environmentType = new Environment<>();
+        Environment<Type> environmentType = new Environment<>();
         Environment<Value> environmentValue = new Environment<>();
 
         do {
@@ -40,11 +40,12 @@ public class Interpreter {
                 out.print("> ");
                 exp = parser.Start();
                 exp.typecheck(environmentType);
-                out.println(exp.eval(environmentValue));
+                exp.eval(environmentValue);
             } catch (ParseException e) {
                 e.printStackTrace();
             } catch (LanguageException e){
-                out.println(e.getMessage());
+                //out.println(e.getMessage());
+                e.printStackTrace();
                 parser.ReInit(in);
             }
         } while (loop);

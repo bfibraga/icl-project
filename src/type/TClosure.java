@@ -5,28 +5,33 @@ import src.misc.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TClosure extends AbstractType implements Type {
+public class TClosure implements Type {
 
-    private List<Pair<String, AbstractType>> params;
-    private AbstractType bodyAbstractType;
+    private static final String TYPE_NAME = "Closure";
 
-    public TClosure(List<Pair<String, AbstractType>> params, AbstractType bodyAbstractType) {
-        super("Closure");
+    private final List<Pair<String, Type>> params;
+    private final Type bodyAbstractType;
+
+    public TClosure(List<Pair<String, Type>> params, Type bodyAbstractType) {
         this.params = params;
         this.bodyAbstractType = bodyAbstractType;
     }
 
-    public TClosure() {
-        super("Closure");
-        this.params = new ArrayList<>();
-        this.bodyAbstractType = new TVoid();
-    }
-
-    public List<Pair<String, AbstractType>> getParams() {
+    public List<Pair<String, Type>> getParams() {
         return params;
     }
 
-    public AbstractType getBodyType() {
+    public Type getBodyType() {
         return bodyAbstractType;
+    }
+
+    @Override
+    public String show() {
+        return TYPE_NAME;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s -> [%s, %s]", this.show(), this.params.toString(), this.bodyAbstractType);
     }
 }

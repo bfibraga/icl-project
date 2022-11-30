@@ -6,7 +6,7 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TVoid;
-import src.type.AbstractType;
+import src.type.Type;
 import src.value.Str;
 import src.value.Value;
 
@@ -25,14 +25,14 @@ public class ASTPrintln implements ASTNode {
         StringBuilder result = new StringBuilder();
         for (ASTNode arg: args) {
             Value value = arg.eval(e);
-            if (value.isCell())
-                throw new InvalidTypes(value.show());
+            /*if (value.isCell())
+                throw new InvalidTypes(value.show());*/
 
             result.append(value.show()).append("\n");
         }
         result.deleteCharAt(result.length()-1);
         System.out.println(result);
-        return new Str(result.toString());
+        return new Str("");
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ASTPrintln implements ASTNode {
     }
 
     @Override
-    public AbstractType typecheck(Environment<AbstractType> e) {
+    public Type typecheck(Environment<Type> e) {
         return new TVoid();
     }
 }

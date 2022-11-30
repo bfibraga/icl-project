@@ -1,5 +1,7 @@
 package src.misc;
 
+import src.misc.frame.DefFrame;
+
 import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -7,19 +9,21 @@ import java.util.Queue;
 public class CodeBlock {
 
     private Queue<String> code;
-    private Frame currFrame;
+
+    //TODO Create Factory class to handle multiple frame types and gensym diferently.
+    private DefFrame currDefFrame;
 
     public CodeBlock(){
         this.code = new LinkedList<>();
-        this.currFrame = new Frame();
+        this.currDefFrame = new DefFrame();
     }
 
-    public Frame getCurrFrame() {
-        return currFrame;
+    public DefFrame getCurrFrame() {
+        return currDefFrame;
     }
 
-    public void setCurrFrame(Frame currFrame) {
-        this.currFrame = currFrame;
+    public void setCurrFrame(DefFrame currDefFrame) {
+        this.currDefFrame = currDefFrame;
     }
 
     public void emit(String operation){
@@ -28,7 +32,7 @@ public class CodeBlock {
 
     //TODO Change Implementation
     public String gensym() {
-        return this.currFrame.addField();
+        return this.currDefFrame.addField();
     }
 
     public void dump(PrintWriter out){

@@ -7,7 +7,8 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TArray;
-import src.type.AbstractType;
+import src.misc.TypeFunctions;
+import src.type.Type;
 import src.value.Array;
 import src.value.Cell;
 import src.value.Value;
@@ -40,12 +41,12 @@ public class ASTArrayIndex implements ASTNode {
     }
 
     @Override
-    public AbstractType typecheck(Environment<AbstractType> e) {
-        AbstractType targetAbstractType = new TArray();
-        AbstractType nodeAbstractType = this.node.typecheck(e);
-        if (!nodeAbstractType.sameType(targetAbstractType))
-            throw new InvalidTypeConvertion(nodeAbstractType.show(), targetAbstractType.show(), this.getClass().getSimpleName());
+    public Type typecheck(Environment<Type> e) {
+        Type targetType = new TArray();
+        Type nodeType = this.node.typecheck(e);
+        if (!TypeFunctions.sameType(nodeType, targetType))
+            throw new InvalidTypeConvertion(nodeType.show(), targetType.show(), this.getClass().getSimpleName());
 
-        return nodeAbstractType;
+        return nodeType;
     }
 }

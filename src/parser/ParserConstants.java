@@ -12,116 +12,118 @@ public interface ParserConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int INT = 5;
+  int INT = 8;
   /** RegularExpression Id. */
-  int FLOAT = 6;
+  int FLOAT = 9;
   /** RegularExpression Id. */
-  int Num = 7;
+  int Num = 10;
   /** RegularExpression Id. */
-  int BOOL = 8;
+  int BOOL = 11;
   /** RegularExpression Id. */
-  int ARR = 9;
+  int ARR = 12;
   /** RegularExpression Id. */
-  int GET = 10;
+  int STRUCT = 13;
   /** RegularExpression Id. */
-  int SETVAL = 11;
+  int SETVAL = 14;
   /** RegularExpression Id. */
-  int GETVAL = 12;
+  int QUOTE = 15;
   /** RegularExpression Id. */
-  int QUOTE = 13;
+  int PLUS = 16;
   /** RegularExpression Id. */
-  int PLUS = 14;
+  int MINUS = 17;
   /** RegularExpression Id. */
-  int MINUS = 15;
+  int TIMES = 18;
   /** RegularExpression Id. */
-  int TIMES = 16;
+  int MOD = 19;
   /** RegularExpression Id. */
-  int MOD = 17;
+  int POW = 20;
   /** RegularExpression Id. */
-  int POW = 18;
+  int DIV = 21;
   /** RegularExpression Id. */
-  int DIV = 19;
+  int LPAR = 22;
   /** RegularExpression Id. */
-  int LPAR = 20;
+  int RPAR = 23;
   /** RegularExpression Id. */
-  int RPAR = 21;
+  int LBRACKET = 24;
   /** RegularExpression Id. */
-  int LBRACKET = 22;
+  int RBRACKET = 25;
   /** RegularExpression Id. */
-  int RBRACKET = 23;
+  int LSBRACKET = 26;
   /** RegularExpression Id. */
-  int LSBRACKET = 24;
+  int RSBRACKET = 27;
   /** RegularExpression Id. */
-  int RSBRACKET = 25;
+  int LET = 28;
   /** RegularExpression Id. */
-  int LET = 26;
+  int MUT = 29;
   /** RegularExpression Id. */
-  int MUT = 27;
+  int EQ = 30;
   /** RegularExpression Id. */
-  int EQ = 28;
+  int SEMCOL = 31;
   /** RegularExpression Id. */
-  int SEMCOL = 29;
+  int COMMA = 32;
   /** RegularExpression Id. */
-  int COMMA = 30;
+  int DOT = 33;
   /** RegularExpression Id. */
-  int DOT = 31;
+  int IF = 34;
   /** RegularExpression Id. */
-  int IF = 32;
+  int ELIF = 35;
   /** RegularExpression Id. */
-  int ELIF = 33;
+  int ELSE = 36;
   /** RegularExpression Id. */
-  int ELSE = 34;
+  int MATCH = 37;
   /** RegularExpression Id. */
-  int MATCH = 35;
+  int VB = 38;
   /** RegularExpression Id. */
-  int VB = 36;
+  int WHILE = 39;
   /** RegularExpression Id. */
-  int WHILE = 37;
+  int FOR = 40;
   /** RegularExpression Id. */
-  int FOR = 38;
+  int IN = 41;
   /** RegularExpression Id. */
-  int IN = 39;
+  int DDOT = 42;
   /** RegularExpression Id. */
-  int DDOT = 40;
+  int DEFAULTCASE = 43;
   /** RegularExpression Id. */
-  int DEFAULTCASE = 41;
+  int GT = 44;
   /** RegularExpression Id. */
-  int GT = 42;
+  int GEQT = 45;
   /** RegularExpression Id. */
-  int GEQT = 43;
+  int LT = 46;
   /** RegularExpression Id. */
-  int LT = 44;
+  int LEQT = 47;
   /** RegularExpression Id. */
-  int LEQT = 45;
+  int DIFF = 48;
   /** RegularExpression Id. */
-  int DIFF = 46;
+  int NOT = 49;
   /** RegularExpression Id. */
-  int NOT = 47;
+  int AND = 50;
   /** RegularExpression Id. */
-  int AND = 48;
+  int OR = 51;
   /** RegularExpression Id. */
-  int OR = 49;
+  int XOR = 52;
   /** RegularExpression Id. */
-  int NEW = 50;
+  int NEW = 53;
   /** RegularExpression Id. */
-  int REF = 51;
+  int REF = 54;
   /** RegularExpression Id. */
-  int FUN = 52;
+  int FUN = 55;
   /** RegularExpression Id. */
-  int LEN = 53;
+  int LEN = 56;
   /** RegularExpression Id. */
-  int PRINT = 54;
+  int PRINT = 57;
   /** RegularExpression Id. */
-  int PRINTLN = 55;
+  int PRINTLN = 58;
   /** RegularExpression Id. */
-  int EXIT = 56;
+  int EXIT = 59;
   /** RegularExpression Id. */
-  int STR = 57;
+  int STR = 60;
   /** RegularExpression Id. */
-  int Id = 58;
+  int Id = 61;
 
   /** Lexical state. */
   int DEFAULT = 0;
+  /** Lexical state. */
+  int WithinComment = 1;
 
   /** Literal token values. */
   String[] tokenImage = {
@@ -130,14 +132,16 @@ public interface ParserConstants {
     "\"\\t\"",
     "\"\\r\"",
     "\"\\n\"",
+    "\"/*\"",
+    "\"*/\"",
+    "<token of kind 7>",
     "<INT>",
     "<FLOAT>",
     "<Num>",
     "<BOOL>",
     "\"arr\"",
-    "\"get\"",
+    "\"struct\"",
     "\"->\"",
-    "\"<-\"",
     "\"\\\'\"",
     "\"+\"",
     "\"-\"",
@@ -175,6 +179,7 @@ public interface ParserConstants {
     "\"!\"",
     "\"and\"",
     "\"or\"",
+    "\"xor\"",
     "\"new\"",
     "\"val\"",
     "\"fn\"",

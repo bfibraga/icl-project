@@ -5,7 +5,7 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TBool;
-import src.type.AbstractType;
+import src.type.Type;
 import src.value.Bool;
 import src.value.Value;
 
@@ -28,7 +28,7 @@ public class ASTBool implements ASTNode {
     }
 
     @Override
-    public AbstractType typecheck(Environment<AbstractType> e) {
+    public Type typecheck(Environment<Type> e) {
         return new TBool();
     }
 }

@@ -4,6 +4,7 @@ import src.exceptions.InvalidTypeConvertion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Array implements Value {
 
@@ -49,7 +50,7 @@ public class Array implements Value {
 
     @Override
     public String show() {
-        return null;
+        return this.values.toString();
     }
 
     @Override

@@ -1,24 +1,29 @@
 package src.type;
 
-public class TCell extends AbstractType implements Type {
+public class TCell implements Type {
 
-    private AbstractType abstractType;
+    private static final String TYPE_NAME = "Cell";
+
+    private Type abstractType;
 
     public TCell(){
-        super("Cell");
         this.setType(new TVoid());
     }
 
-    public TCell(AbstractType abstractType){
-        super("Cell");
-        this.setType(abstractType);
+    public TCell(Type type){
+        this.setType(type);
     }
 
-    public AbstractType getType() {
+    public Type getType() {
         return abstractType;
     }
 
-    public void setType(AbstractType abstractType) {
+    public void setType(Type abstractType) {
         this.abstractType = abstractType;
+    }
+
+    @Override
+    public String show() {
+        return TYPE_NAME;
     }
 }

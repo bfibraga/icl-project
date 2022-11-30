@@ -1,7 +1,10 @@
 package src.type;
 
-public class TStr extends AbstractType implements Type{
-    public TStr() {
-        super("Str");
+public class TStr implements Type{
+    private static final String TYPE_NAME = "Str";
+
+    @Override
+    public String show() {
+        return TYPE_NAME;
     }
 }

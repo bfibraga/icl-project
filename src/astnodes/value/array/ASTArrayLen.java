@@ -1,25 +1,27 @@
-package src.astnodes.value.primitives;
+package src.astnodes.value.array;
 
 import src.astnodes.ASTNode;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.type.TStr;
 import src.type.Type;
-import src.value.Str;
+import src.value.Array;
+import src.value.Int;
 import src.value.Value;
 
-public class ASTStr implements ASTNode {
+public class ASTArrayLen implements ASTNode {
 
-    private final String value;
+    private final String id;
 
-    public ASTStr(String value) {
-        this.value = value;
+    public ASTArrayLen(String id) {
+        this.id = id;
     }
 
     @Override
     public Value eval(Environment<Value> e) {
-        return new Str(this.value);
+        Value expValue = e.find(this.id);
+
+        return new Int(((Array)expValue).length());
     }
 
     @Override
@@ -29,6 +31,6 @@ public class ASTStr implements ASTNode {
 
     @Override
     public Type typecheck(Environment<Type> e) {
-        return new TStr();
+        return null;
     }
 }

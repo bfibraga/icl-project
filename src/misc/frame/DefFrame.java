@@ -1,32 +1,33 @@
-package src.misc;
+package src.misc.frame;
 
 import src.jvm.JVM;
+import src.misc.CodeBlock;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Frame {
+public class DefFrame extends Frame {
 
-    Frame previous;
+    DefFrame previous;
     String id;
     private List<String> fields;
 
-    public Frame(){
+    public DefFrame(){
         this("java/lang/Object", null);
     }
 
-    public Frame(String id){
-        this(id, new Frame());
+    public DefFrame(String id){
+        this(id, new DefFrame());
     }
 
-    public Frame(String id, Frame previous){
+    public DefFrame(String id, DefFrame previous){
         this.id = id;
         this.previous = previous;
         this.fields = new ArrayList<>();
     }
 
-    public Frame getPrevious() {
+    public DefFrame getPrevious() {
         return previous;
     }
 
@@ -34,7 +35,7 @@ public class Frame {
         return id;
     }
 
-    public void getNFrames(List<Frame> result, int level){
+    public void getNFrames(List<DefFrame> result, int level){
         result.add(this);
         if (level > 0){
             getNFrames(result, level-1);
@@ -48,13 +49,13 @@ public class Frame {
         return result;
     }
 
-    public Frame pushFrame(String id){
-        Frame result = new Frame(id, this);
+    public DefFrame pushFrame(String id){
+        DefFrame result = new DefFrame(id, this);
 
         return result;
     }
 
-    public Frame popFrame(){
+    public DefFrame popFrame(){
         return this.previous;
     }
 
@@ -87,5 +88,10 @@ public class Frame {
     @Override
     public String toString() {
         return this.id;
+    }
+
+    @Override
+    public String gensym() {
+        return this.addField();
     }
 }

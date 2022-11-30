@@ -1,25 +1,25 @@
-package src.astnodes.value.record;
+package src.astnodes.value.struct;
 
 import src.astnodes.ASTNode;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.type.TRecord;
-import src.type.AbstractType;
-import src.value.Record;
+import src.type.TStruct;
+import src.type.Type;
+import src.value.Struct;
 import src.value.Value;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ASTRecord implements ASTNode {
+public class ASTStruct implements ASTNode {
 
     private Map<String, ASTNode> fields;
-    private Record value;
+    private Struct value;
 
-    public ASTRecord(Map<String, ASTNode> fields) {
+    public ASTStruct(Map<String, ASTNode> fields) {
         this.fields = fields;
-        this.value = new Record();
+        this.value = new Struct();
     }
 
     @Override
@@ -40,8 +40,8 @@ public class ASTRecord implements ASTNode {
     }
 
     @Override
-    public AbstractType typecheck(Environment<AbstractType> e) {
-        Map<String, AbstractType> fields = new HashMap<>();
+    public Type typecheck(Environment<Type> e) {
+        Map<String, Type> fields = new HashMap<>();
         for (Map.Entry<String, ASTNode> entry: this.fields.entrySet()) {
             String id = entry.getKey();
             ASTNode node = entry.getValue();
@@ -49,6 +49,6 @@ public class ASTRecord implements ASTNode {
             fields.put(id, node.typecheck(e));
         }
 
-        return new TRecord(fields);
+        return new TStruct(fields);
     }
 }

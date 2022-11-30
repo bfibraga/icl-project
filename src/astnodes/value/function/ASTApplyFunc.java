@@ -8,12 +8,13 @@ import src.misc.Coordinates;
 import src.misc.Environment;
 import src.misc.Pair;
 import src.type.TClosure;
-import src.type.AbstractType;
+import src.misc.TypeFunctions;
 import src.type.TVoid;
 import src.type.Type;
 import src.value.Closure;
 import src.value.Value;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ASTApplyFunc implements ASTNode {
@@ -33,10 +34,11 @@ public class ASTApplyFunc implements ASTNode {
         if (!funcValue.isFunc())
             throw new InvalidTypes(funcValue.show());
 
-        e = e.beginScope();
-
         Closure<Value> closure = (Closure<Value>) funcValue;
-        List<Pair<String, AbstractType>> paramsNames = closure.getParamNames();
+
+        e = closure.getEnvironment().beginScope();
+
+        List<Pair<String, Type>> paramsNames = closure.getParamNames();
         for (int a = 0; a < this.args.size(); a++) {
             String argId = paramsNames.get(a).getKey();
             ASTNode argNode = this.args.get(a);
@@ -57,28 +59,31 @@ public class ASTApplyFunc implements ASTNode {
     }
 
     @Override
-    public AbstractType typecheck(Environment<AbstractType> e) {
-        AbstractType targetAbstractType = new TClosure();
-        Type fncAbstractType = this.fnc.typecheck(e);
-        if (!fncAbstractType.show().equals(targetAbstractType.show()))
-            throw new InvalidTypeConvertion(fncAbstractType.show(), targetAbstractType.show(), this.getClass().getSimpleName());
+    public Type typecheck(Environment<Type> e) {
+        Type targetType = new TClosure(new ArrayList<>(), new TVoid());
+        Type fncType = this.fnc.typecheck(e);
+        if (!TypeFunctions.sameType(fncType, targetType))
+            throw new InvalidTypeConvertion(fncType.show(), targetType.show(), this.getClass().getSimpleName());
 
-        /*List<Pair<String, AbstractType>> argList = ((TClosure) fncAbstractType).getParams();
-        for (int a = 0; a < this.args.size(); a++) {
-            Pair<String, AbstractType> curr_arg = argList.get(a);
+        TClosure closureType = ((TClosure) fncType);
+        List<Pair<String, Type>> argList = closureType.getParams();
+
+        //System.out.println(closureType);
+
+        for (int a = 0; a < argList.size(); a++) {
+            Pair<String, Type> curr_arg = argList.get(a);
             String argId = curr_arg.getKey();
             ASTNode argNode = this.args.get(a);
 
-            AbstractType argAbstractType = argNode.typecheck(e);
-            AbstractType givenAbstractType = curr_arg.getValue();
+            Type argAbstractType = argNode.typecheck(e);
+            Type givenAbstractType = curr_arg.getValue();
 
-            if (!argAbstractType.sameType(givenAbstractType))
+            if (!TypeFunctions.sameType(argAbstractType, givenAbstractType))
                 throw new InvalidTypeConvertion(argAbstractType.show(), givenAbstractType.show(), this.getClass().getSimpleName());
 
             e.assoc(argId, argAbstractType);
-        }*/
+        }
 
-        //return ((TClosure) fncAbstractType).getBodyType();
-        return new TVoid();
+        return closureType.getBodyType();
     }
 }

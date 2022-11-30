@@ -5,7 +5,8 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TCell;
-import src.type.AbstractType;
+import src.misc.TypeFunctions;
+import src.type.Type;
 import src.value.Cell;
 import src.value.Value;
 
@@ -29,8 +30,8 @@ public class ASTNew implements ASTNode {
     }
 
     @Override
-    public AbstractType typecheck(Environment<AbstractType> e) {
-        AbstractType argAbstractType = this.arg.typecheck(e);
-        return new TCell(argAbstractType);
+    public Type typecheck(Environment<Type> e) {
+        Type argType = this.arg.typecheck(e);
+        return new TCell(argType);
     }
 }

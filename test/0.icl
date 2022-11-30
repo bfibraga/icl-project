@@ -1,6 +1,6 @@
 {
-    let x : func(int) = fn(a : func(int), b : func(int), n:int){
-        a(b(n))
+    fn c(x : int, y : int){
+        x + y
     };
-    x
+    print(c(1,2))
 },,

@@ -5,16 +5,16 @@
     let counter = {
         let DEFAULT : int = 0;
         let mut value : int = 0;
-        {
-            get = fn () { val(value) };
-            inc = fn () { value -> val(value) + 1 };
-            set = fn (x: int) {value -> x};
-            reset = fn () { value -> DEFAULT }
-        }
+        struct {
+            fn get() { val(value) };
+            fn inc() { value -> val(value) + 1 };
+            fn set(x: int) { value -> x };
+            fn reset() { value -> DEFAULT }
+        };
     };
 
     /* Factorial Function */
-    let fat = fn(n : int) {
+    fn fat(n : int) {
        if n < 0 {
             0
        } else if n = 1 or n = 0 {
@@ -31,8 +31,9 @@
             }
        }
     };
-
-
+    let a : array = [1, true, false];
+    print(fat(3), #a)
+/*
     let rand = {
         let mut seed : int = 2;
         {
@@ -44,5 +45,5 @@
                 val(seed)
             }
         }
-    };
+    }*/
 },,

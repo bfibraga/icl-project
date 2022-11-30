@@ -142,6 +142,8 @@ TOKEN :
   |
   < PRINTLN : "println">
   |
+  < PRINTF : "printf">
+  |
   < EXIT : "exit">
   |
   < STR : <QUOTE> ((" ")* (<Id>))* <QUOTE> >
@@ -302,24 +304,9 @@ Bind<String, ASTNode> DefFunc():
     Bind<String, ASTNode> b;
 }
 {
-    n=<Id> t = Function()
+    <FUN> n=<Id> t = Function()
     { b = new Bind<>(n.image, t); }
     { return b; }
-}
-
-Bind<String, ASTNode> DefEq():
-{
-    Token n, mut;
-    ASTNode t;
-}
-{
-    { mut = new Token(); } (mut=<MUT>)? n = <Id> <EQ> t = BoolAdd()
-    {
-        if (mut.image != null && !mut.image.trim().equals("")){
-            t = new ASTNew(t);
-        }
-        return new Bind<>(n.image, t);
-    }
 }
 
 List<Bind<String, ASTNode>> DefVar():
@@ -329,11 +316,10 @@ List<Bind<String, ASTNode>> DefVar():
     Bind<String, ASTNode> b;
 }
 {
-    ( <LET> b = DefLet()
-        {
-            l.add(b);
-        }
-    <SEMCOL>)+
+    (( <LET> b = DefLet()
+    | b = DefFunc())
+        { l.add(b); }
+    <SEMCOL>)*
     { return l; }
 }
 
@@ -358,8 +344,10 @@ ASTNode Record():
 }
 {
     { Map<String, ASTNode> m = new HashMap<>(); }
-    b = DefLet() { m.put(b.getId(), b.getValue()); }
-    ( <SEMCOL> b = DefLet() { m.put(b.getId(), b.getValue()); })*
+    (b = DefLet() | b = DefFunc())
+    { m.put(b.getId(), b.getValue()); }
+    ( <SEMCOL> (b = DefLet() | b = DefFunc())
+    { m.put(b.getId(), b.getValue()); })*
     { t = new ASTStruct(m); }
     { return t; }
 }
@@ -406,8 +394,9 @@ ASTNode Fact() :
         {
             t = new ASTDef(l, t);
         })
-        | t = Record())
+        /*| t = Record() */)
       <RBRACKET>
+    | <STRUCT> <LBRACKET> t = Record() <RBRACKET>
     | <NEW> <LPAR> t = BoolAdd() <RPAR> { t = new ASTNew(t); }
     | t = IfElse() <RBRACKET>
     | {
@@ -426,8 +415,9 @@ ASTNode Fact() :
             <RBRACKET>
     { t = new ASTWhile(t, b); }
    | <REF> <LPAR> t=BoolAdd() <RPAR> { t = new ASTRef(t); }
-   | <FUN> t = Function()
+   //| <FUN> t = Function()
    | { List<ASTNode> l = new ArrayList<>(); }<PRINT> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrint(l); }
+   | { List<ASTNode> l = new ArrayList<>(); ASTNode str; }<PRINTF> <LPAR> str = BoolAdd() ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrintf(str, l); }
    | { List<ASTNode> l = new ArrayList<>(); }<PRINTLN> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrintln(l); }
    )
    { return t; }

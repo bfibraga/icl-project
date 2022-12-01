@@ -2,9 +2,9 @@ package src.misc;
 
 import src.misc.frame.*;
 
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public class CodeBlock {
 
@@ -12,13 +12,14 @@ public class CodeBlock {
 
     private DefBlock currDefBlock;
     private LabeledBlock labelsBlock;
-    private RefBlock refBlock;
+    private Stack<RefBlock> refBlock;
 
     public CodeBlock(){
         this.code = new LinkedList<>();
         this.currDefBlock = new DefBlock();
         this.labelsBlock = new LabeledBlock();
-        this.refBlock = new RefBlock("int");
+        this.refBlock = new Stack<>();
+        this.refBlock.push(new RefBlock("I"));
     }
 
     public void emit(String operation) {
@@ -33,9 +34,6 @@ public class CodeBlock {
         if (type.equals(BlockType.LABEL))
             return this.labelsBlock.gensym();
 
-        if (type.equals(BlockType.REF))
-            return this.refBlock.gensym();
-
         throw new RuntimeException("Invalid type of CodeType");
     }
 
@@ -44,6 +42,14 @@ public class CodeBlock {
             String op = code.remove();
             out.println("\t\t" + op);
             this.dump(out);
+        }
+
+        try {
+            for (RefBlock ref: this.refBlock) {
+                ref.def(new PrintWriter("./src/jvm/result/" + ref.gensym() + ".j"));
+            }
+        } catch (FileNotFoundException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -57,6 +63,6 @@ public class CodeBlock {
     }
 
     public RefBlock getRefBlock() {
-        return refBlock;
+        return refBlock.peek();
     }
 }

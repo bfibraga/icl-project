@@ -2,6 +2,7 @@ package src.astnodes.functions.io.out;
 
 import src.astnodes.ASTNode;
 import src.exceptions.InvalidTypes;
+import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
@@ -43,7 +44,12 @@ public class ASTPrintf implements ASTNode {
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
-
+        //TODO Get right
+        for (ASTNode arg: this.args) {
+            arg.compile(block, e);
+        }
+        block.emit(String.format("%s java/lang/String/valueOf(I)Ljava/lang/String;", JVM.INVOKESTATIC));
+        block.emit(String.format("%s java/io/PrintStream/println(Ljava/lang/String;)V", JVM.INVOKEVIRTUAL));
     }
 
     @Override

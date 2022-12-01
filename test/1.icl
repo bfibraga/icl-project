@@ -1,8 +1,11 @@
 {
     let x = 1;
-    let y = 2;
-    {
-        let x = 1;
-        x + y
-    } + x
+    let y : int = 2;
+    if x < y {
+        0
+    } else if x == y {
+        1
+    } else {
+        2
+    }
 },,

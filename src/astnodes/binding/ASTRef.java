@@ -32,7 +32,8 @@ public class ASTRef implements ASTNode {
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
-
+        this.node.compile(block, e);
+        //TODO Implement the rest
     }
 
     @Override

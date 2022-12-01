@@ -42,12 +42,6 @@ public class ASTNew implements ASTNode {
         block.emit(String.format("%s %s/<init>()V", JVM.INVOKESPECIAL, refType));
         block.emit(JVM.DUP.toString());
 
-        try {
-            refBlock.def(new PrintWriter("./src/jvm/result/" + refType + ".j"));
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException(ex);
-        }
-
         this.arg.compile(block, e);
         block.emit(String.format("%s %s/v %s", JVM.PUTFIELD, refType, type));
     }

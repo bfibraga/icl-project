@@ -18,6 +18,8 @@ public enum JVM {
     IMUL,
     INEG,
     INVOKESPECIAL,
+    INVOKESTATIC,
+    INVOKEVIRTUAL,
     IOR,
     ISTORE,
     ISUB,

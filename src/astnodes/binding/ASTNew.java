@@ -1,14 +1,20 @@
 package src.astnodes.binding;
 
 import src.astnodes.ASTNode;
+import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.misc.frame.BlockType;
+import src.misc.frame.RefBlock;
 import src.type.TCell;
 import src.misc.TypeFunctions;
 import src.type.Type;
 import src.value.Cell;
 import src.value.Value;
+
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 
 public class ASTNew implements ASTNode {
 
@@ -26,7 +32,24 @@ public class ASTNew implements ASTNode {
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
+        RefBlock refBlock = block.getRefBlock();
 
+        String type = refBlock.getType();
+        String refType = refBlock.gensym();
+
+        block.emit(String.format("%s %s", JVM.NEW, refType));
+        block.emit(JVM.DUP.toString());
+        block.emit(String.format("%s %s/<init>()V", JVM.INVOKESPECIAL, refType));
+        block.emit(JVM.DUP.toString());
+
+        try {
+            refBlock.def(new PrintWriter("./src/jvm/result/" + refType + ".j"));
+        } catch (FileNotFoundException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        this.arg.compile(block, e);
+        block.emit(String.format("%s %s/v %s", JVM.PUTFIELD, refType, type));
     }
 
     @Override

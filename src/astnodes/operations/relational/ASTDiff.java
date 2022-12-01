@@ -37,7 +37,7 @@ public class ASTDiff implements ASTNode {
         }
 
         if (valueL.isBoolean() && valueR.isBoolean()){
-            return new Bool( ((Bool)valueL).getValue() != ((Bool)valueL).getValue() );
+            return new Bool( ((Bool)valueL).getValue() != ((Bool)valueR).getValue() );
         }
 
         if (valueL.isNumber() && valueR.isNumber()){

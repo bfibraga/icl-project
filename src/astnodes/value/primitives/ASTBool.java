@@ -27,7 +27,7 @@ public class ASTBool implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         JVMValues intValue = this.val ? JVMValues.TRUE : JVMValues.FALSE;
-        block.emit(String.format("%s %b", JVM.SIPUSH, intValue));
+        block.emit(String.format("%s %s", JVM.SIPUSH, intValue));
     }
 
     @Override

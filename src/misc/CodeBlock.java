@@ -1,9 +1,6 @@
 package src.misc;
 
-import src.misc.frame.DefBlock;
-import src.misc.frame.LabeledBlock;
-import src.misc.frame.SubBlock;
-import src.misc.frame.BlockType;
+import src.misc.frame.*;
 
 import java.io.PrintWriter;
 import java.util.LinkedList;
@@ -14,15 +11,17 @@ public class CodeBlock {
     private Queue<String> code;
 
     private DefBlock currDefBlock;
-    private SubBlock labelsBlock;
+    private LabeledBlock labelsBlock;
+    private RefBlock refBlock;
 
     public CodeBlock(){
         this.code = new LinkedList<>();
         this.currDefBlock = new DefBlock();
         this.labelsBlock = new LabeledBlock();
+        this.refBlock = new RefBlock("int");
     }
 
-    public void emit(String operation){
+    public void emit(String operation) {
         this.code.add(operation);
     }
 
@@ -33,6 +32,9 @@ public class CodeBlock {
 
         if (type.equals(BlockType.LABEL))
             return this.labelsBlock.gensym();
+
+        if (type.equals(BlockType.REF))
+            return this.refBlock.gensym();
 
         throw new RuntimeException("Invalid type of CodeType");
     }
@@ -52,5 +54,9 @@ public class CodeBlock {
 
     public void setCurrFrame(DefBlock currDefBlock) {
         this.currDefBlock = currDefBlock;
+    }
+
+    public RefBlock getRefBlock() {
+        return refBlock;
     }
 }

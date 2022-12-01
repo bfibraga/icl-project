@@ -48,7 +48,7 @@ public class Bool implements Value {
 
     @Override
     public Value toInt() {
-        int value = (boolean) this.getValue() ? 1 : 0;
+        int value = this.getValue() ? 1 : 0;
         return new Int(value);
     }
 

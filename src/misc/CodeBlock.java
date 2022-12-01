@@ -1,6 +1,9 @@
 package src.misc;
 
-import src.misc.frame.DefFrame;
+import src.misc.frame.DefBlock;
+import src.misc.frame.LabeledBlock;
+import src.misc.frame.SubBlock;
+import src.misc.frame.BlockType;
 
 import java.io.PrintWriter;
 import java.util.LinkedList;
@@ -10,21 +13,28 @@ public class CodeBlock {
 
     private Queue<String> code;
 
-    //TODO Create Factory class to handle multiple frame types and gensym diferently.
-    private DefFrame currDefFrame;
+    private DefBlock currDefBlock;
+    private SubBlock labelsBlock;
 
     public CodeBlock(){
         this.code = new LinkedList<>();
-        this.currDefFrame = new DefFrame();
+        this.currDefBlock = new DefBlock();
+        this.labelsBlock = new LabeledBlock();
     }
 
     public void emit(String operation){
         this.code.add(operation);
     }
 
-    //TODO Change Implementation
-    public String gensym() {
-        return this.currDefFrame.addField();
+    //TODO Testing
+    public String gensym(BlockType type) {
+        if (type.equals(BlockType.CODE))
+            return this.currDefBlock.gensym();
+
+        if (type.equals(BlockType.LABEL))
+            return this.labelsBlock.gensym();
+
+        throw new RuntimeException("Invalid type of CodeType");
     }
 
     public void dump(PrintWriter out){
@@ -36,11 +46,11 @@ public class CodeBlock {
     }
 
 
-    public DefFrame getCurrFrame() {
-        return currDefFrame;
+    public DefBlock getCurrFrame() {
+        return currDefBlock;
     }
 
-    public void setCurrFrame(DefFrame currDefFrame) {
-        this.currDefFrame = currDefFrame;
+    public void setCurrFrame(DefBlock currDefBlock) {
+        this.currDefBlock = currDefBlock;
     }
 }

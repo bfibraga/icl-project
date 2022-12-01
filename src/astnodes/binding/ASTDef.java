@@ -4,10 +4,9 @@ import src.astnodes.ASTNode;
 import src.exceptions.InvalidTypeConvertion;
 import src.jvm.JVM;
 import src.misc.*;
-import src.misc.frame.DefFrame;
+import src.misc.frame.*;
 import src.type.TCell;
 import src.type.TVoid;
-import src.misc.TypeFunctions;
 import src.type.Type;
 import src.value.Value;
 
@@ -49,19 +48,19 @@ public class ASTDef implements ASTNode {
         int depth = e.getDepth();
 
         //Define a new frame
-        DefFrame currDefFrame = block.getCurrFrame();
-        DefFrame newDefFrame = currDefFrame.pushFrame("frame" + (depth - 1));
-        block.setCurrFrame(newDefFrame);
+        DefBlock currDefBlock = block.getCurrFrame();
+        DefBlock newDefBlock = currDefBlock.pushFrame("frame" + (depth - 1));
+        block.setCurrFrame(newDefBlock);
 
         //Init recent declared frame
-        block.emit(String.format("%s %s", JVM.NEW, newDefFrame));
+        block.emit(String.format("%s %s", JVM.NEW, newDefBlock));
         block.emit(JVM.DUP.toString());
-        block.emit(String.format("%s %s/<init>()V", JVM.INVOKESPECIAL, newDefFrame));
+        block.emit(String.format("%s %s/<init>()V", JVM.INVOKESPECIAL, newDefBlock));
         block.emit(JVM.DUP.toString());
 
         //Init static link of current frame
         block.emit(String.format("%s_%d", JVM.ALOAD, 3));
-        block.emit(String.format("%s %s/sl L%s;", JVM.PUTFIELD, newDefFrame, currDefFrame));
+        block.emit(String.format("%s %s/sl L%s;", JVM.PUTFIELD, newDefBlock, currDefBlock));
         block.emit(String.format("%s_%d", JVM.ASTORE, 3));
 
         //Init variables
@@ -72,15 +71,15 @@ public class ASTDef implements ASTNode {
 
             block.emit(String.format("%s_%d", JVM.ALOAD, 3));
             node.compile(block, e);
-            String sym = block.gensym();
-            block.emit(String.format("%s %s/%s I", JVM.PUTFIELD, newDefFrame, sym));
+            String sym = block.gensym(BlockType.CODE);
+            block.emit(String.format("%s %s/%s I", JVM.PUTFIELD, newDefBlock, sym));
 
             coordinates = new Coordinates(sym, depth);
             e.assoc(id, coordinates);
         }
 
         try {
-            newDefFrame.def(new PrintWriter("./src/jvm/result/" + newDefFrame + ".j"));
+            newDefBlock.def(new PrintWriter("./src/jvm/result/" + newDefBlock + ".j"));
         } catch (FileNotFoundException ex) {
             throw new RuntimeException(ex);
         }
@@ -88,8 +87,8 @@ public class ASTDef implements ASTNode {
         body.compile(block, e);
 
         //Generate Code to Pop the frame
-        newDefFrame.pop(block);
-        block.setCurrFrame(currDefFrame);
+        newDefBlock.pop(block);
+        block.setCurrFrame(currDefBlock);
 
         e = e.endScope();
     }

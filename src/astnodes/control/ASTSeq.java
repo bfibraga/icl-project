@@ -1,6 +1,7 @@
 package src.astnodes.control;
 
 import src.astnodes.ASTNode;
+import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
@@ -24,7 +25,9 @@ public class ASTSeq implements ASTNode {
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
-
+        this.l.compile(block, e);
+        block.emit(JVM.POP.toString());
+        this.r.compile(block, e);
     }
 
     @Override

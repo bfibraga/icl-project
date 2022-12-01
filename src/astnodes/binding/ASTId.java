@@ -5,7 +5,7 @@ import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.misc.frame.DefFrame;
+import src.misc.frame.DefBlock;
 import src.type.Type;
 import src.value.Value;
 
@@ -27,19 +27,19 @@ public class ASTId implements ASTNode {
         Coordinates coordinates = e.find(this.id);
         int levelShift = e.getDepth() - coordinates.getDepth();
 
-        DefFrame currDefFrame = block.getCurrFrame();
-        DefFrame previous = currDefFrame.getPrevious();
+        DefBlock currDefBlock = block.getCurrFrame();
+        DefBlock previous = currDefBlock.getPrevious();
 
         block.emit(String.format("%s_%d", JVM.ALOAD, 3));
 
         for (int l = 0; l < levelShift; l++) {
-            block.emit(String.format("%s %s/sl L%s;", JVM.GETFIELD, currDefFrame, previous));
+            block.emit(String.format("%s %s/sl L%s;", JVM.GETFIELD, currDefBlock, previous));
 
-            currDefFrame = previous;
-            previous = currDefFrame.getPrevious();
+            currDefBlock = previous;
+            previous = currDefBlock.getPrevious();
         }
 
-        block.emit(String.format("%s %s/%s I", JVM.GETFIELD, currDefFrame, coordinates.getId()));
+        block.emit(String.format("%s %s/%s I", JVM.GETFIELD, currDefBlock, coordinates.getId()));
     }
 
     @Override

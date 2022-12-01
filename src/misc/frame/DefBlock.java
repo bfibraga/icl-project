@@ -7,27 +7,29 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefFrame {
+public class DefBlock implements SubBlock {
 
-    DefFrame previous;
+    private static final String TOKEN = "v";
+
+    DefBlock previous;
     String id;
     private List<String> fields;
 
-    public DefFrame(){
+    public DefBlock(){
         this("java/lang/Object", null);
     }
 
-    public DefFrame(String id){
-        this(id, new DefFrame());
+    public DefBlock(String id){
+        this(id, new DefBlock());
     }
 
-    public DefFrame(String id, DefFrame previous){
+    public DefBlock(String id, DefBlock previous){
         this.id = id;
         this.previous = previous;
         this.fields = new ArrayList<>();
     }
 
-    public DefFrame getPrevious() {
+    public DefBlock getPrevious() {
         return previous;
     }
 
@@ -35,27 +37,14 @@ public class DefFrame {
         return id;
     }
 
-    public void getNFrames(List<DefFrame> result, int level){
-        result.add(this);
-        if (level > 0){
-            getNFrames(result, level-1);
-        }
-    }
 
-    public String addField(){
-        int size = this.fields.size();
-        String result = "v" + size;
-        this.fields.add(result);
-        return result;
-    }
-
-    public DefFrame pushFrame(String id){
-        DefFrame result = new DefFrame(id, this);
+    public DefBlock pushFrame(String id){
+        DefBlock result = new DefBlock(id, this);
 
         return result;
     }
 
-    public DefFrame popFrame(){
+    public DefBlock popFrame(){
         return this.previous;
     }
 
@@ -90,7 +79,11 @@ public class DefFrame {
         return this.id;
     }
 
+    @Override
     public String gensym() {
-        return this.addField();
+        int size = this.fields.size();
+        String result = TOKEN + size;
+        this.fields.add(result);
+        return result;
     }
 }

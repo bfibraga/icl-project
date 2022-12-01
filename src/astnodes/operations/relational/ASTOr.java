@@ -38,7 +38,6 @@ public class ASTOr implements ASTNode {
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
-        //TODO Implement compilation code for this astnode
         this.l.compile(block, e);
         this.r.compile(block, e);
         block.emit(JVM.IOR.toString());

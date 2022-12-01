@@ -3,13 +3,16 @@ package src.astnodes.control;
 import src.astnodes.ASTNode;
 import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
+import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.misc.frame.BlockType;
 import src.type.TBool;
 import src.misc.TypeFunctions;
 import src.type.Type;
 import src.value.Bool;
+import src.value.Str;
 import src.value.Value;
 
 public class ASTWhile implements ASTNode {
@@ -38,9 +41,18 @@ public class ASTWhile implements ASTNode {
         }
     }
 
+    //TODO Testing
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
-        //TODO Implement compilation code for this astnode
+        String label0 = block.gensym(BlockType.LABEL);
+        block.emit(String.format("%s: ", label0));
+        this.cond.compile(block, e);
+        String label1 = block.gensym(BlockType.LABEL);
+        block.emit(String.format("%s %s", JVM.IFEQ, label1));
+        this.body.compile(block, e);
+        block.emit(JVM.POP.toString());
+        block.emit(String.format("%s %s", JVM.GOTO, label0));
+        block.emit(String.format("%s: ", label1));
     }
 
     @Override

@@ -3,6 +3,7 @@ package src.astnodes.operations.relational;
 import src.astnodes.ASTNode;
 import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
+import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
@@ -38,6 +39,9 @@ public class ASTOr implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         //TODO Implement compilation code for this astnode
+        this.l.compile(block, e);
+        this.r.compile(block, e);
+        block.emit(JVM.IOR.toString());
     }
 
     @Override

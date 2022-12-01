@@ -52,7 +52,7 @@ t1 = new ASTSeq(t1,t2);
     label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case SETVAL:{
+      case ASSIGN:{
         ;
         break;
         }
@@ -60,7 +60,7 @@ t1 = new ASTSeq(t1,t2);
         jj_la1[1] = jj_gen;
         break label_2;
       }
-      jj_consume_token(SETVAL);
+      jj_consume_token(ASSIGN);
       t2 = BoolAdd();
 t1 = new ASTAssign(t1,t2);
     }
@@ -112,7 +112,7 @@ t1 = new ASTAnd(t1,t2);
     ASTNode t1, t2;
     t1 = Exp();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case EQ:
+    case EQREL:
     case GT:
     case GEQT:
     case LT:
@@ -135,8 +135,8 @@ t1 = new ASTAnd(t1,t2);
         op = jj_consume_token(LEQT);
         break;
         }
-      case EQ:{
-        op = jj_consume_token(EQ);
+      case EQREL:{
+        op = jj_consume_token(EQREL);
         break;
         }
       case DIFF:{
@@ -157,7 +157,7 @@ if (op.kind == GT)
             t1 = new ASTLwt(t1,t2);
         else if (op.kind == LEQT)
             t1 = new ASTLwtEq(t1,t2);
-        else if (op.kind == EQ)
+        else if (op.kind == EQREL)
             t1 = new ASTEq(t1,t2);
         else if (op.kind == DIFF)
             t1 = new ASTDiff(t1,t2);
@@ -455,7 +455,7 @@ t = new ASTArray(l);
     throw new Error("Missing return statement in function");
 }
 
-  static final public ASTNode Record() throws ParseException {Bind<String, ASTNode> b;
+  static final public ASTNode Struct() throws ParseException {Bind<String, ASTNode> b;
     Token n;
     ASTNode t;
 Map<String, ASTNode> m = new HashMap<>();
@@ -742,7 +742,7 @@ t = new ASTDef(l, t);
     case STRUCT:{
       jj_consume_token(STRUCT);
       jj_consume_token(LBRACKET);
-      t = Record();
+      t = Struct();
       jj_consume_token(RBRACKET);
       break;
       }
@@ -944,10 +944,10 @@ t = new ASTPrintln(l);
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x80000000,0x4000,0x0,0x0,0x40000000,0x40000000,0x30000,0x30000,0x3c0000,0x3c0000,0x1000000,0x20000000,0x0,0x0,0x400000,0x0,0x10000000,0x10000000,0x0,0x5422900,0x20000000,0x80000000,0x20000000,0x0,0x400000,0x0,0x0,0x400000,0x0,0x400000,0x0,0x5422900,0x400000,0x5422900,0x0,0x0,0x0,0x0,0x5422900,};
+	   jj_la1_0 = new int[] {0x0,0x4000,0x0,0x0,0x80000000,0x80000000,0x30000,0x30000,0x3c0000,0x3c0000,0x1000000,0x20000000,0x0,0x0,0x400000,0x0,0x10000000,0x10000000,0x0,0x5422900,0x20000000,0x0,0x20000000,0x0,0x400000,0x0,0x0,0x400000,0x0,0x400000,0x0,0x5422900,0x400000,0x5422900,0x0,0x0,0x0,0x0,0x5422900,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x0,0x80000,0x40000,0x1f000,0x1f000,0x0,0x0,0x0,0x0,0x4,0x0,0x1,0x40000000,0x0,0x400,0x800000,0x800000,0x1,0x6f6200a4,0x40800000,0x0,0x40800000,0x1,0x0,0x1,0x1,0x0,0x40000000,0x2,0x1,0x6f6200a4,0x2,0x6f6200a4,0x40,0x1,0x1,0x1,0x6f6200a4,};
+	   jj_la1_1 = new int[] {0x1,0x0,0x100000,0x80000,0x3e000,0x3e000,0x0,0x0,0x0,0x0,0x8,0x0,0x2,0x80000000,0x0,0x800,0x1000000,0x1000000,0x2,0xdec40148,0x81000000,0x1,0x81000000,0x2,0x0,0x2,0x2,0x0,0x80000000,0x4,0x2,0xdec40148,0x4,0xdec40148,0x80,0x2,0x2,0x2,0xdec40148,};
 	}
 
   /** Constructor with InputStream. */
@@ -1093,7 +1093,7 @@ t = new ASTPrintln(l);
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[63];
+	 boolean[] la1tokens = new boolean[64];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -1110,7 +1110,7 @@ t = new ASTPrintln(l);
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 63; i++) {
+	 for (int i = 0; i < 64; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;

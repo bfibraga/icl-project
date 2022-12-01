@@ -52,7 +52,7 @@ TOKEN :
   |
   < STRUCT : "struct">
   |
-  < SETVAL : "->">
+  < ASSIGN : "->">
   |
   < QUOTE : "'">
   |
@@ -85,6 +85,8 @@ TOKEN :
   < MUT : "mut">
   |
   < EQ : "=">
+  |
+  < EQREL : "==">
   |
   < SEMCOL: ";" >
   |
@@ -177,7 +179,7 @@ ASTNode SeqE():
     ASTNode t1, t2;
 }
 {
-    t1 = BoolAdd() (<SETVAL> t2 = BoolAdd() { t1 = new ASTAssign(t1,t2); })*
+    t1 = BoolAdd() (<ASSIGN> t2 = BoolAdd() { t1 = new ASTAssign(t1,t2); })*
     { return t1; }
 }
 
@@ -207,7 +209,7 @@ ASTNode RelOps() :
     ASTNode t1, t2;
 }
 {
-    t1 = Exp() (( op= <GT> | op = <GEQT> | op = <LT> | op = <LEQT> | op = <EQ> | op = <DIFF> ) t2 = Exp()
+    t1 = Exp() (( op= <GT> | op = <GEQT> | op = <LT> | op = <LEQT> | op = <EQREL> | op = <DIFF> ) t2 = Exp()
     {
         if (op.kind == GT)
             t1 = new ASTGrt(t1,t2);
@@ -217,7 +219,7 @@ ASTNode RelOps() :
             t1 = new ASTLwt(t1,t2);
         else if (op.kind == LEQT)
             t1 = new ASTLwtEq(t1,t2);
-        else if (op.kind == EQ)
+        else if (op.kind == EQREL)
             t1 = new ASTEq(t1,t2);
         else if (op.kind == DIFF)
             t1 = new ASTDiff(t1,t2);
@@ -336,7 +338,7 @@ ASTNode Array():
     { return t; }
 }
 
-ASTNode Record():
+ASTNode Struct():
 {
     Bind<String, ASTNode> b;
     Token n;
@@ -344,7 +346,7 @@ ASTNode Record():
 }
 {
     { Map<String, ASTNode> m = new HashMap<>(); }
-    (b = DefLet() | b = DefFunc())
+    ( b = DefLet() | b = DefFunc())
     { m.put(b.getId(), b.getValue()); }
     ( <SEMCOL> (b = DefLet() | b = DefFunc())
     { m.put(b.getId(), b.getValue()); })*
@@ -388,15 +390,14 @@ ASTNode Fact() :
     | <LPAR> t=BoolAdd() <RPAR>
     | <NOT> t=Fact() { t = new ASTNot(t); }
     | <LBRACKET>
-        (({ List<Bind<String, ASTNode>> l; }
+        { List<Bind<String, ASTNode>> l; }
         l = DefVar()
         t = Seq()
         {
             t = new ASTDef(l, t);
-        })
-        /*| t = Record() */)
+        }
       <RBRACKET>
-    | <STRUCT> <LBRACKET> t = Record() <RBRACKET>
+    | <STRUCT> <LBRACKET> t = Struct() <RBRACKET>
     | <NEW> <LPAR> t = BoolAdd() <RPAR> { t = new ASTNew(t); }
     | t = IfElse() <RBRACKET>
     | {

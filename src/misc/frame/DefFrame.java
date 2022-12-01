@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefFrame extends Frame {
+public class DefFrame {
 
     DefFrame previous;
     String id;
@@ -90,7 +90,6 @@ public class DefFrame extends Frame {
         return this.id;
     }
 
-    @Override
     public String gensym() {
         return this.addField();
     }

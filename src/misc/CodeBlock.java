@@ -18,14 +18,6 @@ public class CodeBlock {
         this.currDefFrame = new DefFrame();
     }
 
-    public DefFrame getCurrFrame() {
-        return currDefFrame;
-    }
-
-    public void setCurrFrame(DefFrame currDefFrame) {
-        this.currDefFrame = currDefFrame;
-    }
-
     public void emit(String operation){
         this.code.add(operation);
     }
@@ -41,5 +33,14 @@ public class CodeBlock {
             out.println("\t\t" + op);
             this.dump(out);
         }
+    }
+
+
+    public DefFrame getCurrFrame() {
+        return currDefFrame;
+    }
+
+    public void setCurrFrame(DefFrame currDefFrame) {
+        this.currDefFrame = currDefFrame;
     }
 }

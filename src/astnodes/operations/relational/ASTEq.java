@@ -63,8 +63,9 @@ public class ASTEq implements ASTNode {
         block.emit(String.format("%s %s", JVM.IFEQ, label0));
         block.emit(String.format("%s %s", JVM.SIPUSH, JVMValues.FALSE));
         block.emit(String.format("%s %s", JVM.GOTO, label1));
-        block.emit(String.format("%s:", label1));
+        block.emit(String.format("%s:", label0));
         block.emit(String.format("%s %s", JVM.SIPUSH, JVMValues.TRUE));
+        block.emit(String.format("%s:", label1));
     }
 
     @Override

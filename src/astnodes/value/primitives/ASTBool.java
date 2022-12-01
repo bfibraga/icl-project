@@ -2,6 +2,7 @@ package src.astnodes.value.primitives;
 
 import src.astnodes.ASTNode;
 import src.jvm.JVM;
+import src.jvm.JVMValues;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
@@ -25,7 +26,8 @@ public class ASTBool implements ASTNode {
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
-        block.emit(String.format("%s %b", JVM.SIPUSH, this.val));
+        JVMValues intValue = this.val ? JVMValues.TRUE : JVMValues.FALSE;
+        block.emit(String.format("%s %b", JVM.SIPUSH, intValue));
     }
 
     @Override

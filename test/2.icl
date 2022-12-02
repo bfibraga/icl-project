@@ -35,7 +35,7 @@
     fn fat(n : int) {
        if n < 0 {
             0
-       } else if n = 1 or n = 0 {
+       } else if n == 1 or n == 0 {
             1
        } else {
             {

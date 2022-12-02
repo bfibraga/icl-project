@@ -7,10 +7,14 @@ package src.parser;
 import src.astnodes.*;
 import src.astnodes.binding.*;
 import src.astnodes.control.*;
-import src.astnodes.value.array.ASTArrayLen;import src.astnodes.value.function.ASTApplyFunc;import src.astnodes.value.function.ASTFunction;import src.astnodes.functions.io.out.*;
+import src.astnodes.value.array.ASTArrayLen;
+import src.astnodes.value.function.ASTApplyFunc;
+import src.astnodes.value.function.ASTFunction;
+import src.astnodes.functions.io.out.*;
 import src.astnodes.operations.arithmetic.*;
 import src.astnodes.operations.relational.*;
-import src.astnodes.value.array.ASTArray;import src.astnodes.value.primitives.*;
+import src.astnodes.value.array.*;
+import src.astnodes.value.primitives.*;
 import src.astnodes.value.struct.*;
 import src.misc.*;
 import java.util.*;
@@ -365,7 +369,9 @@ ASTNode Function():
     (<COMMA> node=<Id> <DDOT> type = <Id>(<LPAR><Id>(<COMMA><Id>)*<RPAR>)? { p.add(new Pair<>(node.image, type.image)); })*)?
     <RPAR>
     <LBRACKET> t=Seq() <RBRACKET>
-    { return new ASTFunction(p, t); }
+    {
+    return new ASTFunction(p, t);
+    }
 }
 
 ASTNode Fact() :
@@ -380,12 +386,14 @@ ASTNode Fact() :
     | n=<STR> { t = new ASTStr(n.image); }
     | <LSBRACKET> t = Array() <RSBRACKET>
     | <LEN> n = <Id> { t = new ASTArrayLen(n.image); }
-    | n=<Id> { t = new ASTId(n.image); }
-     (({ Token n2; } <DOT>
+    | n=<Id> { t = new ASTId(n.image); Token n2; }
+     ( <DOT>
       n2=<Id> { t = new ASTStructField(t, n2.image); }
     | { List<ASTNode> a = new ArrayList<>(); }
      <LPAR> ({ ASTNode aux; } aux = BoolAdd() { a.add(aux); } (<COMMA> aux = BoolAdd() { a.add(aux); })* )? <RPAR>
-      { t = new ASTApplyFunc(t, a); }))*
+      { t = new ASTApplyFunc(t, a); }
+    | { ASTNode t2; }<LSBRACKET> t2 = BoolAdd() <RSBRACKET>
+        { t = new ASTArrayIndex(t, t2); })*
     | ("-" t = Fact() { t = new ASTNeg(t); })
     | <LPAR> t=BoolAdd() <RPAR>
     | <NOT> t=Fact() { t = new ASTNot(t); }

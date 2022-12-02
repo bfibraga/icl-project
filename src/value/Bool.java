@@ -47,6 +47,11 @@ public class Bool implements Value {
     }
 
     @Override
+    public boolean isArray() {
+        return false;
+    }
+
+    @Override
     public Value toInt() {
         int value = this.getValue() ? 1 : 0;
         return new Int(value);

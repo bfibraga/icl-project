@@ -45,6 +45,11 @@ public class Str implements Value {
     }
 
     @Override
+    public boolean isArray() {
+        return false;
+    }
+
+    @Override
     public Value toInt() {
         throw new InvalidTypeConvertion(this.getClass().getName(), Int.class.getName());
     }

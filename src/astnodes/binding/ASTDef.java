@@ -67,12 +67,13 @@ public class ASTDef implements ASTNode {
         Coordinates coordinates;
         for (Bind<String, ASTNode> bind: init) {
             String id = bind.getId();
+            Type type = bind.getType();
             ASTNode node = bind.getValue();
 
             block.emit(String.format("%s_%d", JVM.ALOAD, 3));
             node.compile(block, e);
             String sym = block.gensym(BlockType.CODE);
-            block.emit(String.format("%s %s/%s I", JVM.PUTFIELD, newDefBlock, sym));
+            block.emit(String.format("%s %s/%s %s", JVM.PUTFIELD, newDefBlock, sym, type.jvmType()));
 
             coordinates = new Coordinates(sym, depth);
             e.assoc(id, coordinates);

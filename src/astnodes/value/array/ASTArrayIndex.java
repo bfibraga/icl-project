@@ -8,31 +8,38 @@ import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TArray;
 import src.misc.TypeFunctions;
+import src.type.TCell;
+import src.type.TInt;
 import src.type.Type;
 import src.value.Array;
 import src.value.Cell;
+import src.value.Int;
 import src.value.Value;
 
 public class ASTArrayIndex implements ASTNode {
 
     private final ASTNode node;
-    private final int index;
+    private final ASTNode index;
 
-    public ASTArrayIndex(ASTNode node, int index) {
+    public ASTArrayIndex(ASTNode node, ASTNode index) {
         this.node = node;
         this.index = index;
     }
 
     @Override
     public Value eval(Environment<Value> e) {
-        Value value = this.node.eval(e);
-        if (!value.isCell()){
-            throw new InvalidTypes(value.show());
+        Value array = this.node.eval(e);
+        if (!array.isArray()){
+            throw new InvalidTypes(array.show());
         }
 
-        //TODO Add Record value check
-        Value record = ((Cell)value).get();
-        return ((Array) record).get(this.index);
+        Value indexValue = this.index.eval(e);
+        if (!indexValue.isNumber()){
+            throw new InvalidTypes(indexValue.show());
+        }
+
+        int index = ((Int)indexValue).getValue();
+        return ((Array)array).get(index);
     }
 
     @Override
@@ -47,6 +54,11 @@ public class ASTArrayIndex implements ASTNode {
         if (!TypeFunctions.sameType(nodeType, targetType))
             throw new InvalidTypeConvertion(nodeType.show(), targetType.show(), this.getClass().getSimpleName());
 
-        return nodeType;
+        targetType = new TInt();
+        Type indexType = this.index.typecheck(e);
+        if (!TypeFunctions.sameType(indexType, targetType))
+            throw new InvalidTypeConvertion(nodeType.show(), targetType.show(), this.getClass().getSimpleName());
+
+        return new TCell();
     }
 }

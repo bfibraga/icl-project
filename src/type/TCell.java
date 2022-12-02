@@ -26,4 +26,10 @@ public class TCell implements Type {
     public String show() {
         return TYPE_NAME;
     }
+
+    @Override
+    public String jvmType() {
+        Type nestedType = this.getType();
+        return String.format("ref_of_%s", nestedType.jvmType());
+    }
 }

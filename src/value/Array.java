@@ -79,6 +79,11 @@ public class Array implements Value {
     }
 
     @Override
+    public boolean isArray() {
+        return true;
+    }
+
+    @Override
     public Value toInt() {
         throw new InvalidTypeConvertion(this.getClass().getName(), Int.class.getName());
     }

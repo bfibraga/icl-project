@@ -11,7 +11,7 @@ import src.astnodes.value.function.ASTFunction;
 import src.astnodes.functions.io.out.*;
 import src.astnodes.operations.arithmetic.*;
 import src.astnodes.operations.relational.*;
-import src.astnodes.value.array.ASTArray;
+import src.astnodes.value.array.*;
 import src.astnodes.value.primitives.*;
 import src.astnodes.value.struct.*;
 import src.misc.*;

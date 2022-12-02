@@ -65,4 +65,11 @@ public class CodeBlock {
     public RefBlock getRefBlock() {
         return refBlock.peek();
     }
+
+    public RefBlock newRefBlock(){
+        RefBlock lastRefBlock = this.getRefBlock();
+        RefBlock result = new RefBlock(lastRefBlock);
+        this.refBlock.push(result);
+        return result;
+    }
 }

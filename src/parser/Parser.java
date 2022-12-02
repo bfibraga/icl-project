@@ -6,10 +6,14 @@ package src.parser;
 import src.astnodes.*;
 import src.astnodes.binding.*;
 import src.astnodes.control.*;
-import src.astnodes.value.array.ASTArrayLen;import src.astnodes.value.function.ASTApplyFunc;import src.astnodes.value.function.ASTFunction;import src.astnodes.functions.io.out.*;
+import src.astnodes.value.array.ASTArrayLen;
+import src.astnodes.value.function.ASTApplyFunc;
+import src.astnodes.value.function.ASTFunction;
+import src.astnodes.functions.io.out.*;
 import src.astnodes.operations.arithmetic.*;
 import src.astnodes.operations.relational.*;
-import src.astnodes.value.array.ASTArray;import src.astnodes.value.primitives.*;
+import src.astnodes.value.array.*;
+import src.astnodes.value.primitives.*;
 import src.astnodes.value.struct.*;
 import src.misc.*;
 import java.util.*;
@@ -632,11 +636,12 @@ t = new ASTArrayLen(n.image);
       }
     case Id:{
       n = jj_consume_token(Id);
-t = new ASTId(n.image);
+t = new ASTId(n.image); Token n2;
       label_12:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case LPAR:
+        case LSBRACKET:
         case DOT:{
           ;
           break;
@@ -647,7 +652,6 @@ t = new ASTId(n.image);
         }
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
         case DOT:{
-Token n2;
           jj_consume_token(DOT);
           n2 = jj_consume_token(Id);
 t = new ASTStructField(t, n2.image);
@@ -702,6 +706,14 @@ a.add(aux);
           }
           jj_consume_token(RPAR);
 t = new ASTApplyFunc(t, a);
+          break;
+          }
+        case LSBRACKET:{
+ASTNode t2;
+          jj_consume_token(LSBRACKET);
+          t2 = BoolAdd();
+          jj_consume_token(RSBRACKET);
+t = new ASTArrayIndex(t, t2);
           break;
           }
         default:
@@ -944,7 +956,7 @@ t = new ASTPrintln(l);
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x0,0x4000,0x0,0x0,0x80000000,0x80000000,0x30000,0x30000,0x3c0000,0x3c0000,0x1000000,0x20000000,0x0,0x0,0x400000,0x0,0x10000000,0x10000000,0x0,0x5422900,0x20000000,0x0,0x20000000,0x0,0x400000,0x0,0x0,0x400000,0x0,0x400000,0x0,0x5422900,0x400000,0x5422900,0x0,0x0,0x0,0x0,0x5422900,};
+	   jj_la1_0 = new int[] {0x0,0x4000,0x0,0x0,0x80000000,0x80000000,0x30000,0x30000,0x3c0000,0x3c0000,0x1000000,0x20000000,0x0,0x0,0x400000,0x0,0x10000000,0x10000000,0x0,0x5422900,0x20000000,0x0,0x20000000,0x0,0x400000,0x0,0x0,0x400000,0x0,0x4400000,0x0,0x5422900,0x4400000,0x5422900,0x0,0x0,0x0,0x0,0x5422900,};
 	}
 	private static void jj_la1_init_1() {
 	   jj_la1_1 = new int[] {0x1,0x0,0x100000,0x80000,0x3e000,0x3e000,0x0,0x0,0x0,0x0,0x8,0x0,0x2,0x80000000,0x0,0x800,0x1000000,0x1000000,0x2,0xdec40148,0x81000000,0x1,0x81000000,0x2,0x0,0x2,0x2,0x0,0x80000000,0x4,0x2,0xdec40148,0x4,0xdec40148,0x80,0x2,0x2,0x2,0xdec40148,};

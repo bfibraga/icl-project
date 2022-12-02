@@ -58,6 +58,11 @@ public class Cell implements Value{
     }
 
     @Override
+    public boolean isArray() {
+        return false;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj){
             return true;

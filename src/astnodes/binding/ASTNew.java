@@ -32,7 +32,7 @@ public class ASTNew implements ASTNode {
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
-        RefBlock refBlock = block.getRefBlock();
+        RefBlock refBlock = block.newRefBlock();
 
         String type = refBlock.getType();
         String refType = refBlock.gensym();

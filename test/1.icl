@@ -1,11 +1,9 @@
 {
-    let x = 1;
-    let y : int = 2;
-    if x < y {
-        0
-    } else if x == y {
-        1
-    } else {
-        2
-    }
+    let a = ['A', 'B', 'C'];
+    let mut c : int = 0;
+    println(a[val(c)]);
+    c -> val(c) + 1;
+    println(a[val(c)]);
+    a[val(c)] -> new(1);
+    println(a)
 },,

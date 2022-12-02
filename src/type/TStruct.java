@@ -25,4 +25,9 @@ public class TStruct implements Type{
     public String show() {
         return TYPE_NAME;
     }
+
+    @Override
+    public String jvmType() {
+        return null;
+    }
 }

@@ -31,6 +31,11 @@ public class TClosure implements Type {
     }
 
     @Override
+    public String jvmType() {
+        return null;
+    }
+
+    @Override
     public String toString() {
         return String.format("%s -> [%s, %s]", this.show(), this.params.toString(), this.bodyAbstractType);
     }

@@ -14,6 +14,8 @@ public interface Value {
 
     boolean isFunc();
 
+    boolean isArray();
+
     Value toInt();
     
     Value toBool();

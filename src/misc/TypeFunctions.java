@@ -11,7 +11,7 @@ public class TypeFunctions {
     }
 
     public static Type getType(String name){
-        if (name.equals("array")){
+        if (name.contains("array")){
             return new TArray();
         }
         if (name.equals("bool")){
@@ -20,7 +20,7 @@ public class TypeFunctions {
         if (name.equals("cell")){
             return new TCell();
         }
-        if (name.equals("func")){
+        if (name.contains("func")){
             return new TClosure(new ArrayList<>(), new TVoid());
         }
         if (name.equals("int")){

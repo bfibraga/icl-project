@@ -1,6 +1,7 @@
 package src.astnodes.value.function;
 
 import src.astnodes.ASTNode;
+import src.exceptions.InvalidTypeConvertion;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
@@ -47,6 +48,7 @@ public class ASTFunction implements ASTNode {
             e.assoc(paramID, paramType);
         }
         Type bodyType = this.body.typecheck(e);
+
         e = e.endScope();
 
         return new TClosure(params, bodyType);

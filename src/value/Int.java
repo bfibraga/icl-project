@@ -47,6 +47,11 @@ public class Int implements Value {
     }
 
     @Override
+    public boolean isArray() {
+        return false;
+    }
+
+    @Override
     public Value toInt() {
         return this;
     }

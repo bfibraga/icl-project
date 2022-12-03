@@ -3,6 +3,7 @@ package src.astnodes.binding;
 import src.astnodes.ASTNode;
 import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
+import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
@@ -39,7 +40,12 @@ public class ASTAssign implements ASTNode {
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
-
+        this.l.compile(block, e);
+        this.r.compile(block, e);
+        //TODO Implement the rest
+        String type = "";
+        String refType = "";
+        block.emit(String.format("%s %s/%s", JVM.PUTFIELD, refType, type));
     }
 
     @Override

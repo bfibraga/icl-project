@@ -8,6 +8,7 @@ import src.misc.Coordinates;
 import src.misc.Environment;
 import src.parser.ParseException;
 import src.parser.Parser;
+import src.type.Type;
 
 import java.io.*;
 import java.util.Scanner;
@@ -30,22 +31,25 @@ public class Compiler {
             Parser parser = new Parser(in);
 
             ASTNode exp;
-            Environment<Coordinates> environment = new Environment<>();
+            Environment<Coordinates> environmentCoord = new Environment<>();
+            Environment<Type> environmentType= new Environment<>();
+
             CodeBlock code = new CodeBlock();
             
             PrintWriter out = new PrintWriter("./src/jvm/result/Header.j");
             //PrintWriter out = new PrintWriter(System.out);
 
             exp = parser.Start();
-            exp.compile(code, environment);
+            exp.typecheck(environmentType);
+            out.println(">");
+            exp.compile(code, environmentCoord);
             
             publishCode(code, out, new Scanner(new File("./src/jvm/Dummy.j")));
 
         } catch (LanguageException e) {
-            System.out.println(e.getMessage());
-            //parser.ReInit(System.in);
+            handleException("Language error encountered!", e);
         } catch (ParseException | IOException e)  {
-            e.printStackTrace();
+            handleException("Syntax error encountered!", e);
         }
     }
 
@@ -67,5 +71,17 @@ public class Compiler {
 
         out.close();
         in.close();
+    }
+
+    private static void handleException(String message, Exception e) {
+        System.out.println(message + "\nExiting...");
+
+        System.out.println("Exception message:");
+        System.out.println(e.getMessage());
+
+        System.out.println("Stack trace on exit:");
+        e.printStackTrace();
+
+        System.exit(1);
     }
 }

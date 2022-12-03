@@ -9,10 +9,7 @@ import src.misc.TypeFunctions;
 import src.type.Type;
 import src.value.Value;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 
 public class Interpreter {
     /** Main entry point. */
@@ -37,17 +34,28 @@ public class Interpreter {
 
         do {
             try {
-                out.print("> ");
+                out.print("< ");
                 exp = parser.Start();
                 exp.typecheck(environmentType);
+                out.println(">");
                 exp.eval(environmentValue);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            } catch (LanguageException e){
-                //out.println(e.getMessage());
-                e.printStackTrace();
-                parser.ReInit(in);
+            } catch (LanguageException e) {
+                handleException("Language error encountered!", e);
+            } catch (ParseException e)  {
+                handleException("Syntax error encountered!", e);
             }
         } while (loop);
+    }
+
+    private static void handleException(String message, Exception e) {
+        System.out.println(message + "\nExiting...");
+
+        System.out.println("Exception message:");
+        System.out.println(e.getMessage());
+
+        System.out.println("Stack trace on exit:");
+        e.printStackTrace();
+
+        System.exit(1);
     }
 }

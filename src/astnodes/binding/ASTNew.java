@@ -32,10 +32,10 @@ public class ASTNew implements ASTNode {
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
-        RefBlock refBlock = block.newRefBlock();
+        //RefBlock refBlock = block.newRefBlock();
 
-        String type = refBlock.getType();
-        String refType = refBlock.gensym();
+        String type = "ERROR";
+        String refType = "ERROR OF ERROR";
 
         block.emit(String.format("%s %s", JVM.NEW, refType));
         block.emit(JVM.DUP.toString());

@@ -39,7 +39,7 @@ public class ASTId implements ASTNode {
             previous = currDefBlock.getPrevious();
         }
 
-        block.emit(String.format("%s %s/%s I", JVM.GETFIELD, currDefBlock, coordinates.getId()));
+        block.emit(String.format("%s %s/%s %s", JVM.GETFIELD, currDefBlock, coordinates.getId(), coordinates.getTypename()));
     }
 
     @Override

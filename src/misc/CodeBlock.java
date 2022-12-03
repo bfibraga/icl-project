@@ -12,14 +12,13 @@ public class CodeBlock {
 
     private DefBlock currDefBlock;
     private LabeledBlock labelsBlock;
-    private Stack<RefBlock> refBlock;
+    private ReferenceHandler reference;
 
     public CodeBlock(){
         this.code = new LinkedList<>();
         this.currDefBlock = new DefBlock();
         this.labelsBlock = new LabeledBlock();
-        this.refBlock = new Stack<>();
-        this.refBlock.push(new RefBlock("I"));
+        this.reference = new ReferenceHandler();
     }
 
     public void emit(String operation) {
@@ -44,13 +43,7 @@ public class CodeBlock {
             this.dump(out);
         }
 
-        try {
-            for (RefBlock ref: this.refBlock) {
-                ref.def(new PrintWriter("./src/jvm/result/" + ref.gensym() + ".j"));
-            }
-        } catch (FileNotFoundException ex) {
-            throw new RuntimeException(ex);
-        }
+        this.reference.dump();
     }
 
 
@@ -62,14 +55,7 @@ public class CodeBlock {
         this.currDefBlock = currDefBlock;
     }
 
-    public RefBlock getRefBlock() {
-        return refBlock.peek();
-    }
-
-    public RefBlock newRefBlock(){
-        RefBlock lastRefBlock = this.getRefBlock();
-        RefBlock result = new RefBlock(lastRefBlock);
-        this.refBlock.push(result);
-        return result;
+    public ReferenceHandler getReference() {
+        return reference;
     }
 }

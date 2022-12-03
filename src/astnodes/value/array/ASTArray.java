@@ -1,6 +1,7 @@
 package src.astnodes.value.array;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypeConvertion;
 import src.misc.*;
 import src.type.TArray;
@@ -12,7 +13,7 @@ import src.value.Value;
 
 import java.util.List;
 
-public class ASTArray implements ASTNode {
+public class ASTArray extends TypeHolder implements ASTNode  {
 
     private final List<ASTNode> fields;
     private Array value;
@@ -52,6 +53,8 @@ public class ASTArray implements ASTNode {
         if (previous == null)
             previous = new TVoid();
 
-        return new TArray(previous);
+        Type result = new TArray(previous);
+        this.setType(result);
+        return this.getType();
     }
 }

@@ -14,38 +14,40 @@ import java.io.*;
 public class Interpreter {
     /** Main entry point. */
     public static void main(String[] args) throws FileNotFoundException {
-        InputStream in;
-        boolean isFileMode;
-        if (args.length == 0 || args[0].trim().equals("")){
-            in = System.in;
-            isFileMode = false;
-        } else {
-            String filename = args[0];
-            in = new FileInputStream(filename);
-            isFileMode = true;
-        }
+        try{
+            InputStream in;
+            boolean isFileMode;
+            if (args.length == 0 || args[0].trim().equals("")){
+                in = System.in;
+                isFileMode = false;
+            } else {
+                String filename = args[0];
+                in = new FileInputStream(filename);
+                isFileMode = true;
+            }
 
-        PrintStream out = System.out;
+            PrintStream out = System.out;
 
-        Parser parser = new Parser(in);
-        ASTNode exp;
-        Environment<Type> environmentType = new Environment<>();
-        Environment<Value> environmentValue = new Environment<>();
+            Parser parser = new Parser(in);
+            ASTNode exp;
+            Environment<Type> environmentType = new Environment<>();
+            Environment<Value> environmentValue = new Environment<>();
 
-        do {
-            try {
+            do {
                 if (!isFileMode)
                     out.print("< ");
                 exp = parser.Start();
                 exp.typecheck(environmentType);
                 out.println(">");
                 exp.eval(environmentValue);
-            } catch (LanguageException e) {
-                handleException("Language error encountered!", e);
-            } catch (ParseException e)  {
-                handleException("Syntax error encountered!", e);
-            }
-        } while (!isFileMode);
+            } while (!isFileMode);
+
+        } catch (LanguageException e) {
+            handleException("Language error encountered!", e);
+        } catch (ParseException e)  {
+            handleException("Syntax error encountered!", e);
+        }
+
     }
 
     private static void handleException(String message, Exception e) {

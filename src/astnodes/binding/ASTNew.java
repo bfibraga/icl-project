@@ -8,6 +8,7 @@ import src.misc.Coordinates;
 import src.misc.Environment;
 import src.misc.frame.BlockType;
 import src.misc.frame.RefBlock;
+import src.misc.frame.ReferenceHandler;
 import src.type.TCell;
 import src.misc.TypeFunctions;
 import src.type.Type;
@@ -35,8 +36,14 @@ public class ASTNew extends TypeHolder implements ASTNode {
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         //RefBlock refBlock = block.newRefBlock();
 
-        String type = "ERROR";
-        String refType = "ERROR OF ERROR";
+        ReferenceHandler referenceHandler = block.getReference();
+        Type type = this.getType();
+        Type nestedType = ((TCell)type).getType();
+
+        referenceHandler.addRef(type, nestedType);
+
+        String typename = nestedType.jvmType();
+        String refType = type.jvmType();
 
         block.emit(String.format("%s %s", JVM.NEW, refType));
         block.emit(JVM.DUP.toString());
@@ -44,7 +51,9 @@ public class ASTNew extends TypeHolder implements ASTNode {
         block.emit(JVM.DUP.toString());
 
         this.arg.compile(block, e);
-        block.emit(String.format("%s %s/v %s", JVM.PUTFIELD, refType, type));
+        block.emit(String.format("%s %s/v %s", JVM.PUTFIELD, refType, typename.contains("Ref_of_") ?
+                "L" + typename + ";" :
+                typename ));
     }
 
     @Override

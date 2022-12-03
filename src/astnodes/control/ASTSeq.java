@@ -27,7 +27,7 @@ public class ASTSeq extends TypeHolder implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         this.l.compile(block, e);
-        block.emit(JVM.POP.toString());
+        //block.emit(JVM.POP.toString());
         this.r.compile(block, e);
     }
 

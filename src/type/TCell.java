@@ -30,6 +30,6 @@ public class TCell implements Type {
     @Override
     public String jvmType() {
         Type nestedType = this.getType();
-        return String.format("ref_of_%s", nestedType.jvmType());
+        return String.format("Ref_of_%s", nestedType.jvmType());
     }
 }

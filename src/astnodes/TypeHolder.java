@@ -21,6 +21,7 @@ public abstract class TypeHolder {
 
     public Type setType(Type type) {
         this.type = type;
+        //System.out.println(type);
         return this.getType();
     }
 }

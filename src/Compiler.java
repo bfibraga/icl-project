@@ -18,13 +18,12 @@ public class Compiler {
     private static final int CODE_LINE = 31;
 
     public static void main(String[] args) {
-        String filename = args[0];
-        if (!filename.endsWith(".icl")){
-            System.out.println("Not a icl file");
-            return;
-        }
-
         try {
+            String filename = args[0];
+            if (!filename.endsWith(".icl")){
+                System.out.println("Not a icl file");
+                return;
+            }
 
             File file = new File(filename);
             InputStream in = new FileInputStream(file);
@@ -41,7 +40,6 @@ public class Compiler {
 
             exp = parser.Start();
             exp.typecheck(environmentType);
-            out.println(">");
             exp.compile(code, environmentCoord);
             
             publishCode(code, out, new Scanner(new File("./src/jvm/Dummy.j")));

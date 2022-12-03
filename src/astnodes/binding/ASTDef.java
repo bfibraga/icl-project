@@ -68,14 +68,19 @@ public class ASTDef extends TypeHolder implements ASTNode {
         Coordinates coordinates;
         for (Bind<String, ASTNode> bind: init) {
             String id = bind.getId();
-            Type type = bind.getType();
-            String typename = type.jvmType();
             ASTNode node = bind.getValue();
+
+            Type type = ((TypeHolder)node).getType();
+            String typename = type.jvmType();
 
             block.emit(String.format("%s_%d", JVM.ALOAD, 3));
             node.compile(block, e);
+
             String sym = block.gensym(BlockType.CODE);
-            block.emit(String.format("%s %s/%s %s", JVM.PUTFIELD, newDefBlock, sym, typename));
+            newDefBlock.setType(sym, type);
+            block.emit(String.format("%s %s/%s %s", JVM.PUTFIELD, newDefBlock, sym, typename.contains("Ref_of_") ?
+                    "L" + typename + ";" :
+                    typename ));
 
             coordinates = new Coordinates(sym, depth, typename);
             e.assoc(id, coordinates);

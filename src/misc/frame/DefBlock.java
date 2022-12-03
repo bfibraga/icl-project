@@ -2,10 +2,14 @@ package src.misc.frame;
 
 import src.jvm.JVM;
 import src.misc.CodeBlock;
+import src.type.TVoid;
+import src.type.Type;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DefBlock implements SubBlock {
 
@@ -13,7 +17,7 @@ public class DefBlock implements SubBlock {
 
     DefBlock previous;
     String id;
-    private List<String> fields;
+    private Map<String, Type> fields;
 
     public DefBlock(){
         this("java/lang/Object", null);
@@ -26,7 +30,7 @@ public class DefBlock implements SubBlock {
     public DefBlock(String id, DefBlock previous){
         this.id = id;
         this.previous = previous;
-        this.fields = new ArrayList<>();
+        this.fields = new HashMap<>();
     }
 
     public DefBlock getPrevious() {
@@ -53,8 +57,13 @@ public class DefBlock implements SubBlock {
         out.println(".super java/lang/Object");
         out.println(String.format(".field public sl L%s;", this.previous.getId()));
 
-        for (String var: this.fields) {
-            out.println(String.format(".field public %s I", var));
+        for (Map.Entry<String, Type> entry: this.fields.entrySet()) {
+            String varname = entry.getKey();
+            Type type = entry.getValue();
+            String typename = type.jvmType();
+            out.println(String.format(".field public %s %s", varname, typename.contains("Ref_of_") ?
+                    "L" + typename + ";" :
+                    typename ));
         }
 
         out.println("""
@@ -74,6 +83,10 @@ public class DefBlock implements SubBlock {
         block.emit(String.format("%s_%d", JVM.ASTORE, 3));
     }
 
+    public void setType(String id, Type newType){
+        this.fields.put(id, newType);
+    }
+
     @Override
     public String toString() {
         return this.id;
@@ -83,7 +96,7 @@ public class DefBlock implements SubBlock {
     public String gensym() {
         int size = this.fields.size();
         String result = TOKEN + size;
-        this.fields.add(result);
+        this.fields.put(result, new TVoid());
         return result;
     }
 }

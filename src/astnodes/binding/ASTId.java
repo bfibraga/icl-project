@@ -40,7 +40,11 @@ public class ASTId extends TypeHolder implements ASTNode {
             previous = currDefBlock.getPrevious();
         }
 
-        block.emit(String.format("%s %s/%s %s", JVM.GETFIELD, currDefBlock, coordinates.getId(), coordinates.getTypename()));
+        String typename = coordinates.getTypename();
+        block.emit(String.format("%s %s/%s %s", JVM.GETFIELD, currDefBlock, coordinates.getId(),
+                typename.contains("Ref_of_") ?
+                        "L" + typename + ";" :
+                        typename ));
     }
 
     @Override

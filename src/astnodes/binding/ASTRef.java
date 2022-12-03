@@ -8,6 +8,7 @@ import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.misc.frame.ReferenceHandler;
 import src.type.TCell;
 import src.misc.TypeFunctions;
 import src.type.Type;
@@ -35,10 +36,15 @@ public class ASTRef extends TypeHolder implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         this.node.compile(block, e);
-        //TODO Implement the rest
-        String type = "";
-        String refType = "";
-        block.emit(String.format("%s %s/%s", JVM.GETFIELD, refType, type));
+        ReferenceHandler referenceHandler = block.getReference();
+        Type type = this.getType();
+        Type nestedType = new TCell(type);
+
+        String typename = nestedType.jvmType();
+        String refTypename = type.jvmType();
+        block.emit(String.format("%s %s/v %s", JVM.GETFIELD, typename, refTypename.contains("Ref_of_") ?
+                "L" + refTypename + ";" :
+                refTypename ));
     }
 
     @Override

@@ -8,6 +8,7 @@ import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.misc.frame.ReferenceHandler;
 import src.type.TCell;
 import src.misc.TypeFunctions;
 import src.type.Type;
@@ -43,10 +44,13 @@ public class ASTAssign extends TypeHolder implements ASTNode {
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         this.l.compile(block, e);
         this.r.compile(block, e);
-        //TODO Implement the rest
-        String type = "";
-        String refType = "";
-        block.emit(String.format("%s %s/%s", JVM.PUTFIELD, refType, type));
+        Type refType = ((TypeHolder)this.l).getType();
+        Type contentType = ((TCell) refType).getType();
+
+        String contentTypename = contentType.jvmType();
+        block.emit(String.format("%s %s/v %s", JVM.PUTFIELD, refType.jvmType(), contentTypename.contains("Ref_of_") ?
+                "L" + contentTypename + ";" :
+                contentTypename));
     }
 
     @Override

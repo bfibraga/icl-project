@@ -1,6 +1,7 @@
 package src.astnodes.value.function;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
@@ -17,7 +18,7 @@ import src.value.Value;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ASTApplyFunc implements ASTNode {
+public class ASTApplyFunc extends TypeHolder implements ASTNode {
 
     private final ASTNode fnc;
     private final List<ASTNode> args;
@@ -84,6 +85,8 @@ public class ASTApplyFunc implements ASTNode {
             e.assoc(argId, argAbstractType);
         }
 
-        return closureType.getBodyType();
+        Type result = closureType.getBodyType();
+        this.setType(result);
+        return result;
     }
 }

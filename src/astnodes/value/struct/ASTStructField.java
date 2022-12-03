@@ -1,6 +1,7 @@
 package src.astnodes.value.struct;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypeConvertion;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
@@ -10,7 +11,7 @@ import src.type.*;
 import src.value.Struct;
 import src.value.Value;
 
-public class ASTStructField implements ASTNode {
+public class ASTStructField extends TypeHolder implements ASTNode {
 
     private final ASTNode node;
     private final String field;
@@ -50,6 +51,8 @@ public class ASTStructField implements ASTNode {
         if (!TypeFunctions.sameType(nodeType, targetType))
             throw new InvalidTypeConvertion(nodeType.show(), targetType.show(), this.getClass().getSimpleName());
 
-        return ((TStruct) nodeType).get(this.field);
+        Type result = ((TStruct) nodeType).get(this.field);
+        this.setType(result);
+        return result;
     }
 }

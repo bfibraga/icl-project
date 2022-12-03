@@ -1,6 +1,7 @@
 package src.astnodes.operations.relational;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
 import src.jvm.JVM;
@@ -17,7 +18,7 @@ import src.value.Value;
 
 import java.util.ArrayList;
 
-public class ASTLwt implements ASTNode {
+public class ASTLwt extends TypeHolder implements ASTNode {
     private ASTNode l, r;
 
     public ASTLwt(ASTNode l, ASTNode r){
@@ -70,6 +71,7 @@ public class ASTLwt implements ASTNode {
         if (!TypeFunctions.sameType(rType, targetType))
             throw new InvalidTypeConvertion(rType.show(), targetType.show(), this.getClass().getSimpleName());
 
+        this.setType(new TBool());
         return new TBool();
     }
 }

@@ -1,6 +1,7 @@
 package src.astnodes.binding;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
@@ -9,7 +10,7 @@ import src.misc.frame.DefBlock;
 import src.type.Type;
 import src.value.Value;
 
-public class ASTId implements ASTNode {
+public class ASTId extends TypeHolder implements ASTNode {
 
     private final String id;
 
@@ -44,6 +45,7 @@ public class ASTId implements ASTNode {
 
     @Override
     public Type typecheck(Environment<Type> e) {
-        return e.find(this.id);
+        this.setType(e.find(this.id));
+        return this.getType();
     }
 }

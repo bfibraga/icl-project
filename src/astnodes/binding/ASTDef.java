@@ -1,6 +1,7 @@
 package src.astnodes.binding;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypeConvertion;
 import src.jvm.JVM;
 import src.misc.*;
@@ -14,7 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
 
-public class ASTDef implements ASTNode {
+public class ASTDef extends TypeHolder implements ASTNode {
 
     private List<Bind<String, ASTNode>> init;
     private ASTNode body;
@@ -118,6 +119,7 @@ public class ASTDef implements ASTNode {
 
         nodeType = body.typecheck(e);
         e = e.endScope();
-        return nodeType;
+        this.setType(nodeType);
+        return this.getType();
     }
 }

@@ -1,6 +1,7 @@
 package src.astnodes.control;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
@@ -15,7 +16,7 @@ import src.value.Value;
 import java.util.List;
 import java.util.Map;
 
-public class ASTMatch implements ASTNode {
+public class ASTMatch extends TypeHolder implements ASTNode {
 
     private ASTNode cond;
     private Map<List<ASTNode>, ASTNode> cases;
@@ -81,6 +82,8 @@ public class ASTMatch implements ASTNode {
             }
         }
 
-        return this.def.typecheck(e);
+        Type result = this.def.typecheck(e);
+        this.setType(result);
+        return result;
     }
 }

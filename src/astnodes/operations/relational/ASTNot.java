@@ -1,6 +1,7 @@
 package src.astnodes.operations.relational;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
 import src.jvm.JVM;
@@ -15,7 +16,7 @@ import src.type.Type;
 import src.value.Bool;
 import src.value.Value;
 
-public class ASTNot implements ASTNode {
+public class ASTNot extends TypeHolder implements ASTNode {
     private ASTNode body;
 
     public ASTNot(ASTNode body){
@@ -55,6 +56,7 @@ public class ASTNot implements ASTNode {
         if (!TypeFunctions.sameType(bodyType, targetType))
             throw new InvalidTypeConvertion(bodyType.show(), targetType.show(), this.getClass().getSimpleName());
 
+        this.setType(new TBool());
         return targetType;
     }
 }

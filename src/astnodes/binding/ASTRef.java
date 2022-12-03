@@ -1,6 +1,7 @@
 package src.astnodes.binding;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
 import src.jvm.JVM;
@@ -13,7 +14,7 @@ import src.type.Type;
 import src.value.Cell;
 import src.value.Value;
 
-public class ASTRef implements ASTNode {
+public class ASTRef extends TypeHolder implements ASTNode {
 
     private final ASTNode node;
 
@@ -47,6 +48,8 @@ public class ASTRef implements ASTNode {
         if (!TypeFunctions.sameType(nodeType, targetType))
             throw new InvalidTypeConvertion(nodeType.show(), targetType.show(), this.getClass().getSimpleName());
 
-        return ((TCell) nodeType).getType();
+        Type result = ((TCell) nodeType).getType();
+        this.setType(result);
+        return result;
     }
 }

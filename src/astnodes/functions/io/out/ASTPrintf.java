@@ -1,18 +1,20 @@
 package src.astnodes.functions.io.out;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypes;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.type.TVoid;
 import src.type.Type;
 import src.value.Value;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ASTPrintf implements ASTNode {
+public class ASTPrintf extends TypeHolder implements ASTNode {
 
     private final ASTNode str;
     private final List<ASTNode> args;
@@ -54,6 +56,7 @@ public class ASTPrintf implements ASTNode {
 
     @Override
     public Type typecheck(Environment<Type> e) {
-        return null;
+        this.setType(new TVoid());
+        return new TVoid();
     }
 }

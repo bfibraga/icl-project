@@ -15,14 +15,14 @@ public class Interpreter {
     /** Main entry point. */
     public static void main(String[] args) throws FileNotFoundException {
         InputStream in;
-        boolean loop;
+        boolean isFileMode;
         if (args.length == 0 || args[0].trim().equals("")){
             in = System.in;
-            loop = true;
+            isFileMode = false;
         } else {
             String filename = args[0];
             in = new FileInputStream(filename);
-            loop = false;
+            isFileMode = true;
         }
 
         PrintStream out = System.out;
@@ -34,7 +34,8 @@ public class Interpreter {
 
         do {
             try {
-                out.print("< ");
+                if (!isFileMode)
+                    out.print("< ");
                 exp = parser.Start();
                 exp.typecheck(environmentType);
                 out.println(">");
@@ -44,7 +45,7 @@ public class Interpreter {
             } catch (ParseException e)  {
                 handleException("Syntax error encountered!", e);
             }
-        } while (loop);
+        } while (!isFileMode);
     }
 
     private static void handleException(String message, Exception e) {

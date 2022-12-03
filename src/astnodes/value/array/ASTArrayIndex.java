@@ -1,22 +1,20 @@
 package src.astnodes.value.array;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.type.TArray;
+import src.type.*;
 import src.misc.TypeFunctions;
-import src.type.TCell;
-import src.type.TInt;
-import src.type.Type;
 import src.value.Array;
 import src.value.Cell;
 import src.value.Int;
 import src.value.Value;
 
-public class ASTArrayIndex implements ASTNode {
+public class ASTArrayIndex extends TypeHolder implements ASTNode {
 
     private final ASTNode node;
     private final ASTNode index;
@@ -59,6 +57,7 @@ public class ASTArrayIndex implements ASTNode {
         if (!TypeFunctions.sameType(indexType, targetType))
             throw new InvalidTypeConvertion(nodeType.show(), targetType.show(), this.getClass().getSimpleName());
 
+        this.setType(new TCell());
         return new TCell();
     }
 }

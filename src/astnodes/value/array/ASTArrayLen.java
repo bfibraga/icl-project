@@ -1,15 +1,17 @@
 package src.astnodes.value.array;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.type.TInt;
 import src.type.Type;
 import src.value.Array;
 import src.value.Int;
 import src.value.Value;
 
-public class ASTArrayLen implements ASTNode {
+public class ASTArrayLen extends TypeHolder implements ASTNode {
 
     private final String id;
 
@@ -31,6 +33,8 @@ public class ASTArrayLen implements ASTNode {
 
     @Override
     public Type typecheck(Environment<Type> e) {
-        return null;
+        Type result = new TInt();
+        this.setType(result);
+        return result;
     }
 }

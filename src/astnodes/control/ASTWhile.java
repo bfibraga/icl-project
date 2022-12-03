@@ -1,6 +1,7 @@
 package src.astnodes.control;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
 import src.jvm.JVM;
@@ -15,7 +16,7 @@ import src.value.Bool;
 import src.value.Str;
 import src.value.Value;
 
-public class ASTWhile implements ASTNode {
+public class ASTWhile extends TypeHolder implements ASTNode {
 
     private ASTNode cond;
     private ASTNode body;
@@ -63,6 +64,8 @@ public class ASTWhile implements ASTNode {
         if (!TypeFunctions.sameType(condType, targetType))
             throw new InvalidTypeConvertion(condType.show(), targetType.show(), this.getClass().getSimpleName());
 
-        return this.body.typecheck(e);
+        Type result = this.body.typecheck(e);
+        this.setType(result);
+        return result;
     }
 }

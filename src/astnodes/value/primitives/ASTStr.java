@@ -1,6 +1,7 @@
 package src.astnodes.value.primitives;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
@@ -9,7 +10,7 @@ import src.type.Type;
 import src.value.Str;
 import src.value.Value;
 
-public class ASTStr implements ASTNode {
+public class ASTStr extends TypeHolder implements ASTNode {
 
     private final String value;
 
@@ -29,6 +30,7 @@ public class ASTStr implements ASTNode {
 
     @Override
     public Type typecheck(Environment<Type> e) {
+        this.setType(new TStr());
         return new TStr();
     }
 }

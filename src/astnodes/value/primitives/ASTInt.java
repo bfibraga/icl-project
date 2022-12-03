@@ -1,6 +1,7 @@
 package src.astnodes.value.primitives;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
@@ -10,7 +11,7 @@ import src.type.Type;
 import src.value.Int;
 import src.value.Value;
 
-public class ASTInt implements ASTNode {
+public class ASTInt extends TypeHolder implements ASTNode {
     private int val;
 
     public ASTInt(int val){
@@ -29,6 +30,7 @@ public class ASTInt implements ASTNode {
 
     @Override
     public Type typecheck(Environment<Type> e) {
+        this.setType(new TInt());
         return new TInt();
     }
 }

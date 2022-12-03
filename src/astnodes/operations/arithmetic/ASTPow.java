@@ -1,6 +1,7 @@
 package src.astnodes.operations.arithmetic;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypeConvertion;
 import src.exceptions.InvalidTypes;
 import src.misc.CodeBlock;
@@ -12,7 +13,7 @@ import src.type.Type;
 import src.value.Int;
 import src.value.Value;
 
-public class ASTPow implements ASTNode {
+public class ASTPow extends TypeHolder implements ASTNode {
     
     private ASTNode l, r;
 
@@ -53,6 +54,7 @@ public class ASTPow implements ASTNode {
         if (!TypeFunctions.sameType(rType, targetType))
             throw new InvalidTypeConvertion(rType.show(), targetType.show(), this.getClass().getSimpleName());
 
+        this.setType(targetType);
         return targetType;
     }
 }

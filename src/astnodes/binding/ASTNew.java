@@ -1,6 +1,7 @@
 package src.astnodes.binding;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
@@ -16,7 +17,7 @@ import src.value.Value;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
-public class ASTNew implements ASTNode {
+public class ASTNew extends TypeHolder implements ASTNode {
 
     private final ASTNode arg;
 
@@ -49,6 +50,8 @@ public class ASTNew implements ASTNode {
     @Override
     public Type typecheck(Environment<Type> e) {
         Type argType = this.arg.typecheck(e);
-        return new TCell(argType);
+        Type result = new TCell(argType);
+        this.setType(result);
+        return result;
     }
 }

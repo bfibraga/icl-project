@@ -1,6 +1,7 @@
 package src.astnodes.control;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
@@ -8,7 +9,7 @@ import src.misc.Environment;
 import src.type.Type;
 import src.value.Value;
 
-public class ASTSeq implements ASTNode {
+public class ASTSeq extends TypeHolder implements ASTNode {
 
     private final ASTNode l, r;
 
@@ -33,6 +34,8 @@ public class ASTSeq implements ASTNode {
     @Override
     public Type typecheck(Environment<Type> e) {
         this.l.typecheck(e);
-        return this.r.typecheck(e);
+        Type rType = this.r.typecheck(e);
+        this.setType(rType);
+        return rType;
     }
 }

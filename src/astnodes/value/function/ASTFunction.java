@@ -1,11 +1,13 @@
 package src.astnodes.value.function;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypeConvertion;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.misc.Pair;
+import src.type.TCell;
 import src.type.TClosure;
 import src.misc.TypeFunctions;
 import src.type.Type;
@@ -15,7 +17,7 @@ import src.value.Value;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ASTFunction implements ASTNode {
+public class ASTFunction extends TypeHolder implements ASTNode {
 
     private final List<Pair<String, Type>> params;
     private final ASTNode body;
@@ -51,6 +53,8 @@ public class ASTFunction implements ASTNode {
 
         e = e.endScope();
 
-        return new TClosure(params, bodyType);
+        Type result = new TClosure(params, bodyType);
+        this.setType(result);
+        return result;
     }
 }

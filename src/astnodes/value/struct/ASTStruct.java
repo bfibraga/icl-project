@@ -1,9 +1,11 @@
 package src.astnodes.value.struct;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.type.TBool;
 import src.type.TStruct;
 import src.type.Type;
 import src.value.Struct;
@@ -12,7 +14,7 @@ import src.value.Value;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ASTStruct implements ASTNode {
+public class ASTStruct extends TypeHolder implements ASTNode {
 
     private Map<String, ASTNode> fields;
     private Struct value;
@@ -49,6 +51,8 @@ public class ASTStruct implements ASTNode {
             fields.put(id, node.typecheck(e));
         }
 
-        return new TStruct(fields);
+        Type result = new TStruct(fields);
+        this.setType(result);
+        return result;
     }
 }

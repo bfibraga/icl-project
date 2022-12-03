@@ -1,6 +1,7 @@
 package src.astnodes.functions.io.out;
 
 import src.astnodes.ASTNode;
+import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypes;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
@@ -13,7 +14,7 @@ import src.value.Value;
 
 import java.util.List;
 
-public class ASTPrint implements ASTNode {
+public class ASTPrint extends TypeHolder implements ASTNode {
 
     private List<ASTNode> args;
 
@@ -46,6 +47,7 @@ public class ASTPrint implements ASTNode {
 
     @Override
     public Type typecheck(Environment<Type> e) {
+        this.setType(new TVoid());
         return new TVoid();
     }
 }

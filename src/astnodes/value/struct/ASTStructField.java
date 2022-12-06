@@ -2,7 +2,7 @@ package src.astnodes.value.struct;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
+import src.exceptions.InvalidTypeConvertionException;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
@@ -49,7 +49,7 @@ public class ASTStructField extends TypeHolder implements ASTNode {
 
         targetType = new TStruct();
         if (!TypeFunctions.sameType(nodeType, targetType))
-            throw new InvalidTypeConvertion(nodeType.show(), targetType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(nodeType.show(), targetType.show(), this.getClass().getSimpleName());
 
         Type result = ((TStruct) nodeType).get(this.field);
         this.setType(result);

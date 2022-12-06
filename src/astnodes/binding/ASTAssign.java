@@ -2,13 +2,12 @@ package src.astnodes.binding;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
-import src.exceptions.InvalidTypes;
+import src.exceptions.InvalidTypeConvertionException;
+import src.exceptions.InvalidValueConvertionException;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.misc.frame.ReferenceHandler;
 import src.type.TCell;
 import src.misc.TypeFunctions;
 import src.type.Type;
@@ -28,7 +27,7 @@ public class ASTAssign extends TypeHolder implements ASTNode {
     public Value eval(Environment<Value> e) {
         Value valueL = this.l.eval(e);
         if (!valueL.isCell()){
-            throw new InvalidTypes(valueL.show());
+            throw new InvalidValueConvertionException(valueL.show());
         }
 
         Value valueR = this.r.eval(e);
@@ -48,7 +47,8 @@ public class ASTAssign extends TypeHolder implements ASTNode {
         Type contentType = ((TCell) refType).getType();
 
         String contentTypename = contentType.jvmType();
-        block.emit(String.format("%s %s/v %s", JVM.PUTFIELD, refType.jvmType(), contentTypename.contains("Ref_of_") ?
+        block.emit(String.format("%s %s/v %s", JVM.PUTFIELD, refType.jvmType(),
+                contentTypename.contains("Ref_of_") ?
                 "L" + contentTypename + ";" :
                 contentTypename));
     }
@@ -59,7 +59,7 @@ public class ASTAssign extends TypeHolder implements ASTNode {
         Type lType = this.l.typecheck(e);
 
         if (!TypeFunctions.sameType(lType, targetType)){
-            throw new InvalidTypeConvertion(lType.show(), targetType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(lType.show(), targetType.show(), this.getClass().getSimpleName());
         }
 
         this.setType(this.r.typecheck(e));

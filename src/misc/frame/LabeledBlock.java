@@ -5,20 +5,19 @@ import java.util.List;
 
 public class LabeledBlock implements SubBlock {
 
-    private static final String TOKEN = "L";
+    private static final String TOKEN = "Label_";
 
 
-    private List<String> labels;
+    private int nlabels;
 
     public LabeledBlock() {
-        this.labels = new ArrayList<>();
+        this.nlabels = 0;
     }
 
     @Override
     public String gensym() {
-        int size = this.labels.size();
-        String result = TOKEN + size;
-        this.labels.add(result);
+        String result = TOKEN + nlabels;
+        nlabels += 1;
         return result;
     }
 }

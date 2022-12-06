@@ -2,7 +2,7 @@ package src.astnodes.binding;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
+import src.exceptions.InvalidTypeConvertionException;
 import src.jvm.JVM;
 import src.misc.*;
 import src.misc.frame.*;
@@ -117,7 +117,7 @@ public class ASTDef extends TypeHolder implements ASTNode {
                     nodeType;
 
             if (!TypeFunctions.sameType(defaultType, new TVoid()) && !TypeFunctions.sameType(contentType, defaultType))
-                throw new InvalidTypeConvertion(contentType.show(), defaultType.show(), this.getClass().getSimpleName());
+                throw new InvalidTypeConvertionException(contentType.show(), defaultType.show(), this.getClass().getSimpleName());
 
             e.assoc(id, nodeType);
         }

@@ -2,13 +2,12 @@ package src.astnodes.binding;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
-import src.exceptions.InvalidTypes;
+import src.exceptions.InvalidTypeConvertionException;
+import src.exceptions.InvalidValueConvertionException;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
-import src.misc.frame.ReferenceHandler;
 import src.type.TCell;
 import src.misc.TypeFunctions;
 import src.type.Type;
@@ -27,7 +26,7 @@ public class ASTRef extends TypeHolder implements ASTNode {
     public Value eval(Environment<Value> e) {
         Value value = this.node.eval(e);
         if (!value.isCell()){
-            throw new InvalidTypes(value.show());
+            throw new InvalidValueConvertionException(value.show());
         }
 
         return ((Cell) value).get();
@@ -36,7 +35,7 @@ public class ASTRef extends TypeHolder implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         this.node.compile(block, e);
-        ReferenceHandler referenceHandler = block.getReference();
+
         Type type = this.getType();
         Type nestedType = new TCell(type);
 
@@ -52,7 +51,7 @@ public class ASTRef extends TypeHolder implements ASTNode {
         Type targetType = new TCell();
         Type nodeType = this.node.typecheck(e);
         if (!TypeFunctions.sameType(nodeType, targetType))
-            throw new InvalidTypeConvertion(nodeType.show(), targetType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(nodeType.show(), targetType.show(), this.getClass().getSimpleName());
 
         Type result = ((TCell) nodeType).getType();
         this.setType(result);

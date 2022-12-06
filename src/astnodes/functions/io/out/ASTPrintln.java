@@ -2,7 +2,6 @@ package src.astnodes.functions.io.out;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypes;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
@@ -41,13 +40,19 @@ public class ASTPrintln extends TypeHolder implements ASTNode {
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         for (ASTNode arg: this.args) {
             arg.compile(block, e);
-            block.emit(String.format("%s java/lang/String/valueOf(I)Ljava/lang/String;", JVM.INVOKESTATIC));
+            Type argType = ((TypeHolder)arg).getType();
+            String argTypename = argType.jvmType();
+            argTypename = argTypename.contains("Ref_of") ? "L" + argTypename + ";" : argTypename;
+            block.emit(String.format("%s java/lang/String/valueOf(%s)Ljava/lang/String;", JVM.INVOKESTATIC, argTypename));
             block.emit(String.format("%s java/io/PrintStream/println(Ljava/lang/String;)V", JVM.INVOKEVIRTUAL));
         }
     }
 
     @Override
     public Type typecheck(Environment<Type> e) {
+        for (ASTNode arg: this.args) {
+            arg.typecheck(e);
+        }
         this.setType(new TVoid());
         return new TVoid();
     }

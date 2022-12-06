@@ -2,8 +2,8 @@ package src.astnodes.operations.relational;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
-import src.exceptions.InvalidTypes;
+import src.exceptions.InvalidTypeConvertionException;
+import src.exceptions.InvalidValueConvertionException;
 import src.jvm.JVM;
 import src.jvm.JVMValues;
 import src.misc.CodeBlock;
@@ -30,12 +30,12 @@ public class ASTGrtEq extends TypeHolder implements ASTNode {
     public Value eval(Environment<Value> e) {
         Value valueL = this.l.eval(e);
         if (!valueL.isNumber() || valueL.isBoolean()){
-            throw new InvalidTypes(valueL.show());
+            throw new InvalidValueConvertionException(valueL.show());
         }
 
         Value valueR = this.r.eval(e);
         if (!valueR.isNumber() || valueR.isBoolean()){
-            throw new InvalidTypes(valueR.show());
+            throw new InvalidValueConvertionException(valueR.show());
         }
 
         return new Bool(((Int)valueL).getValue() >= ((Int)valueR).getValue()) ;
@@ -63,12 +63,12 @@ public class ASTGrtEq extends TypeHolder implements ASTNode {
         Type targetType = new TInt();
         Type lType = this.l.typecheck(e);
         if (!TypeFunctions.sameType(lType, targetType))
-            throw new InvalidTypeConvertion(lType.show(), targetType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(lType.show(), targetType.show(), this.getClass().getSimpleName());
 
 
         Type rType = this.r.typecheck(e);
         if (!TypeFunctions.sameType(rType, targetType))
-            throw new InvalidTypeConvertion(rType.show(), targetType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(rType.show(), targetType.show(), this.getClass().getSimpleName());
 
         this.setType(new TBool());
         return new TBool();

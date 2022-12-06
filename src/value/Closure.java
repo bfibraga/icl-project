@@ -3,16 +3,14 @@ package src.value;
 import src.astnodes.ASTNode;
 import src.misc.Environment;
 import src.misc.Pair;
-import src.misc.TypeFunctions;
 import src.type.Type;
 
 import java.util.List;
 
 public class Closure<T> implements Value {
-
     private final List<Pair<String, Type>> paramNames;
     private final ASTNode body;
-    private final Environment<T> environment;
+    private Environment<T> environment;
 
     public Closure(List<Pair<String, Type>> paramNames, ASTNode body, Environment<T> environment) {
         this.paramNames = paramNames;
@@ -30,6 +28,10 @@ public class Closure<T> implements Value {
 
     public Environment<T> getEnvironment() {
         return environment;
+    }
+
+    public void setEnvironment(Environment<T> environment) {
+        this.environment = environment;
     }
 
     @Override

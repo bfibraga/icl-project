@@ -2,10 +2,9 @@ package src.astnodes.control;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
-import src.exceptions.InvalidTypes;
+import src.exceptions.InvalidTypeConvertionException;
+import src.exceptions.InvalidValueConvertionException;
 import src.jvm.JVM;
-import src.jvm.JVMValues;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
@@ -33,7 +32,7 @@ public class ASTIfElse extends TypeHolder implements ASTNode {
         Value condValue = this.cond.eval(e);
 
         if (!condValue.isBoolean()){
-            throw new InvalidTypes(condValue.show());
+            throw new InvalidValueConvertionException(condValue.show());
         }
 
         return ((Bool)condValue).getValue() ? this.thenBody.eval(e) : this.elseBody.eval(e);
@@ -61,13 +60,13 @@ public class ASTIfElse extends TypeHolder implements ASTNode {
         Type condType = this.cond.typecheck(e);
 
         if (!TypeFunctions.sameType(condType, targetType))
-            throw new InvalidTypeConvertion(condType.show(), targetType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(condType.show(), targetType.show(), this.getClass().getSimpleName());
 
         Type thenType = this.thenBody.typecheck(e);
         Type elseType = this.elseBody.typecheck(e);
 
         if (!TypeFunctions.sameType(thenType, elseType))
-            throw new InvalidTypeConvertion(thenType.show(), elseType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(thenType.show(), elseType.show(), this.getClass().getSimpleName());
 
         this.setType(elseType);
         return elseType; //Or thenType

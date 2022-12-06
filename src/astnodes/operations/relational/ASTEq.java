@@ -2,8 +2,8 @@ package src.astnodes.operations.relational;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
-import src.exceptions.InvalidTypes;
+import src.exceptions.InvalidTypeConvertionException;
+import src.exceptions.InvalidValueConvertionException;
 import src.jvm.JVM;
 import src.jvm.JVMValues;
 import src.misc.CodeBlock;
@@ -29,12 +29,12 @@ public class ASTEq extends TypeHolder implements ASTNode {
     public Value eval(Environment<Value> e) {
         Value valueL = this.l.eval(e);
         if (!valueL.isNumber() && !valueL.isBoolean() && !valueL.isString()){
-            throw new InvalidTypes(valueL.show());
+            throw new InvalidValueConvertionException(valueL.show());
         }
 
         Value valueR = this.r.eval(e);
         if (!valueR.isNumber() && !valueR.isBoolean() && !valueL.isString()){
-            throw new InvalidTypes(valueR.show());
+            throw new InvalidValueConvertionException(valueR.show());
         }
 
         if (valueL.isBoolean() && valueR.isBoolean()){
@@ -49,7 +49,7 @@ public class ASTEq extends TypeHolder implements ASTNode {
             return new Bool(valueL.show().equals(valueR.show())) ;
         }
 
-        throw new InvalidTypes(valueL.getClass().getSimpleName());
+        throw new InvalidValueConvertionException(valueL.getClass().getSimpleName());
     }
 
     @Override
@@ -75,7 +75,7 @@ public class ASTEq extends TypeHolder implements ASTNode {
         Type rType = this.r.typecheck(e);
 
         if (!TypeFunctions.sameType(lType, rType))
-            throw new InvalidTypeConvertion(lType.show(), rType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(lType.show(), rType.show(), this.getClass().getSimpleName());
 
         this.setType(new TBool());
         return new TBool();

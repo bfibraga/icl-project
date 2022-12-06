@@ -1,7 +1,7 @@
 package src.misc;
 
-import src.exceptions.IDMultipleDeclarations;
-import src.exceptions.UndeclaredID;
+import src.exceptions.IDMultipleDeclarationsException;
+import src.exceptions.UndeclaredIDException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class Environment<V> {
         } else if (this.sl != null) {
             result = this.sl.find(id);
         } else {
-            throw new UndeclaredID(id);
+            throw new UndeclaredIDException(id);
         }
 
         return result;
@@ -49,7 +49,7 @@ public class Environment<V> {
 
     public void assoc(String id, V value){
         if (this.def.containsKey(id)){
-            throw new IDMultipleDeclarations(id);
+            throw new IDMultipleDeclarationsException(id);
         } else {
             this.def.put(id, value);
         }
@@ -57,5 +57,14 @@ public class Environment<V> {
 
     public void alter(String id, V value){
         this.def.put(id, value);
+    }
+
+    @Override
+    public String toString() {
+        return "Environment{" +
+                "depth=" + depth +
+                ", def=" + def +
+                ", sl=" + sl +
+                '}';
     }
 }

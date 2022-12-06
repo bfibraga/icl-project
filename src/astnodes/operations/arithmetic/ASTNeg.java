@@ -2,8 +2,8 @@ package src.astnodes.operations.arithmetic;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
-import src.exceptions.InvalidTypes;
+import src.exceptions.InvalidTypeConvertionException;
+import src.exceptions.InvalidValueConvertionException;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
@@ -26,7 +26,7 @@ public class ASTNeg extends TypeHolder implements ASTNode {
     public Value eval(Environment<Value> e) {
         Value valueExp = this.exp.eval(e);
         if (!valueExp.isNumber() || valueExp.isBoolean()){
-            throw new InvalidTypes(valueExp.show());
+            throw new InvalidValueConvertionException(valueExp.show());
         }
 
         return new Int(-1 * ((Int) valueExp).getValue());
@@ -43,7 +43,7 @@ public class ASTNeg extends TypeHolder implements ASTNode {
         Type targetType = new TInt();
         Type expType = this.exp.typecheck(e);
         if (!TypeFunctions.sameType(expType, targetType))
-            throw new InvalidTypeConvertion(expType.show(), targetType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(expType.show(), targetType.show(), this.getClass().getSimpleName());
 
         this.setType(targetType);
         return targetType;

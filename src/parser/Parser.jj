@@ -384,6 +384,7 @@ ASTNode Fact() :
       n=<INT> { t = new ASTInt(Integer.parseInt(n.image)); }
     | n=<BOOL> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
     | n=<STR> { t = new ASTStr(n.image); }
+    //| <FUN> t = Function()
     | <LSBRACKET> t = Array() <RSBRACKET>
     | <LEN> n = <Id> { t = new ASTArrayLen(n.image); }
     | n=<Id> { t = new ASTId(n.image); Token n2; }
@@ -424,7 +425,6 @@ ASTNode Fact() :
             <RBRACKET>
     { t = new ASTWhile(t, b); }
    | <REF> <LPAR> t=BoolAdd() <RPAR> { t = new ASTRef(t); }
-   //| <FUN> t = Function()
    | { List<ASTNode> l = new ArrayList<>(); }<PRINT> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrint(l); }
    | { List<ASTNode> l = new ArrayList<>(); ASTNode str; }<PRINTF> <LPAR> str = BoolAdd() ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrintf(str, l); }
    | { List<ASTNode> l = new ArrayList<>(); }<PRINTLN> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrintln(l); }

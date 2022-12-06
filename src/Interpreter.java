@@ -37,7 +37,7 @@ public class Interpreter {
                 if (!isFileMode)
                     out.print("< ");
                 exp = parser.Start();
-                exp.typecheck(environmentType);
+                //exp.typecheck(environmentType);
                 out.println(">");
                 exp.eval(environmentValue);
             } while (!isFileMode);

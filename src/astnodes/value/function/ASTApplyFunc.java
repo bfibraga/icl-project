@@ -2,8 +2,8 @@ package src.astnodes.value.function;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
-import src.exceptions.InvalidTypes;
+import src.exceptions.InvalidTypeConvertionException;
+import src.exceptions.InvalidValueConvertionException;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
@@ -33,11 +33,14 @@ public class ASTApplyFunc extends TypeHolder implements ASTNode {
     public Value eval(Environment<Value> e) {
         Value funcValue = this.fnc.eval(e);
         if (!funcValue.isFunc())
-            throw new InvalidTypes(funcValue.show());
+            throw new InvalidValueConvertionException(funcValue.show());
 
         Closure<Value> closure = (Closure<Value>) funcValue;
 
         e = closure.getEnvironment().beginScope();
+
+        System.out.println(e);
+
 
         List<Pair<String, Type>> paramsNames = closure.getParamNames();
         for (int a = 0; a < this.args.size(); a++) {
@@ -47,7 +50,10 @@ public class ASTApplyFunc extends TypeHolder implements ASTNode {
 
             e.assoc(argId, argValue);
         }
+
         Value result = closure.getBody().eval(e);
+        e.alter(closure.toString(), result);
+        closure.setEnvironment(e);
 
         e = e.endScope();
 
@@ -64,7 +70,7 @@ public class ASTApplyFunc extends TypeHolder implements ASTNode {
         Type targetType = new TClosure(new ArrayList<>(), new TVoid());
         Type fncType = this.fnc.typecheck(e);
         if (!TypeFunctions.sameType(fncType, targetType))
-            throw new InvalidTypeConvertion(fncType.show(), targetType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(fncType.show(), targetType.show(), this.getClass().getSimpleName());
 
         TClosure closureType = ((TClosure) fncType);
         List<Pair<String, Type>> argList = closureType.getParams();
@@ -80,7 +86,7 @@ public class ASTApplyFunc extends TypeHolder implements ASTNode {
             Type givenAbstractType = curr_arg.getValue();
 
             if (!TypeFunctions.sameType(argAbstractType, givenAbstractType))
-                throw new InvalidTypeConvertion(argAbstractType.show(), givenAbstractType.show(), this.getClass().getSimpleName());
+                throw new InvalidTypeConvertionException(argAbstractType.show(), givenAbstractType.show(), this.getClass().getSimpleName());
 
             e.assoc(argId, argAbstractType);
         }

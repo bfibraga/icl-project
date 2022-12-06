@@ -38,15 +38,8 @@
        } else if n == 1 or n == 0 {
             1
        } else {
-            {
-                let mut result = 1;
-                while counter.get() < n{
-                    result -> val(result) * (n - counter.get());
-                    counter.inc()
-                };
-                counter.reset();
-                val(result)
-            }
+            n * fat( n-1 )
+            /*n-1*/
        }
     };
 

@@ -2,7 +2,7 @@ package src.astnodes.functions.io.out;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypes;
+import src.exceptions.InvalidValueConvertionException;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
@@ -28,7 +28,7 @@ public class ASTPrintf extends TypeHolder implements ASTNode {
     public Value eval(Environment<Value> e) {
         Value strValue = this.str.eval(e);
         if (!strValue.isString()){
-            throw new InvalidTypes(strValue.show());
+            throw new InvalidValueConvertionException(strValue.show());
         }
 
         List<Value> result = new ArrayList<>();
@@ -49,9 +49,12 @@ public class ASTPrintf extends TypeHolder implements ASTNode {
         //TODO Get right
         for (ASTNode arg: this.args) {
             arg.compile(block, e);
+            Type argType = ((TypeHolder)arg).getType();
+            String argTypename = argType.jvmType();
+            argTypename = argTypename.contains("Ref_of") ? "L" + argTypename + ";" : argTypename;
+            block.emit(String.format("%s java/lang/String/valueOf(%s)Ljava/lang/String;", JVM.INVOKESTATIC, argTypename));
+            block.emit(String.format("%s java/io/PrintStream/printf(Ljava/lang/String;)V", JVM.INVOKEVIRTUAL));
         }
-        block.emit(String.format("%s java/lang/String/valueOf(I)Ljava/lang/String;", JVM.INVOKESTATIC));
-        block.emit(String.format("%s java/io/PrintStream/println(Ljava/lang/String;)V", JVM.INVOKEVIRTUAL));
     }
 
     @Override

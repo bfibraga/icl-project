@@ -2,12 +2,10 @@ package src.astnodes.value.function;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.misc.Pair;
-import src.type.TCell;
 import src.type.TClosure;
 import src.misc.TypeFunctions;
 import src.type.Type;
@@ -32,7 +30,11 @@ public class ASTFunction extends TypeHolder implements ASTNode {
 
     @Override
     public Value eval(Environment<Value> e) {
-        return new Closure<>(this.params, this.body, e);
+        Closure<Value> closure = new Closure<>(this.params, this.body, e);
+        e.assoc(closure.show(), closure);
+        closure.setEnvironment(e);
+
+        return closure;
     }
 
     @Override

@@ -2,8 +2,8 @@ package src.astnodes.control;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
-import src.exceptions.InvalidTypes;
+import src.exceptions.InvalidTypeConvertionException;
+import src.exceptions.InvalidValueConvertionException;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
@@ -13,7 +13,6 @@ import src.type.TBool;
 import src.misc.TypeFunctions;
 import src.type.Type;
 import src.value.Bool;
-import src.value.Str;
 import src.value.Value;
 
 public class ASTWhile extends TypeHolder implements ASTNode {
@@ -31,7 +30,7 @@ public class ASTWhile extends TypeHolder implements ASTNode {
         Value condValue = this.cond.eval(e);
 
         if (!condValue.isBoolean()){
-            throw new InvalidTypes(condValue.show());
+            throw new InvalidValueConvertionException(condValue.show());
         }
 
         if (((Bool)condValue).getValue()){
@@ -45,15 +44,24 @@ public class ASTWhile extends TypeHolder implements ASTNode {
     //TODO Testing
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
-        String label0 = block.gensym(BlockType.LABEL);
-        block.emit(String.format("%s: ", label0));
+        String labelStart = block.gensym(BlockType.LABEL);
+        String labelTrue = block.gensym(BlockType.LABEL);
+        String labelFalse = block.gensym(BlockType.LABEL);
+
+        System.out.println(labelStart + "\n" + labelTrue + "\n" + labelFalse);
+
+        block.emit(String.format("%s:", labelStart));
         this.cond.compile(block, e);
-        String label1 = block.gensym(BlockType.LABEL);
-        block.emit(String.format("%s %s", JVM.IFEQ, label1));
+        block.emit(String.format("%s %s", JVM.IFEQ, labelFalse));
+
+        block.emit(String.format("%s:", labelTrue));
         this.body.compile(block, e);
-        block.emit(JVM.POP.toString());
-        block.emit(String.format("%s %s", JVM.GOTO, label0));
-        block.emit(String.format("%s: ", label1));
+
+        //TODO Not working with pop op, has a problem of 1 != 2 on stack.
+        //block.emit(JVM.POP.toString());
+
+        block.emit(String.format("%s %s", JVM.GOTO, labelStart));
+        block.emit(String.format("%s: ", labelFalse));
     }
 
     @Override
@@ -62,7 +70,7 @@ public class ASTWhile extends TypeHolder implements ASTNode {
         Type condType = this.cond.typecheck(e);
 
         if (!TypeFunctions.sameType(condType, targetType))
-            throw new InvalidTypeConvertion(condType.show(), targetType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(condType.show(), targetType.show(), this.getClass().getSimpleName());
 
         Type result = this.body.typecheck(e);
         this.setType(result);

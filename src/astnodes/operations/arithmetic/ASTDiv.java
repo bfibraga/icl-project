@@ -2,8 +2,8 @@ package src.astnodes.operations.arithmetic;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
-import src.exceptions.InvalidTypes;
+import src.exceptions.InvalidTypeConvertionException;
+import src.exceptions.InvalidValueConvertionException;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
@@ -27,12 +27,12 @@ public class ASTDiv extends TypeHolder implements ASTNode {
     public Value eval(Environment<Value> e) {
         Value valueL = this.l.eval(e);
         if (!valueL.isNumber() || valueL.isBoolean()){
-            throw new InvalidTypes(valueL.show());
+            throw new InvalidValueConvertionException(valueL.show());
         }
 
         Value valueR = this.r.eval(e);
         if (!valueR.isNumber() || valueR.isBoolean()){
-            throw new InvalidTypes(valueL.show());
+            throw new InvalidValueConvertionException(valueL.show());
         }
 
         return new Int(((Int)valueL).getValue() / ((Int)valueR).getValue()) ;
@@ -50,12 +50,12 @@ public class ASTDiv extends TypeHolder implements ASTNode {
         Type targetType = new TInt();
         Type lType = this.l.typecheck(e);
         if (!TypeFunctions.sameType(lType, targetType))
-            throw new InvalidTypeConvertion(lType.show(), targetType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(lType.show(), targetType.show(), this.getClass().getSimpleName());
 
 
         Type rType = this.r.typecheck(e);
         if (!TypeFunctions.sameType(rType, targetType))
-            throw new InvalidTypeConvertion(rType.show(), targetType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(rType.show(), targetType.show(), this.getClass().getSimpleName());
 
         this.setType(targetType);
         return targetType;

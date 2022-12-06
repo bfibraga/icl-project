@@ -1,9 +1,9 @@
 package src.exceptions;
 
-public class UndeclaredID extends LanguageException {
+public class UndeclaredIDException extends LanguageException {
     private static final String DEFAULT_MSG = "Identifier %s undeclared.";
 
-    public UndeclaredID(String id){
+    public UndeclaredIDException(String id){
         super(String.format(DEFAULT_MSG, id));
     }
 }

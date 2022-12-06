@@ -2,8 +2,8 @@ package src.astnodes.control;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
-import src.exceptions.InvalidTypes;
+import src.exceptions.InvalidTypeConvertionException;
+import src.exceptions.InvalidValueConvertionException;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
@@ -35,7 +35,7 @@ public class ASTMatch extends TypeHolder implements ASTNode {
         Value condValue = this.cond.eval(e);
 
         if (!condValue.isNumber()){
-            throw new InvalidTypes(condValue.show());
+            throw new InvalidValueConvertionException(condValue.show());
         }
 
         for (Map.Entry<List<ASTNode>, ASTNode> entry : this.cases.entrySet()) {
@@ -65,7 +65,7 @@ public class ASTMatch extends TypeHolder implements ASTNode {
         Type condType = this.cond.typecheck(e);
 
         if (!TypeFunctions.sameType(condType, targetType))
-            throw new InvalidTypeConvertion(condType.show(), targetType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(condType.show(), targetType.show(), this.getClass().getSimpleName());
 
         Type defType = this.def.typecheck(e);
         for (Map.Entry<List<ASTNode>, ASTNode> entry : this.cases.entrySet()) {

@@ -2,8 +2,8 @@ package src.astnodes.operations.relational;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
-import src.exceptions.InvalidTypes;
+import src.exceptions.InvalidTypeConvertionException;
+import src.exceptions.InvalidValueConvertionException;
 import src.jvm.JVM;
 import src.jvm.JVMValues;
 import src.misc.CodeBlock;
@@ -27,7 +27,7 @@ public class ASTNot extends TypeHolder implements ASTNode {
     public Value eval(Environment<Value> e) {
         Value valueBody = this.body.eval(e);
         if (!valueBody.isBoolean() || valueBody.isNumber()){
-            throw new InvalidTypes(valueBody.show());
+            throw new InvalidValueConvertionException(valueBody.show());
         }
 
         return new Bool( !((Bool)valueBody).getValue()) ;
@@ -54,7 +54,7 @@ public class ASTNot extends TypeHolder implements ASTNode {
         Type bodyType = this.body.typecheck(e);
 
         if (!TypeFunctions.sameType(bodyType, targetType))
-            throw new InvalidTypeConvertion(bodyType.show(), targetType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(bodyType.show(), targetType.show(), this.getClass().getSimpleName());
 
         this.setType(new TBool());
         return targetType;

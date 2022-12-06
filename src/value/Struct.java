@@ -1,6 +1,6 @@
 package src.value;
 
-import src.exceptions.InvalidTypeConvertion;
+import src.exceptions.InvalidTypeConvertionException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,12 +71,12 @@ public class Struct implements Value {
 
     @Override
     public Value toInt() {
-        throw new InvalidTypeConvertion(this.getClass().getName(), Int.class.getName());
+        throw new InvalidTypeConvertionException(this.getClass().getName(), Int.class.getName());
     }
 
     @Override
     public Value toBool() {
-        throw new InvalidTypeConvertion(this.getClass().getName(), Bool.class.getName());
+        throw new InvalidTypeConvertionException(this.getClass().getName(), Bool.class.getName());
     }
 
     @Override

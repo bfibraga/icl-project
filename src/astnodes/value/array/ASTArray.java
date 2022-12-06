@@ -2,7 +2,7 @@ package src.astnodes.value.array;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
+import src.exceptions.InvalidTypeConvertionException;
 import src.misc.*;
 import src.type.TArray;
 import src.type.TVoid;
@@ -45,7 +45,7 @@ public class ASTArray extends TypeHolder implements ASTNode  {
             Type type = field.typecheck(e);
 
             if (previous != null && !TypeFunctions.sameType(previous, type))
-                throw new InvalidTypeConvertion(previous.show(), type.show(), this.getClass().getSimpleName());
+                throw new InvalidTypeConvertionException(previous.show(), type.show(), this.getClass().getSimpleName());
 
             previous = type;
         }

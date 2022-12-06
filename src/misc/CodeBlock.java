@@ -14,11 +14,14 @@ public class CodeBlock {
     private LabeledBlock labelsBlock;
     private ReferenceHandler reference;
 
+    private FuncBlock funcBlock;
+
     public CodeBlock(){
         this.code = new LinkedList<>();
         this.currDefBlock = new DefBlock();
         this.labelsBlock = new LabeledBlock();
         this.reference = new ReferenceHandler();
+        this.funcBlock = new FuncBlock();
     }
 
     public void emit(String operation) {
@@ -33,10 +36,13 @@ public class CodeBlock {
         if (type.equals(BlockType.LABEL))
             return this.labelsBlock.gensym();
 
+        if (type.equals(BlockType.FUNC))
+            return this.funcBlock.gensym();
+
         throw new RuntimeException("Invalid type of CodeType");
     }
 
-    public void dump(PrintWriter out){
+    public void dump(PrintWriter out) {
         if (!this.code.isEmpty()){
             String op = code.remove();
             out.println("\t\t" + op);

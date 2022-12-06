@@ -2,8 +2,8 @@ package src.astnodes.operations.relational;
 
 import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
-import src.exceptions.InvalidTypeConvertion;
-import src.exceptions.InvalidTypes;
+import src.exceptions.InvalidTypeConvertionException;
+import src.exceptions.InvalidValueConvertionException;
 import src.jvm.JVM;
 import src.jvm.JVMValues;
 import src.misc.CodeBlock;
@@ -30,12 +30,12 @@ public class ASTGrt extends TypeHolder implements ASTNode {
     public Value eval(Environment<Value> e) {
         Value valueL = this.l.eval(e);
         if (!valueL.isNumber() || valueL.isBoolean()){
-            throw new InvalidTypes(valueL.show());
+            throw new InvalidValueConvertionException(valueL.show());
         }
 
         Value valueR = this.r.eval(e);
         if (!valueR.isNumber() || valueR.isBoolean()){
-            throw new InvalidTypes(valueR.show());
+            throw new InvalidValueConvertionException(valueR.show());
         }
 
         return new Bool(((Int)valueL).getValue() > ((Int)valueR).getValue()) ;
@@ -43,19 +43,20 @@ public class ASTGrt extends TypeHolder implements ASTNode {
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
+
+        String label1 = block.gensym(BlockType.LABEL);
+        String label2 = block.gensym(BlockType.LABEL);
+
         this.l.compile(block, e);
         this.r.compile(block, e);
         block.emit(JVM.ISUB.toString());
 
-        String label0 = block.gensym(BlockType.LABEL);
-        String label1 = block.gensym(BlockType.LABEL);
-
-        block.emit(String.format("%s %s", JVM.IFGT, label0));
+        block.emit(String.format("%s %s", JVM.IFGT, label1));
         block.emit(String.format("%s %s", JVM.SIPUSH, JVMValues.FALSE));
-        block.emit(String.format("%s %s", JVM.GOTO, label1));
-        block.emit(String.format("%s:", label0));
-        block.emit(String.format("%s %s", JVM.SIPUSH, JVMValues.TRUE));
+        block.emit(String.format("%s %s", JVM.GOTO, label2));
         block.emit(String.format("%s:", label1));
+        block.emit(String.format("%s %s", JVM.SIPUSH, JVMValues.TRUE));
+        block.emit(String.format("%s:", label2));
     }
 
     @Override
@@ -63,12 +64,12 @@ public class ASTGrt extends TypeHolder implements ASTNode {
         Type targetType = new TInt();
         Type lType = this.l.typecheck(e);
         if (!TypeFunctions.sameType(lType, targetType))
-            throw new InvalidTypeConvertion(lType.show(), targetType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(lType.show(), targetType.show(), this.getClass().getSimpleName());
 
 
         Type rType = this.r.typecheck(e);
         if (!TypeFunctions.sameType(rType, targetType))
-            throw new InvalidTypeConvertion(rType.show(), targetType.show(), this.getClass().getSimpleName());
+            throw new InvalidTypeConvertionException(rType.show(), targetType.show(), this.getClass().getSimpleName());
 
         this.setType(new TBool());
         return new TBool();

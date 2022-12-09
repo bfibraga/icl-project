@@ -48,8 +48,6 @@ public class ASTWhile extends TypeHolder implements ASTNode {
         String labelTrue = block.gensym(BlockType.LABEL);
         String labelFalse = block.gensym(BlockType.LABEL);
 
-        System.out.println(labelStart + "\n" + labelTrue + "\n" + labelFalse);
-
         block.emit(String.format("%s:", labelStart));
         this.cond.compile(block, e);
         block.emit(String.format("%s %s", JVM.IFEQ, labelFalse));

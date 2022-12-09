@@ -16,4 +16,9 @@ public class TInt implements Type{
     public String jvmType() {
         return JVM_TYPE;
     }
+
+    @Override
+    public String toString() {
+        return this.show();
+    }
 }

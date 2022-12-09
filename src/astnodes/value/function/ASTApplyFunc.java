@@ -37,10 +37,10 @@ public class ASTApplyFunc extends TypeHolder implements ASTNode {
 
         Closure<Value> closure = (Closure<Value>) funcValue;
 
-        e = closure.getEnvironment().beginScope();
+        Environment<Value> closureEnvironment = closure.getEnvironment().beginScope();
 
-        System.out.println(e);
-
+        //System.out.println("Antes: " + closure);
+        //System.out.println(closureEnvironment);
 
         List<Pair<String, Type>> paramsNames = closure.getParamNames();
         for (int a = 0; a < this.args.size(); a++) {
@@ -48,14 +48,13 @@ public class ASTApplyFunc extends TypeHolder implements ASTNode {
             ASTNode argNode = this.args.get(a);
             Value argValue = argNode.eval(e);
 
-            e.assoc(argId, argValue);
+            closureEnvironment.assoc(argId, argValue);
         }
+        //System.out.println("Depois");
+        //System.out.println(closureEnvironment);
 
-        Value result = closure.getBody().eval(e);
-        e.alter(closure.toString(), result);
-        closure.setEnvironment(e);
-
-        e = e.endScope();
+        Value result = closure.getBody().eval(closureEnvironment);
+        closureEnvironment = closureEnvironment.endScope();
 
         return result;
     }
@@ -73,6 +72,8 @@ public class ASTApplyFunc extends TypeHolder implements ASTNode {
             throw new InvalidTypeConvertionException(fncType.show(), targetType.show(), this.getClass().getSimpleName());
 
         TClosure closureType = ((TClosure) fncType);
+
+        e = e.beginScope();
         List<Pair<String, Type>> argList = closureType.getParams();
 
         //System.out.println(closureType);
@@ -93,6 +94,9 @@ public class ASTApplyFunc extends TypeHolder implements ASTNode {
 
         Type result = closureType.getBodyType();
         this.setType(result);
+
+        e = e.endScope();
+
         return result;
     }
 }

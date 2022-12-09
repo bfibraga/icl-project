@@ -7,7 +7,7 @@ package src.parser;
 import src.astnodes.*;
 import src.astnodes.binding.*;
 import src.astnodes.control.*;
-import src.astnodes.value.array.ASTArrayLen;
+import src.astnodes.functions.ASTExit;import src.astnodes.value.array.ASTArrayLen;
 import src.astnodes.value.function.ASTApplyFunc;
 import src.astnodes.value.function.ASTFunction;
 import src.astnodes.functions.io.out.*;
@@ -48,7 +48,7 @@ TOKEN :
   |
   < FLOAT : <INT> "." (["0"-"9"])* | "." <INT> >
   |
-  < Num: (<INT> | <FLOAT>)>
+  < Num: <INT> | <FLOAT>>
   |
   < BOOL : ("true" | "false") >
   |
@@ -56,7 +56,9 @@ TOKEN :
   |
   < STRUCT : "struct">
   |
-  < ASSIGN : "->">
+  < ARROWRIGHT : "->">
+  |
+  < ARROWLEFT : "<-">
   |
   < QUOTE : "'">
   |
@@ -113,6 +115,8 @@ TOKEN :
   < FOR : "for">
   |
   < IN : "in">
+  |
+  < TO : "to">
   |
   < DDOT : ":">
   |
@@ -183,7 +187,7 @@ ASTNode SeqE():
     ASTNode t1, t2;
 }
 {
-    t1 = BoolAdd() (<ASSIGN> t2 = BoolAdd() { t1 = new ASTAssign(t1,t2); })*
+    t1 = BoolAdd() (<ARROWRIGHT> t2 = BoolAdd() { t1 = new ASTAssign(t1,t2); })*
     { return t1; }
 }
 
@@ -288,7 +292,7 @@ Bind<String, ASTNode> DefLet():
 }
 {
     { mut = new Token(); type = new Token(); }
-    (mut=<MUT>)? n = <Id> (<DDOT> type = <Id>(<LPAR>(<Id>(<COMMA><Id>)*)?<RPAR>)? )? <EQ> t = BoolAdd()
+    (mut=<MUT>)? n = <Id> (<DDOT> type = TypeBuild() )? <EQ> t = BoolAdd()
     {
         if (mut.image != null && !mut.image.trim().equals("")){
             t = new ASTNew(t);
@@ -358,19 +362,34 @@ ASTNode Struct():
     { return t; }
 }
 
+Token TypeBuild():
+{
+    Token type, in = new Token(), rt = new Token();
+}
+{
+    { in.image=""; rt.image=""; }
+    type = <Id> ( in = <LPAR> { Token n = new Token(); } n = TypeBuild() { in.image += n.image; }
+    ({ Token n2 = new Token(); } <COMMA>  n2 = TypeBuild() { in.image += "," + n2.image; })*
+    { in.image += ")"; } <RPAR> <ARROWRIGHT> rt = TypeBuild() { in.image += ":" + rt.image; } )?
+    {
+        type.image += in.image;
+        return type;
+    }
+}
+
 ASTNode Function():
 {
     ASTNode t;
 }
 {
-   { List<Pair<String,String>> p = new ArrayList<>(); }
-    <LPAR> ({ Token type, node; } node = <Id> <DDOT> type = <Id>(<LPAR><Id>(<COMMA><Id>)*<RPAR>)?
+   { List<Pair<String,String>> p = new ArrayList<>(); Token returnType = new Token(); returnType.image = ""; }
+    <LPAR> ({ Token type = new Token(), node; type.image = ""; } node = <Id> (<DDOT> type = TypeBuild())?
     { p.add(new Pair<>(node.image, type.image)); }
-    (<COMMA> node=<Id> <DDOT> type = <Id>(<LPAR><Id>(<COMMA><Id>)*<RPAR>)? { p.add(new Pair<>(node.image, type.image)); })*)?
-    <RPAR>
+    (<COMMA> node=<Id> (<DDOT> type = TypeBuild())? { p.add(new Pair<>(node.image, type.image)); })*)?
+    <RPAR> (<ARROWRIGHT> returnType = TypeBuild())?
     <LBRACKET> t=Seq() <RBRACKET>
     {
-    return new ASTFunction(p, t);
+        return new ASTFunction(p, t, returnType.image);
     }
 }
 
@@ -424,10 +443,16 @@ ASTNode Fact() :
             b = Seq()
             <RBRACKET>
     { t = new ASTWhile(t, b); }
+   | { Bind<String, ASTNode> init; ASTNode b; }
+        <FOR> init = DefLet() <TO> t = BoolAdd() <LBRACKET>
+            b = Seq()
+        <RBRACKET>
+     { t = new ASTFor(init, t, b); }
    | <REF> <LPAR> t=BoolAdd() <RPAR> { t = new ASTRef(t); }
    | { List<ASTNode> l = new ArrayList<>(); }<PRINT> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrint(l); }
    | { List<ASTNode> l = new ArrayList<>(); ASTNode str; }<PRINTF> <LPAR> str = BoolAdd() ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrintf(str, l); }
    | { List<ASTNode> l = new ArrayList<>(); }<PRINTLN> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrintln(l); }
+   | <EXIT> { t = new ASTExit(); }
    )
    { return t; }
 }

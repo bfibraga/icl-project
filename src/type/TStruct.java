@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class TStruct implements Type{
 
-    private static final String TYPE_NAME = "Record";
+    private static final String TYPE_NAME = "Struct";
 
     private Map<String, Type> fields;
 
@@ -29,5 +29,10 @@ public class TStruct implements Type{
     @Override
     public String jvmType() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return this.show();
     }
 }

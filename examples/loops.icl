@@ -1,4 +1,4 @@
-/* Test 0 - Primitive Types */
+/* Test 1 - Loops */
 {
     let mut x : int = 0;
     let MAX : int = 5;

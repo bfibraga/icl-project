@@ -3,14 +3,26 @@ package src.misc;
 import src.type.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class TypeFunctions {
 
     public static boolean sameType(Type givenType, Type targetType) {
-        return givenType.show().equals(targetType.show());
+        return givenType != null &&
+                targetType != null &&
+                givenType.show().equals(targetType.show());
+    }
+
+    public static boolean isVoid(Type type){
+        return sameType(type, new TVoid());
     }
 
     public static Type getType(String name){
+        if (name == null || name.trim().equals("")){
+            return new TVoid();
+        }
+
         if (name.contains("array")){
             return new TArray();
         }
@@ -20,18 +32,37 @@ public class TypeFunctions {
         if (name.equals("cell")){
             return new TCell();
         }
-        if (name.contains("func")){
-            return new TClosure(new ArrayList<>(), new TVoid());
-        }
         if (name.equals("int")){
             return new TInt();
         }
-        if (name.equals("struct")){
+        if (name.equals("structure")){
             return new TStruct();
         }
         if (name.equals("str")){
             return new TStr();
         }
+
+        if (name.contains("func")){
+            //TODO Implement type detector in params
+
+            String[] funcParts = name.split(":");
+            String mainBody = funcParts[0];
+            String returnTypename = funcParts[1];
+
+            String[] typeParams = mainBody.substring(mainBody.indexOf("(")+1, mainBody.indexOf(")")).split(",");
+            List<Pair<String, Type>> listType = new ArrayList<>();
+
+            for (int i = 0; i < typeParams.length; i++) {
+                String id = String.valueOf(i);
+                Type paramType = TypeFunctions.getType(typeParams[i]);
+
+                listType.add(new Pair<>(id, paramType));
+            }
+            Type returnType = TypeFunctions.getType(returnTypename);
+
+            return new TClosure(listType, returnType);
+        }
+
         return new TVoid();
     }
 }

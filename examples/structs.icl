@@ -17,6 +17,11 @@
             };
             fn reset() {
                 value -> DEFAULT
+            };
+            fn times(n : int){
+                for mut i : int = 0 to n - 1 {
+                    value -> val(value) + 1
+                }
             }
         }
     };
@@ -38,18 +43,18 @@
        } else if n == 1 or n == 0 {
             1
        } else {
-            n * fat( n-1 )
-            /*n-1*/
+            /* n * fat( n-1 ) */
+            n-1
        }
     };
 
-    println(lamp.get());
-    lamp.switch();
-    println(lamp.get());
+    counter.times(3);
+    println(counter.get());
+    counter.inc();
+    println(counter.get());
+    counter.times(-2);
+    println(counter.get())
 
-    println(lamp.get());
-
-    println(fat(3))
 /*
     let rand = {
         let mut seed : int = 2;

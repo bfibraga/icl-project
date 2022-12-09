@@ -59,12 +59,16 @@ public class Environment<V> {
         this.def.put(id, value);
     }
 
+    public void clear(String id) {
+        this.def.remove(id);
+    }
+
     @Override
     public String toString() {
         return "Environment{" +
                 "depth=" + depth +
                 ", def=" + def +
-                ", sl=" + sl +
-                '}';
+                ", sl=\n" + sl +
+                '}' + "\n";
     }
 }

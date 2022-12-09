@@ -43,7 +43,7 @@ public class ASTStructField extends TypeHolder implements ASTNode {
     public Type typecheck(Environment<Type> e) {
         Type targetType = new TCell();
         Type nodeType = this.node.typecheck(e);
-        if (TypeFunctions.sameType(nodeType, targetType)){
+        if (TypeFunctions.sameType(nodeType, targetType) && !TypeFunctions.isVoid(nodeType)){
             nodeType = ((TCell) nodeType).getType();
         }
 

@@ -19,12 +19,14 @@ public class ASTFunction extends TypeHolder implements ASTNode {
 
     private final List<Pair<String, Type>> params;
     private final ASTNode body;
+    private final Type returnType;
 
-    public ASTFunction(List<Pair<String,String>> params, ASTNode body) {
+    public ASTFunction(List<Pair<String,String>> params, ASTNode body, String returnTypename) {
         this.params = new ArrayList<>();
         for (Pair<String,String> pair: params) {
             this.params.add(new Pair<>(pair.getKey(), TypeFunctions.getType(pair.getValue())));
         }
+        this.returnType = TypeFunctions.getType(returnTypename);
         this.body = body;
     }
 
@@ -33,7 +35,6 @@ public class ASTFunction extends TypeHolder implements ASTNode {
         Closure<Value> closure = new Closure<>(this.params, this.body, e);
         e.assoc(closure.show(), closure);
         closure.setEnvironment(e);
-
         return closure;
     }
 

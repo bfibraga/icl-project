@@ -1,7 +1,7 @@
 /* Test - Functions */
 fn main() {
     println({
-        fn f(x : int, y : int) -> int {
+        let f = fn(x : int, y) {
             x + y
         };
         f(1,2)
@@ -10,7 +10,7 @@ fn main() {
         fn f2(x : int, y : int) -> int {
             x * y
         };
-        fn g2(x : int, y : int) -> int {
+        let g2 = fn(x : int, y : int) -> int {
             x + y
         };
         fn comp2(f : func(int, int) -> int, g : func(int, int) -> int, x : int, y : int) -> int {

@@ -305,7 +305,7 @@ Bind<String, ASTNode> Let():
 }
 {
     { mut = new Token(); type = new Token(); }
-    (mut=<MUT>)? n = <Id> (<DDOT> type = TypeBuild() )? <EQ> (t = BoolAdd() | <FUN> t = Function())
+    (mut=<MUT>)? n = <Id> (<DDOT> type = TypeBuild() )? <EQ> (t = BoolAdd())
     {
         if (mut.image != null && !mut.image.trim().equals("")){
             t = new ASTNew(t);
@@ -377,7 +377,7 @@ ASTNode Struct():
     { Map<String, ASTNode> m = new HashMap<>(); }
     ( b = Let() | b = DefFunc())
     { m.put(b.getId(), b.getValue()); }
-    ( <SEMCOL> (b = DefLet() | b = DefFunc())
+    ( <SEMCOL> (b = Let() | b = DefFunc())
     { m.put(b.getId(), b.getValue()); })*
     { t = new ASTStruct(m); }
     { return t; }
@@ -432,6 +432,7 @@ ASTNode Fact() :
       n=<INT> { t = new ASTInt(Integer.parseInt(n.image)); }
     | n=<BOOL> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
     | n=<STR> { t = new ASTStr(n.image); }
+    //| t = Function()
     | <LSBRACKET> t = Array() <RSBRACKET>
     | <LEN> n = <Id> { t = new ASTArrayLen(n.image); }
     | n=<Id> { t = new ASTId(n.image); Token n2; }

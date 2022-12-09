@@ -10,7 +10,9 @@ public class TypeFunctions {
     public static boolean sameType(Type givenType, Type targetType) {
         return givenType != null &&
                 targetType != null &&
-                givenType.show().equals(targetType.show());
+                (givenType.show().equals(new TVoid().show()) ||
+                        targetType.show().equals(new TVoid().show()) ||
+                        givenType.show().equals(targetType.show()));
     }
 
     public static boolean isVoid(Type type){

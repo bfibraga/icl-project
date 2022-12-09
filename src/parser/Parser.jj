@@ -7,7 +7,8 @@ package src.parser;
 import src.astnodes.*;
 import src.astnodes.binding.*;
 import src.astnodes.control.*;
-import src.astnodes.functions.ASTExit;import src.astnodes.value.array.ASTArrayLen;
+import src.astnodes.functions.*;
+import src.astnodes.value.array.ASTArrayLen;
 import src.astnodes.value.function.ASTApplyFunc;
 import src.astnodes.value.function.ASTFunction;
 import src.astnodes.functions.io.out.*;
@@ -146,6 +147,8 @@ TOKEN :
   |
   < FUN : "fn">
   |
+  < MAIN : "main">
+  |
   < LEN : "#">
   |
   < PRINT : "print">
@@ -167,8 +170,18 @@ ASTNode Start():
     ASTNode t;
 }
 {
-   t = Seq() <COMMA> <COMMA>
+   t = Main() <COMMA> <COMMA>
    { return t; }
+}
+
+ASTNode Main():
+{
+    Token n;
+    ASTNode t;
+}
+{
+    <FUN> <MAIN> <LPAR> <RPAR> t = Seq() { t = new ASTMain(t); }
+    { return t; }
 }
 
 ASTNode Seq():
@@ -284,7 +297,7 @@ ASTNode IfElse():
     { return new ASTIfElse(c, b, e); }
 }
 
-Bind<String, ASTNode> DefLet():
+Bind<String, ASTNode> Let():
 {
     Token n, mut, type;
     ASTNode t;
@@ -292,7 +305,7 @@ Bind<String, ASTNode> DefLet():
 }
 {
     { mut = new Token(); type = new Token(); }
-    (mut=<MUT>)? n = <Id> (<DDOT> type = TypeBuild() )? <EQ> t = BoolAdd()
+    (mut=<MUT>)? n = <Id> (<DDOT> type = TypeBuild() )? <EQ> (t = BoolAdd() | <FUN> t = Function())
     {
         if (mut.image != null && !mut.image.trim().equals("")){
             t = new ASTNew(t);
@@ -319,6 +332,15 @@ Bind<String, ASTNode> DefFunc():
     { return b; }
 }
 
+Bind<String, ASTNode> DefLet():
+{
+    Bind<String, ASTNode> b;
+}
+{
+    <LET> b = Let()
+    { return b; }
+}
+
 List<Bind<String, ASTNode>> DefVar():
 {
     Token n;
@@ -326,9 +348,8 @@ List<Bind<String, ASTNode>> DefVar():
     Bind<String, ASTNode> b;
 }
 {
-    (( <LET> b = DefLet()
-    | b = DefFunc())
-        { l.add(b); }
+    (( b = DefLet() | b = DefFunc())
+    { l.add(b); }
     <SEMCOL>)*
     { return l; }
 }
@@ -354,7 +375,7 @@ ASTNode Struct():
 }
 {
     { Map<String, ASTNode> m = new HashMap<>(); }
-    ( b = DefLet() | b = DefFunc())
+    ( b = Let() | b = DefFunc())
     { m.put(b.getId(), b.getValue()); }
     ( <SEMCOL> (b = DefLet() | b = DefFunc())
     { m.put(b.getId(), b.getValue()); })*
@@ -382,11 +403,19 @@ ASTNode Function():
     ASTNode t;
 }
 {
-   { List<Pair<String,String>> p = new ArrayList<>(); Token returnType = new Token(); returnType.image = ""; }
-    <LPAR> ({ Token type = new Token(), node; type.image = ""; } node = <Id> (<DDOT> type = TypeBuild())?
+   {
+        List<Pair<String,String>> p = new ArrayList<>();
+        Token returnType = new Token();
+        returnType.image = "";
+   }
+    <LPAR> ({ Token type = new Token(), node; type.image = ""; }
+     node = <Id> (<DDOT> type = TypeBuild())?
     { p.add(new Pair<>(node.image, type.image)); }
-    (<COMMA> node=<Id> (<DDOT> type = TypeBuild())? { p.add(new Pair<>(node.image, type.image)); })*)?
+
+    (<COMMA> node=<Id> (<DDOT> type = TypeBuild())?
+    { p.add(new Pair<>(node.image, type.image)); })*)?
     <RPAR> (<ARROWRIGHT> returnType = TypeBuild())?
+
     <LBRACKET> t=Seq() <RBRACKET>
     {
         return new ASTFunction(p, t, returnType.image);
@@ -403,7 +432,6 @@ ASTNode Fact() :
       n=<INT> { t = new ASTInt(Integer.parseInt(n.image)); }
     | n=<BOOL> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
     | n=<STR> { t = new ASTStr(n.image); }
-    //| <FUN> t = Function()
     | <LSBRACKET> t = Array() <RSBRACKET>
     | <LEN> n = <Id> { t = new ASTArrayLen(n.image); }
     | n=<Id> { t = new ASTId(n.image); Token n2; }
@@ -434,7 +462,8 @@ ASTNode Fact() :
         Map<List<ASTNode>, ASTNode> cases = new HashMap<>();
      }
      <MATCH> cond = BoolAdd() <LBRACKET>
-         ({ List<ASTNode> p = new ArrayList<>(); } v = BoolAdd() { p.add(v); } (<VB> v = BoolAdd() { p.add(v); })* <DDOT> c = Seq() { cases.put(p, c); } <COMMA> )*
+         ({ List<ASTNode> p = new ArrayList<>(); }
+            v = BoolAdd() { p.add(v); } (<VB> v = BoolAdd() { p.add(v); })* <DDOT> c = Seq() { cases.put(p, c); } <COMMA> )*
          <DEFAULTCASE> <DDOT> d = Seq()
      <RBRACKET>
      { t = new ASTMatch(cond, cases, d); }

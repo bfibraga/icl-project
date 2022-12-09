@@ -114,19 +114,21 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int FUN = 58;
   /** RegularExpression Id. */
-  int LEN = 59;
+  int MAIN = 59;
   /** RegularExpression Id. */
-  int PRINT = 60;
+  int LEN = 60;
   /** RegularExpression Id. */
-  int PRINTLN = 61;
+  int PRINT = 61;
   /** RegularExpression Id. */
-  int PRINTF = 62;
+  int PRINTLN = 62;
   /** RegularExpression Id. */
-  int EXIT = 63;
+  int PRINTF = 63;
   /** RegularExpression Id. */
-  int STR = 64;
+  int EXIT = 64;
   /** RegularExpression Id. */
-  int Id = 65;
+  int STR = 65;
+  /** RegularExpression Id. */
+  int Id = 66;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -194,6 +196,7 @@ public interface ParserConstants {
     "\"new\"",
     "\"val\"",
     "\"fn\"",
+    "\"main\"",
     "\"#\"",
     "\"print\"",
     "\"println\"",

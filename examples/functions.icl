@@ -1,7 +1,7 @@
 /* Test - Functions */
-{
+fn main() {
     println({
-        fn f(x : int, y) {
+        fn f(x : int, y : int) -> int {
             x + y
         };
         f(1,2)

@@ -66,7 +66,7 @@ public class ASTApplyFunc extends TypeHolder implements ASTNode {
 
     @Override
     public Type typecheck(Environment<Type> e) {
-        Type targetType = new TClosure(new ArrayList<>(), new TVoid());
+        Type targetType = new TClosure(new ArrayList<>(), new TVoid(), new TVoid());
         Type fncType = this.fnc.typecheck(e);
         if (!TypeFunctions.sameType(fncType, targetType))
             throw new InvalidTypeConvertionException(fncType.show(), targetType.show(), this.getClass().getSimpleName());
@@ -93,10 +93,15 @@ public class ASTApplyFunc extends TypeHolder implements ASTNode {
         }
 
         Type result = closureType.getBodyType();
-        this.setType(result);
+        Type returnType = closureType.getReturnType();
+
+        if (!TypeFunctions.sameType(result, returnType))
+            throw new InvalidTypeConvertionException(result, returnType, this.getClass().getSimpleName());
+
+        this.setType(returnType);
 
         e = e.endScope();
 
-        return result;
+        return returnType;
     }
 }

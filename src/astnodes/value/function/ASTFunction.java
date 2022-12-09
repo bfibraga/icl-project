@@ -56,7 +56,7 @@ public class ASTFunction extends TypeHolder implements ASTNode {
 
         e = e.endScope();
 
-        Type result = new TClosure(params, bodyType);
+        Type result = new TClosure(params, bodyType, returnType);
         this.setType(result);
         return result;
     }

@@ -3,7 +3,6 @@ package src.misc;
 import src.type.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TypeFunctions {
@@ -60,7 +59,7 @@ public class TypeFunctions {
             }
             Type returnType = TypeFunctions.getType(returnTypename);
 
-            return new TClosure(listType, returnType);
+            return new TClosure(listType, returnType, returnType);
         }
 
         return new TVoid();

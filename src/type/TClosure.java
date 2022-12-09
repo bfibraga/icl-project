@@ -2,7 +2,6 @@ package src.type;
 
 import src.misc.Pair;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TClosure implements Type {
@@ -12,9 +11,12 @@ public class TClosure implements Type {
     private final List<Pair<String, Type>> params;
     private final Type bodyAbstractType;
 
-    public TClosure(List<Pair<String, Type>> params, Type bodyAbstractType) {
+    private final Type returnType;
+
+    public TClosure(List<Pair<String, Type>> params, Type bodyAbstractType, Type returnType) {
         this.params = params;
         this.bodyAbstractType = bodyAbstractType;
+        this.returnType = returnType;
     }
 
     public List<Pair<String, Type>> getParams() {
@@ -23,6 +25,10 @@ public class TClosure implements Type {
 
     public Type getBodyType() {
         return bodyAbstractType;
+    }
+
+    public Type getReturnType() {
+        return returnType;
     }
 
     @Override

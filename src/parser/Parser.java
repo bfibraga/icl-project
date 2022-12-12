@@ -412,6 +412,7 @@ List<ASTNode> l = new ArrayList<>();
     case NOT:
     case NEW:
     case REF:
+    case LAMBDA:
     case LEN:
     case PRINT:
     case PRINTLN:
@@ -629,7 +630,8 @@ t = new ASTBool(Boolean.parseBoolean(n.image));
 t = new ASTStr(n.image);
       break;
       }
-    case LPAR:{
+    case LAMBDA:{
+      jj_consume_token(LAMBDA);
       t = Function();
       break;
       }
@@ -686,6 +688,7 @@ List<ASTNode> a = new ArrayList<>();
           case NOT:
           case NEW:
           case REF:
+          case LAMBDA:
           case LEN:
           case PRINT:
           case PRINTLN:
@@ -742,7 +745,8 @@ t = new ASTArrayIndex(t, t2);
       t = Fact();
 t = new ASTNeg(t);
       break;
-      }{
+      }
+    case LPAR:{
       jj_consume_token(LPAR);
       t = BoolAdd();
       jj_consume_token(RPAR);
@@ -807,6 +811,7 @@ t = new ASTNew(t);
         case NOT:
         case NEW:
         case REF:
+        case LAMBDA:
         case LEN:
         case PRINT:
         case PRINTLN:
@@ -995,7 +1000,7 @@ t = new ASTExit();
 	   jj_la1_1 = new int[] {0x2,0x0,0x400000,0x200000,0xf8001,0xf8001,0x0,0x0,0x0,0x0,0x10,0x0,0x2000,0x4000000,0x4000000,0x4,0xf3100690,0x4000000,0x2,0x4000000,0x4,0x0,0x2000,0x4,0x2000,0x0,0x0,0x8,0x4,0xf3100690,0x8,0xf3100690,0x100,0x4,0x4,0x4,0xf3100690,};
 	}
 	private static void jj_la1_init_2() {
-	   jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x7,0x4,0x0,0x4,0x0,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x0,0x7,0x0,0x7,0x0,0x0,0x0,0x0,0x7,};
+	   jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf,0x8,0x0,0x8,0x0,0x0,0x0,0x0,0x0,0x8,0x0,0x0,0x0,0xf,0x0,0xf,0x0,0x0,0x0,0x0,0xf,};
 	}
 
   /** Constructor with InputStream. */
@@ -1141,7 +1146,7 @@ t = new ASTExit();
   /** Generate ParseException. */
   static public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[67];
+	 boolean[] la1tokens = new boolean[68];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -1161,7 +1166,7 @@ t = new ASTExit();
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 67; i++) {
+	 for (int i = 0; i < 68; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;

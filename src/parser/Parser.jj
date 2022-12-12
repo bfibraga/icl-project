@@ -149,6 +149,8 @@ TOKEN :
   |
   < MAIN : "main">
   |
+  < LAMBDA : "lambda">
+  |
   < LEN : "#">
   |
   < PRINT : "print">
@@ -432,7 +434,7 @@ ASTNode Fact() :
       n=<INT> { t = new ASTInt(Integer.parseInt(n.image)); }
     | n=<BOOL> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
     | n=<STR> { t = new ASTStr(n.image); }
-    //| t = Function()
+    | <LAMBDA> t = Function()
     | <LSBRACKET> t = Array() <RSBRACKET>
     | <LEN> n = <Id> { t = new ASTArrayLen(n.image); }
     | n=<Id> { t = new ASTId(n.image); Token n2; }

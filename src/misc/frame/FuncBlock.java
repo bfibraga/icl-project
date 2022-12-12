@@ -68,7 +68,7 @@ public class FuncBlock {
         out.close();
     }
 
-    public void dump(PrintWriter out){
+    private void dump(PrintWriter out){
         if (!this.applyOps.isEmpty()){
             String currOp = this.applyOps.poll();
             out.println("\t" + currOp);

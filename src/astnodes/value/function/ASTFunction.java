@@ -6,12 +6,18 @@ import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.misc.Pair;
+import src.misc.frame.DefBlock;
+import src.misc.frame.FuncBlock;
 import src.type.TClosure;
 import src.misc.TypeFunctions;
 import src.type.Type;
 import src.value.Closure;
 import src.value.Value;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +46,15 @@ public class ASTFunction extends TypeHolder implements ASTNode {
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
+        DefBlock currDefBlock = block.getCurrFrame();
+        FuncBlock funcBlock = new FuncBlock((TClosure) this.getType(), currDefBlock);
 
+        try {
+            funcBlock.defInterface(new PrintWriter("./src/jvm/result/" + funcBlock.getInterfaceId() + ".j"));
+            funcBlock.defClosure(new PrintWriter("./src/jvm/result/" + "closure_of_" + funcBlock.getInterfaceId() + ".j"));
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override

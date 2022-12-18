@@ -22,10 +22,9 @@ import java.util.*;
 public class Parser implements ParserConstants {
 
   static final public ASTNode Start() throws ParseException {ASTNode t;
-    t = Main();
+    t = Seq();
     jj_consume_token(COMMA);
     jj_consume_token(COMMA);
-    jj_consume_token(0);
 {if ("" != null) return t;}
     throw new Error("Missing return statement in function");
 }

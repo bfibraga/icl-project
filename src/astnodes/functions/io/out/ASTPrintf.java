@@ -7,6 +7,7 @@ import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
+import src.type.TStr;
 import src.type.TVoid;
 import src.type.Type;
 import src.value.Str;
@@ -54,7 +55,10 @@ public class ASTPrintf extends TypeHolder implements ASTNode {
             Type argType = ((TypeHolder)arg).getType();
             String argTypename = argType.jvmType();
             argTypename = argTypename.contains("Ref_of") ? "L" + argTypename + ";" : argTypename;
-            block.emit(String.format("%s java/lang/String/valueOf(%s)Ljava/lang/String;", JVM.INVOKESTATIC, argTypename));
+
+            if (!argTypename.equals(new TStr().jvmType()))
+                block.emit(String.format("%s java/lang/String/valueOf(%s)Ljava/lang/String;", JVM.INVOKESTATIC, argTypename));
+
             block.emit(String.format("%s java/io/PrintStream/printf(Ljava/lang/String;)V", JVM.INVOKEVIRTUAL));
         }
     }

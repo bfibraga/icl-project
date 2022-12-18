@@ -185,7 +185,7 @@ ASTNode Start():
     ASTNode t;
 }
 {
-   t = Main() <COMMA> <COMMA> <EOF>
+   t = Seq() <COMMA> <COMMA>
    { return t; }
 }
 

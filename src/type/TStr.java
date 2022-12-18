@@ -2,8 +2,7 @@ package src.type;
 
 public class TStr implements Type{
     private static final String TYPE_NAME = "Str";
-    private static final String JVM_TYPE = "S";
-
+    private static final String JVM_TYPE = "Ljava/lang/String;";
 
     @Override
     public String show() {

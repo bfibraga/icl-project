@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 
 public class FuncBlock {
 
-    private static final String TOKEN = "closure_interface_";
+    private static final String TOKEN = "closure_interface";
     private String interfaceId;
 
     private TClosure closure;
@@ -70,7 +70,7 @@ public class FuncBlock {
 
             out.println(".class public " + id);
             out.println(".super java/lang/Object");
-            out.println(".implements closure_" + this.getInterfaceId());
+            out.println(".implements closure_interface" + this.getInterfaceId());
             System.out.println(this.defBlock.getId());
             out.println(".field sl " + this.defBlock.getId());
             out.println();
@@ -81,7 +81,8 @@ public class FuncBlock {
                 \taload_0
                 \tinvokenonvirtual java/lang/Object/<init>()V
                 \treturn
-                .end method""");
+                .end method
+                """);
 
             out.println(".method public apply" + this.getInterfaceId());
             out.println("\t.limit locals " + (this.closure.getParams().size() + 2));

@@ -45,16 +45,22 @@ public class TClosure implements Type {
 
     @Override
     public String jvmType() {
-        StringBuilder paramsList = new StringBuilder();
+        StringBuilder resultType = new StringBuilder("Lclosure_interface(");
         for (Pair<String, Type> pair: this.getParams()) {
             String id = pair.getKey();
             Type type = pair.getValue();
 
-            paramsList.append(type.jvmType()).append(",");
+            resultType.append(type.jvmType()).append(",");
         }
-        if (!paramsList.isEmpty())
-            paramsList.deleteCharAt(paramsList.length()-1);
-        return paramsList.toString();
+        if (!resultType.isEmpty())
+            resultType.deleteCharAt(resultType.length()-1);
+
+        resultType.append(")").append(getReturnType().jvmType()).append(";");
+
+        return resultType.toString();
+
+        //StringBuilder stringBuilder = new StringBuilder("Lclosure_" + this.JVMID + ";");
+        //return stringBuilder.toString();
     }
 
     @Override

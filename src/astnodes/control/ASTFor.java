@@ -35,7 +35,6 @@ public class ASTFor extends TypeHolder implements ASTNode {
         if (!initValue.isCell())
             throw new InvalidValueConvertionException(initValue.show());
 
-
         Value contentValue = ((Cell)initValue).get();
         if (!contentValue.isNumber())
             throw new InvalidValueConvertionException(contentValue.show());

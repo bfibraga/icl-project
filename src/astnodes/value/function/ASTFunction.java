@@ -51,11 +51,13 @@ public class ASTFunction extends TypeHolder implements ASTNode {
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         e = e.beginScope();
         int depth = e.getDepth();
-        DefBlock currDefBlock = block.getCurrFrame();
 
         TClosure closure = (TClosure) this.getType();
         String funcID = block.gensym(BlockType.FUNC);
         closure.setJVMID(funcID);
+        this.setType(closure);
+
+        DefBlock currDefBlock = block.getCurrFrame();
 
         for (Pair<String, Type> param: closure.getParams()) {
             String id = param.getKey();
@@ -67,7 +69,7 @@ public class ASTFunction extends TypeHolder implements ASTNode {
         DefBlock newDefBlock = funcBlock.getDefBlock();
         String result = "\"";
         try {
-            funcBlock.defInterface(new PrintWriter("./src/jvm/result/closure_interface_" + funcBlock.getInterfaceId() + ".j"));
+            funcBlock.defInterface(new PrintWriter("./src/jvm/result/closure_interface" + funcBlock.getInterfaceId() + ".j"));
 
             PrintWriter closureOut = funcBlock.defClosure("./src/jvm/result", "closure_" + funcID);
 
@@ -85,11 +87,24 @@ public class ASTFunction extends TypeHolder implements ASTNode {
             funcBodyBlock.emit(String.format("%s %s/sl L%s;", JVM.PUTFIELD, newDefBlock, currDefBlock));
             funcBodyBlock.emit(String.format("%s_%d", JVM.ASTORE, 3));
 
+            //funcBodyBlock.emit("-----");
+
+            for (int i = 0; i < this.params.size(); i++) {
+                Pair<String, Type> pair = this.params.get(i);
+
+                funcBodyBlock.emit(String.format("%s %d", JVM.ILOAD, (i+1)));
+                funcBodyBlock.emit(String.format("%s %s/%s %s", JVM.PUTFIELD, newDefBlock, "v"+i,  pair.getValue().jvmType()));
+                funcBodyBlock.emit(JVM.DUP.toString());
+            }
+            
             this.body.compile(funcBodyBlock, e);
             funcBodyBlock.emit(JVM.IRETURN.toString());
             funcBodyBlock.emit(".end method");
 
+            //funcBodyBlock.emit("-----");
+
             funcBodyBlock.dump(closureOut);
+
             closureOut.close();
 
             funcBlock.defFuncFrameBlock("./src/jvm/result");

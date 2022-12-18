@@ -1,63 +1,81 @@
 package src.misc.frame;
 
+import src.misc.Pair;
 import src.type.TClosure;
+import src.type.Type;
 
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 public class FuncBlock {
 
-    private static final String TOKEN = "closure_%s_to_%s";
+    private static final String TOKEN = "closure_interface_";
     private String interfaceId;
 
     private TClosure closure;
-
-    private Queue<String> applyOps;
 
     private DefBlock defBlock;
 
     public FuncBlock(TClosure closure, DefBlock defBlock){
         this.closure = closure;
-        this.interfaceId = String.format(TOKEN, closure.getParams(), closure.getReturnType().jvmType());
-        this.applyOps = new LinkedList<>();
-        this.defBlock = new DefBlock("frame_closure" + defBlock.getId(), defBlock);
+        StringBuilder paramsList = new StringBuilder();
+        this.defBlock = new DefBlock("closure_" + defBlock.getId(), defBlock);
+
+        for (Pair<String, Type> pair: closure.getParams()) {
+            String id = pair.getKey();
+            Type type = pair.getValue();
+
+            String symID = this.defBlock.gensym();
+            this.defBlock.setType(symID, type);
+            paramsList.append(type.jvmType()).append(",");
+        }
+        if (!paramsList.isEmpty())
+            paramsList.deleteCharAt(paramsList.length()-1);
+
+        this.interfaceId = String.format("(%s)%s", paramsList, closure.getReturnType().jvmType());
     }
 
     public String getInterfaceId() {
         return interfaceId;
     }
 
-    public void add(String op){
-        this.applyOps.add(op);
+    public DefBlock getDefBlock() {
+        return defBlock;
     }
 
     public void defInterface(PrintWriter out){
-        out.println(".interface public " + this.getInterfaceId());
+        out.println(".interface public " + TOKEN + this.getInterfaceId());
         out.println(".super java/lang/Object");
-        out.println(".method public abstract apply(" + this.closure.getParams() + ")" + this.closure.getReturnType().jvmType());
-        out.println(".end method");
-    }
-
-    public void defFuncFrameBlock(PrintWriter out){
-        this.defBlock.def(out);
-    }
-
-    public void defClosure(PrintWriter out){
-        out.println(".class public closure_NANI");
-        out.println(".super java/lang/Object");
-        out.println(".implements " + this.getInterfaceId());
-        out.println(".field sl " + this.defBlock.getId());
-        out.println();
-
-        out.println(".method public apply(" + this.closure.getParams() + ")" + this.closure.getReturnType().jvmType());
-        out.println("\t.limit locals 4");
-        out.println("\t.limit stack 256");
-        this.dump(out);
+        out.println(".method public abstract apply" + this.getInterfaceId());
         out.println(".end method");
 
-        out.println("""
+        out.close();
+    }
+
+    public void defFuncFrameBlock(String path){
+        try{
+            PrintWriter out = new PrintWriter(path + "/" + defBlock.getId() + ".j");
+
+            this.defBlock.def(out);
+            out.close();
+        } catch (IOException io){
+            io.printStackTrace();
+        }
+    }
+
+    public PrintWriter defClosure(String path, String id){
+
+        try {
+            PrintWriter out = new PrintWriter(path + "/" + id  + ".j");
+
+            out.println(".class public " + id);
+            out.println(".super java/lang/Object");
+            out.println(".implements closure_" + this.getInterfaceId());
+            System.out.println(this.defBlock.getId());
+            out.println(".field sl " + this.defBlock.getId());
+            out.println();
+
+            out.println("""
                 
                 .method	public <init>()V
                 \taload_0
@@ -65,14 +83,15 @@ public class FuncBlock {
                 \treturn
                 .end method""");
 
-        out.close();
-    }
+            out.println(".method public apply" + this.getInterfaceId());
+            out.println("\t.limit locals " + (this.closure.getParams().size() + 2));
+            out.println("\t.limit stack 256");
 
-    private void dump(PrintWriter out){
-        if (!this.applyOps.isEmpty()){
-            String currOp = this.applyOps.poll();
-            out.println("\t" + currOp);
-            this.dump(out);
+            return out;
+
+        } catch (IOException io){
+            io.printStackTrace();
         }
+        return null;
     }
 }

@@ -30,12 +30,23 @@ SKIP :
 | "\t"
 | "\r"
 | "\n"
-| "/*" : WithinComment
+| "/*" : WithinCommentBlock
+| "//" : WithinComment
+}
+
+<WithinCommentBlock> SKIP :
+{
+  "*/" : DEFAULT
+}
+
+<WithinCommentBlock> MORE :
+{
+  <~[]>
 }
 
 <WithinComment> SKIP :
 {
-  "*/" : DEFAULT
+  "\n" : DEFAULT
 }
 
 <WithinComment> MORE :
@@ -74,6 +85,8 @@ TOKEN :
   < POW : "^">
   |
   < DIV : "/">
+  |
+  < QMARK : "?">
   |
   < LPAR : "(" >
   |
@@ -172,7 +185,7 @@ ASTNode Start():
     ASTNode t;
 }
 {
-   t = Main() <COMMA> <COMMA>
+   t = Main() <COMMA> <COMMA> <EOF>
    { return t; }
 }
 
@@ -329,7 +342,7 @@ Bind<String, ASTNode> DefFunc():
     Bind<String, ASTNode> b;
 }
 {
-    <FUN> n=<Id> t = Function()
+    <FUN> n=<Id> t = Function(n)
     { b = new Bind<>(n.image, t); }
     { return b; }
 }
@@ -400,7 +413,7 @@ Token TypeBuild():
     }
 }
 
-ASTNode Function():
+ASTNode Function(Token id):
 {
     ASTNode t;
 }
@@ -420,13 +433,14 @@ ASTNode Function():
 
     <LBRACKET> t=Seq() <RBRACKET>
     {
-        return new ASTFunction(p, t, returnType.image);
+        //System.out.println(id.image);
+        return new ASTFunction(id.image, p, t, returnType.image);
     }
 }
 
 ASTNode Fact() :
 {
-    Token n;
+    Token n = new Token();
     ASTNode t;
 }
 {
@@ -434,7 +448,7 @@ ASTNode Fact() :
       n=<INT> { t = new ASTInt(Integer.parseInt(n.image)); }
     | n=<BOOL> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
     | n=<STR> { t = new ASTStr(n.image); }
-    | <LAMBDA> t = Function()
+    | <LAMBDA> t = Function(n)
     | <LSBRACKET> t = Array() <RSBRACKET>
     | <LEN> n = <Id> { t = new ASTArrayLen(n.image); }
     | n=<Id> { t = new ASTId(n.image); Token n2; }
@@ -466,7 +480,7 @@ ASTNode Fact() :
      }
      <MATCH> cond = BoolAdd() <LBRACKET>
          ({ List<ASTNode> p = new ArrayList<>(); }
-            v = BoolAdd() { p.add(v); } (<VB> v = BoolAdd() { p.add(v); })* <DDOT> c = Seq() { cases.put(p, c); } <COMMA> )*
+            v = BoolAdd() { p.add(v); } (<VB> v = BoolAdd() { p.add(v); })* <EQ> c = Seq() { cases.put(p, c); } <COMMA> )*
          <DEFAULTCASE> <DDOT> d = Seq()
      <RBRACKET>
      { t = new ASTMatch(cond, cases, d); }
@@ -481,9 +495,9 @@ ASTNode Fact() :
         <RBRACKET>
      { t = new ASTFor(init, t, b); }
    | <REF> <LPAR> t=BoolAdd() <RPAR> { t = new ASTRef(t); }
-   | { List<ASTNode> l = new ArrayList<>(); }<PRINT> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrint(l); }
+   | { List<ASTNode> l = new ArrayList<>(); }<PRINT> <LPAR> (t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })*)? <RPAR> { t = new ASTPrint(l); }
    | { List<ASTNode> l = new ArrayList<>(); ASTNode str; }<PRINTF> <LPAR> str = BoolAdd() ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrintf(str, l); }
-   | { List<ASTNode> l = new ArrayList<>(); }<PRINTLN> <LPAR> t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrintln(l); }
+   | { List<ASTNode> l = new ArrayList<>(); }<PRINTLN> <LPAR> (t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })*)? <RPAR> { t = new ASTPrintln(l); }
    | <EXIT> { t = new ASTExit(); }
    )
    { return t; }

@@ -1,9 +1,6 @@
 fn main(){
-    fn f(x:int)->int{
-        x*2
+    fn f(x:int)->bool {
+        x <= 2 and x > 0
     };
-    let g = lambda(x:int)->int{
-        x+1
-    };
-    println(g(1))
+    println(f(2))
 },,

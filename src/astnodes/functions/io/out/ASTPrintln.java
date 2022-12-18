@@ -31,13 +31,16 @@ public class ASTPrintln extends TypeHolder implements ASTNode {
 
             result.append(value.show()).append("\n");
         }
-        result.deleteCharAt(result.length()-1);
+        if (!result.isEmpty())
+            result.deleteCharAt(result.length()-1);
+
         System.out.println(result);
         return new Str("");
     }
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
+        block.emit(String.format("%s java/lang/System/out Ljava/io/PrintStream;", JVM.GETSTATIC));
         for (ASTNode arg: this.args) {
             arg.compile(block, e);
             Type argType = ((TypeHolder)arg).getType();

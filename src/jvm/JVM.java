@@ -5,6 +5,7 @@ public enum JVM {
     ASTORE,
     DUP,
     GETFIELD,
+    GETSTATIC,
     GOTO,
     IADD,
     IAND,
@@ -28,7 +29,8 @@ public enum JVM {
     POP,
     PUTFIELD,
     SIPUSH,
-    ILOAD;
+    ILOAD,
+    IRETURN;
 
     @Override
     public String toString() {

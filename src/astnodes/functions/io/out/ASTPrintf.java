@@ -9,6 +9,7 @@ import src.misc.Coordinates;
 import src.misc.Environment;
 import src.type.TVoid;
 import src.type.Type;
+import src.value.Str;
 import src.value.Value;
 
 import java.util.ArrayList;
@@ -41,12 +42,13 @@ public class ASTPrintf extends TypeHolder implements ASTNode {
         }
         System.out.printf(strValue.show(), result);
 
-        return null;
+        return new Str("");
     }
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         //TODO Get right
+        block.emit(String.format("%s java/lang/System/out Ljava/io/PrintStream;", JVM.GETSTATIC));
         for (ASTNode arg: this.args) {
             arg.compile(block, e);
             Type argType = ((TypeHolder)arg).getType();

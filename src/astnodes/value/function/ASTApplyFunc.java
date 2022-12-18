@@ -37,10 +37,8 @@ public class ASTApplyFunc extends TypeHolder implements ASTNode {
 
         Closure<Value> closure = (Closure<Value>) funcValue;
 
-        Environment<Value> closureEnvironment = closure.getEnvironment().beginScope();
-
-        //System.out.println("Antes: " + closure);
-        //System.out.println(closureEnvironment);
+        Environment<Value> closureEnvironment = closure.getEnvironment();
+        //closureEnvironment.assoc(closure.getId(), closure);
 
         List<Pair<String, Type>> paramsNames = closure.getParamNames();
         for (int a = 0; a < this.args.size(); a++) {
@@ -50,8 +48,6 @@ public class ASTApplyFunc extends TypeHolder implements ASTNode {
 
             closureEnvironment.assoc(argId, argValue);
         }
-        //System.out.println("Depois");
-        //System.out.println(closureEnvironment);
 
         Value result = closure.getBody().eval(closureEnvironment);
         closureEnvironment = closureEnvironment.endScope();

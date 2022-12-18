@@ -30,8 +30,8 @@ public class TypeFunctions {
         if (name.equals("bool")){
             return new TBool();
         }
-        if (name.equals("cell")){
-            return new TCell();
+        if (name.contains("ref")){
+            return new TCell(new TVoid());
         }
         if (name.equals("int")){
             return new TInt();

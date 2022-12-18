@@ -8,14 +8,21 @@ import src.type.Type;
 import java.util.List;
 
 public class Closure<T> implements Value {
+
+    private final String id;
     private final List<Pair<String, Type>> paramNames;
     private final ASTNode body;
     private Environment<T> environment;
 
-    public Closure(List<Pair<String, Type>> paramNames, ASTNode body, Environment<T> environment) {
+    public Closure(String id, List<Pair<String, Type>> paramNames, ASTNode body, Environment<T> environment) {
+        this.id = id;
         this.paramNames = paramNames;
         this.body = body;
         this.environment = environment;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public List<Pair<String, Type>> getParamNames() {

@@ -37,11 +37,13 @@ public class ASTPrint extends TypeHolder implements ASTNode {
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
+        block.emit(String.format("%s java/lang/System/out Ljava/io/PrintStream;", JVM.GETSTATIC));
         for (ASTNode arg: this.args) {
             arg.compile(block, e);
             Type argType = ((TypeHolder)arg).getType();
             String argTypename = argType.jvmType();
             argTypename = argTypename.contains("Ref_of") ? "L" + argTypename + ";" : argTypename;
+
             block.emit(String.format("%s java/lang/String/valueOf(%s)Ljava/lang/String;", JVM.INVOKESTATIC, argTypename));
             block.emit(String.format("%s java/io/PrintStream/print(Ljava/lang/String;)V", JVM.INVOKEVIRTUAL));
         }

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ASTFunction extends TypeHolder implements ASTNode {
 
@@ -53,27 +54,36 @@ public class ASTFunction extends TypeHolder implements ASTNode {
         int depth = e.getDepth();
 
         TClosure closure = (TClosure) this.getType();
-        String funcID = block.gensym(BlockType.FUNC);
-        closure.setJVMID(funcID);
-        this.setType(closure);
+        String funcID = closure.getJVMID();
 
         DefBlock currDefBlock = block.getCurrFrame();
 
-        for (Pair<String, Type> param: closure.getParams()) {
+        /*for (Pair<String, Type> param: closure.getParams()) {
             String id = param.getKey();
             Type paramType = param.getValue();
             e.assoc(id, new Coordinates(id, depth, paramType.jvmType()));
-        }
+        }*/
 
-        FuncBlock funcBlock = new FuncBlock(closure, currDefBlock);
+        FuncBlock funcBlock = new FuncBlock(closure, new DefBlock("closure_" + currDefBlock.getId()));
         DefBlock newDefBlock = funcBlock.getDefBlock();
-        String result = "\"";
+
         try {
-            funcBlock.defInterface(new PrintWriter("./src/jvm/result/closure_interface" + funcBlock.getInterfaceId() + ".j"));
+            block.emit(String.format("%s %s", JVM.NEW, "closure_" + funcID));
+            block.emit(JVM.DUP.toString());
+            block.emit(String.format("%s %s/<init>()V", JVM.INVOKESPECIAL, "closure_" + funcID));
+            block.emit(JVM.DUP.toString());
+
+            block.emit(String.format("%s_%d", JVM.ALOAD, 3));
+            block.emit(String.format("%s %s/sl L%s;", JVM.PUTFIELD, "closure_" + funcID, newDefBlock.getPrevious()));
+
+            block.emit("");
+
+
+            funcBlock.defInterface(new PrintWriter("./src/jvm/result/closure_interface_" + funcBlock.getInterfaceId() + ".j"));
 
             PrintWriter closureOut = funcBlock.defClosure("./src/jvm/result", "closure_" + funcID);
 
-            CodeBlock funcBodyBlock = new CodeBlock();
+            CodeBlock funcBodyBlock = new CodeBlock(newDefBlock, block.getReference());
 
             //Init recent declared frame
             funcBodyBlock.emit(String.format("%s %s", JVM.NEW, newDefBlock));
@@ -82,26 +92,40 @@ public class ASTFunction extends TypeHolder implements ASTNode {
             funcBodyBlock.emit(JVM.DUP.toString());
 
             //Init static link of current frame
-            funcBodyBlock.emit(String.format("%s_%d", JVM.ALOAD, 3));
-            funcBodyBlock.emit(String.format("%s %s/sl L%s;", JVM.GETFIELD, "closure_" + funcID, currDefBlock.getPrevious()));
-            funcBodyBlock.emit(String.format("%s %s/sl L%s;", JVM.PUTFIELD, newDefBlock, currDefBlock));
-            funcBodyBlock.emit(String.format("%s_%d", JVM.ASTORE, 3));
+            funcBodyBlock.emit(String.format("%s_%d", JVM.ALOAD, 0));
+            funcBodyBlock.emit(String.format("%s %s/sl L%s;", JVM.GETFIELD, "closure_" + funcID, newDefBlock.getPrevious()));
+            funcBodyBlock.emit(String.format("%s %s/sl L%s;", JVM.PUTFIELD, newDefBlock, newDefBlock.getPrevious()));
+            funcBodyBlock.emit(JVM.DUP.toString());
 
-            //funcBodyBlock.emit("-----");
-
+            Coordinates coordinates;
             for (int i = 0; i < this.params.size(); i++) {
                 Pair<String, Type> pair = this.params.get(i);
+                String id = pair.getKey();
 
+                Type type = pair.getValue();
+                String typename = type.jvmType();
+
+                String sym = funcBodyBlock.gensym(BlockType.CODE);
+                newDefBlock.setType(sym, type);
+
+                coordinates = new Coordinates(sym, depth, typename);
+                e.assoc(id, coordinates);
+
+                funcBodyBlock.emit("");
                 funcBodyBlock.emit(String.format("%s %d", JVM.ILOAD, (i+1)));
-                funcBodyBlock.emit(String.format("%s %s/%s %s", JVM.PUTFIELD, newDefBlock, "v"+i,  pair.getValue().jvmType()));
-                funcBodyBlock.emit(JVM.DUP.toString());
+                funcBodyBlock.emit(String.format("%s %s/%s %s", JVM.PUTFIELD, newDefBlock, sym, typename.contains("Ref_of_") ?
+                        "L" + typename + ";" :
+                        typename ));
+                funcBodyBlock.emit(String.format("%s_%d", JVM.ASTORE, 3));
+
+                funcBodyBlock.emit("");
             }
             
             this.body.compile(funcBodyBlock, e);
+
+            funcBodyBlock.emit("");
             funcBodyBlock.emit(JVM.IRETURN.toString());
             funcBodyBlock.emit(".end method");
-
-            //funcBodyBlock.emit("-----");
 
             funcBodyBlock.dump(closureOut);
 
@@ -129,11 +153,14 @@ public class ASTFunction extends TypeHolder implements ASTNode {
 
         e = e.endScope();
 
-        Type result = new TClosure(params, bodyType, returnType);
+        TClosure result = new TClosure(params, bodyType, returnType);
 
         //e.assoc(this.id, result);
 
+        String JVMID = UUID.randomUUID().toString().replace("-", "_");
+        result.setJVMID(JVMID);
         this.setType(result);
+
         return result;
     }
 }

@@ -29,7 +29,7 @@ public class Cell implements Value{
 
     @Override
     public String show() {
-        return String.format("Cell(%s)", this.get().show());
+        return String.format("ref(%s)", this.get().show());
     }
 
     @Override

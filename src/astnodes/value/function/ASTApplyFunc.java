@@ -4,10 +4,12 @@ import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypeConvertionException;
 import src.exceptions.InvalidValueConvertionException;
+import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
 import src.misc.Environment;
 import src.misc.Pair;
+import src.misc.frame.FuncBlock;
 import src.type.TClosure;
 import src.misc.TypeFunctions;
 import src.type.TVoid;
@@ -57,7 +59,27 @@ public class ASTApplyFunc extends TypeHolder implements ASTNode {
 
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
+        block.emit("");
+        this.fnc.compile(block, e);
+        TClosure closure = (TClosure) ((TypeHolder) this.fnc).getType();
+        FuncBlock funcBlock = new FuncBlock(closure, block.getCurrFrame());
 
+        StringBuilder applyParams = new StringBuilder("(");
+        String[] parts = funcBlock.getInterfaceId().split("_");
+        applyParams.append(parts[0]);
+        for (int i = 1; i < parts.length-1; i++) {
+            applyParams.append(", ").append(parts[i]);
+        }
+        applyParams.append(")").append(parts[parts.length - 1]);
+
+        block.emit(String.format("%s %s", JVM.CHECKCAST, "closure_interface_" + funcBlock.getInterfaceId()));
+
+        for (ASTNode arg: this.args) {
+            arg.compile(block, e);
+        }
+
+        block.emit(String.format("%s %s/apply%s %d", JVM.INVOKEINTERFACE, "closure_interface_" + funcBlock.getInterfaceId(), applyParams, closure.getParams().size()+1));
+        block.emit("");
     }
 
     @Override

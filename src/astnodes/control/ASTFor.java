@@ -32,56 +32,53 @@ public class ASTFor extends TypeHolder implements ASTNode {
         ASTNode initNode = this.init.getValue();
 
         Value initValue = initNode.eval(e);
-        if (!initValue.isCell())
+        if (!initValue.isNumber())
             throw new InvalidValueConvertionException(initValue.show());
 
-        Value contentValue = ((Cell)initValue).get();
-        if (!contentValue.isNumber())
-            throw new InvalidValueConvertionException(contentValue.show());
-
         Value iterationValue = this.limit.eval(e);
-        if (iterationValue.isCell())
-            iterationValue = ((Cell)iterationValue).get();
-
         if (!iterationValue.isNumber())
             throw new InvalidValueConvertionException(iterationValue.show());
 
-        e = e.beginScope();
-        e.assoc(initId, initValue);
-
-        int initInt = ((Int)contentValue).getValue();
+        int initInt = ((Int)initValue).getValue();
         int iterationInt = ((Int)iterationValue).getValue();
 
         Value result = new Bool(false);
 
         if (initInt > iterationInt){
-            result = iterationStep(e, iterationInt, initInt);
+            result = iterationStep(e, initId, iterationInt, initInt);
         }
 
         if (initInt < iterationInt){
-            result = iterationStep(e, initInt, iterationInt);
+            result = iterationStep(e, initId, initInt, iterationInt);
         }
 
         if (initInt == iterationInt){
             result = this.body.eval(e);
         }
 
-        e.endScope();
         return result;
     }
 
-    private Value iterationStep(Environment<Value> e, int min, int max) {
-        for (int i = min; i <= max; i++) {
-            Value previousI = e.find(init.getId());
-            Cell newI = ((Cell)previousI);
+    private Value iterationStep(Environment<Value> e, String id, int min, int max) {
 
-            newI.set(new Int(i));
+        Value bodyValue = this.evalBody(e, id, min);
 
-            e.alter(init.getId(), newI);
-            this.body.eval(e);
+        for (int i = min + 1; i <= max; i++) {
+            bodyValue = evalBody(e, id, i);
         }
+
+        return bodyValue;
+    }
+
+    private Value evalBody(Environment<Value> e, String id, int value) {
+        e = e.beginScope();
+
+        e.assoc(id, new Int(value));
+        Value bodyValue = this.body.eval(e);
+
         e = e.endScope();
-        return new Bool(true);
+
+        return bodyValue;
     }
 
     @Override

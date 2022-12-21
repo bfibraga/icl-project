@@ -24,6 +24,14 @@ public class CodeBlock {
         this.nFuncBlocks = 0;
     }
 
+    public CodeBlock(DefBlock currDefBlock, ReferenceHandler reference){
+        this.code = new LinkedList<>();
+        this.currDefBlock = currDefBlock;
+        this.labelsBlock = new LabeledBlock();
+        this.reference = reference;
+        this.nFuncBlocks = 0;
+    }
+
     public void emit(String operation) {
         this.code.add(operation);
     }

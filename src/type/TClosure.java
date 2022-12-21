@@ -34,6 +34,10 @@ public class TClosure implements Type {
         return returnType;
     }
 
+    public String getJVMID() {
+        return JVMID;
+    }
+
     public void setJVMID(String JVMID) {
         this.JVMID = JVMID;
     }
@@ -45,7 +49,7 @@ public class TClosure implements Type {
 
     @Override
     public String jvmType() {
-        StringBuilder resultType = new StringBuilder("Lclosure_interface(");
+        /*StringBuilder resultType = new StringBuilder("Lclosure_interface(");
         for (Pair<String, Type> pair: this.getParams()) {
             String id = pair.getKey();
             Type type = pair.getValue();
@@ -57,10 +61,10 @@ public class TClosure implements Type {
 
         resultType.append(")").append(getReturnType().jvmType()).append(";");
 
-        return resultType.toString();
+        return resultType.toString();*/
 
-        //StringBuilder stringBuilder = new StringBuilder("Lclosure_" + this.JVMID + ";");
-        //return stringBuilder.toString();
+        StringBuilder stringBuilder = new StringBuilder("Lclosure_" + this.JVMID + ";");
+        return stringBuilder.toString();
     }
 
     @Override

@@ -3,6 +3,7 @@ package src.jvm;
 public enum JVM {
     ALOAD,
     ASTORE,
+    CHECKCAST,
     DUP,
     GETFIELD,
     GETSTATIC,
@@ -19,6 +20,7 @@ public enum JVM {
     ILOAD,
     IMUL,
     INEG,
+    INVOKEINTERFACE,
     INVOKESPECIAL,
     INVOKESTATIC,
     INVOKEVIRTUAL,

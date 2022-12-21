@@ -4,8 +4,12 @@
 {
     // Single comment line
     let value : int = 2;
-    let f : func(int, int, int) -> bool = lambda(x : int, min : int, max : int ) -> bool {
-        x >= min and x <= max
+    fn f(x:int) -> int{
+        x+1
     };
-    println(f(2, 3, 7))
+    fn g(x:int) -> int{
+        x*3
+    };
+    //println(true)
+    println(f(g(value)))
 },,

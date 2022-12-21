@@ -51,7 +51,6 @@ public class ASTFunction extends TypeHolder implements ASTNode {
     @Override
     public void compile(CodeBlock block, Environment<Coordinates> e) {
         e = e.beginScope();
-        int depth = e.getDepth();
 
         TClosure closure = (TClosure) this.getType();
         String funcID = closure.getJVMID();
@@ -97,30 +96,13 @@ public class ASTFunction extends TypeHolder implements ASTNode {
             funcBodyBlock.emit(String.format("%s %s/sl L%s;", JVM.PUTFIELD, newDefBlock, newDefBlock.getPrevious()));
             funcBodyBlock.emit(JVM.DUP.toString());
 
-            Coordinates coordinates;
-            for (int i = 0; i < this.params.size(); i++) {
-                Pair<String, Type> pair = this.params.get(i);
-                String id = pair.getKey();
-
-                Type type = pair.getValue();
-                String typename = type.jvmType();
-
-                String sym = funcBodyBlock.gensym(BlockType.CODE);
-                newDefBlock.setType(sym, type);
-
-                coordinates = new Coordinates(sym, depth, typename);
-                e.assoc(id, coordinates);
-
-                funcBodyBlock.emit("");
-                funcBodyBlock.emit(String.format("%s %d", JVM.ILOAD, (i+1)));
-                funcBodyBlock.emit(String.format("%s %s/%s %s", JVM.PUTFIELD, newDefBlock, sym, typename.contains("Ref_of_") ?
-                        "L" + typename + ";" :
-                        typename ));
-                funcBodyBlock.emit(String.format("%s_%d", JVM.ASTORE, 3));
-
-                funcBodyBlock.emit("");
+            for (int i = 0; i < this.params.size()-1; i++) {
+                saveCoordinates(funcBodyBlock, newDefBlock, e, i);
+                funcBodyBlock.emit(JVM.DUP.toString());
             }
-            
+            saveCoordinates(funcBodyBlock, newDefBlock, e, this.params.size()-1);
+            funcBodyBlock.emit(String.format("%s_%d", JVM.ASTORE, 3));
+
             this.body.compile(funcBodyBlock, e);
 
             funcBodyBlock.emit("");
@@ -137,6 +119,30 @@ public class ASTFunction extends TypeHolder implements ASTNode {
         }
 
         e = e.endScope();
+    }
+
+    private void saveCoordinates(CodeBlock funcBlock, DefBlock defBlock, Environment<Coordinates> e, int index){
+        int depth = e.getDepth();
+
+        Pair<String, Type> pair = this.params.get(index);
+        String id = pair.getKey();
+
+        Type type = pair.getValue();
+        String typename = type.jvmType();
+
+        String sym = funcBlock.gensym(BlockType.CODE);
+        defBlock.setType(sym, type);
+
+        Coordinates coordinates = new Coordinates(sym, depth, typename);
+        e.assoc(id, coordinates);
+
+        funcBlock.emit("");
+        funcBlock.emit(String.format("%s %d", JVM.ILOAD, (index+1)));
+        funcBlock.emit(String.format("%s %s/%s %s", JVM.PUTFIELD, defBlock, sym, typename.contains("Ref_of_") ?
+                "L" + typename + ";" :
+                typename ));
+
+        funcBlock.emit("");
     }
 
     @Override
@@ -157,7 +163,7 @@ public class ASTFunction extends TypeHolder implements ASTNode {
 
         //e.assoc(this.id, result);
 
-        String JVMID = UUID.randomUUID().toString().replace("-", "_");
+        String JVMID = "f" + UUID.randomUUID().toString().replace("-", "_");
         result.setJVMID(JVMID);
         this.setType(result);
 

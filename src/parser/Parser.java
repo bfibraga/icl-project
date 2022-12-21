@@ -78,7 +78,7 @@ t1 = new ASTSeq(t1,t2);
         break label_2;
       }
       jj_consume_token(ARROWRIGHT);
-      t2 = BoolAdd();
+      t2 = SeqE();
 t1 = new ASTAssign(t1,t2);
     }
 {if ("" != null) return t1;}

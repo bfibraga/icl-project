@@ -52,7 +52,7 @@ public class FuncBlock {
         String[] parts = this.getInterfaceId().split("_");
         applyParams.append(parts[0]);
         for (int i = 1; i < parts.length-1; i++) {
-            applyParams.append(", ").append(parts[i]);
+            applyParams.append(parts[i]);
         }
         applyParams.append(")").append(parts[parts.length - 1]);
 
@@ -96,7 +96,7 @@ public class FuncBlock {
             String[] parts = this.getInterfaceId().split("_");
             applyParams.append(parts[0]);
             for (int i = 1; i < parts.length-1; i++) {
-                applyParams.append(", ").append(parts[i]);
+                applyParams.append(parts[i]);
             }
             applyParams.append(")").append(parts[parts.length - 1]);
 

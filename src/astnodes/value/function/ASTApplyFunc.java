@@ -4,6 +4,7 @@ import src.astnodes.ASTNode;
 import src.astnodes.TypeHolder;
 import src.exceptions.InvalidTypeConvertionException;
 import src.exceptions.InvalidValueConvertionException;
+import src.exceptions.WrongNumberFuntionParametersException;
 import src.jvm.JVM;
 import src.misc.CodeBlock;
 import src.misc.Coordinates;
@@ -68,7 +69,7 @@ public class ASTApplyFunc extends TypeHolder implements ASTNode {
         String[] parts = funcBlock.getInterfaceId().split("_");
         applyParams.append(parts[0]);
         for (int i = 1; i < parts.length-1; i++) {
-            applyParams.append(", ").append(parts[i]);
+            applyParams.append(parts[i]);
         }
         applyParams.append(")").append(parts[parts.length - 1]);
 
@@ -93,6 +94,9 @@ public class ASTApplyFunc extends TypeHolder implements ASTNode {
 
         e = e.beginScope();
         List<Pair<String, Type>> argList = closureType.getParams();
+
+        if (argList.size() != this.args.size())
+            throw new WrongNumberFuntionParametersException(argList.size(), this.args.size());
 
         //System.out.println(closureType);
 

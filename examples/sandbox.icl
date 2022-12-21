@@ -4,12 +4,8 @@
 {
     // Single comment line
     let value : int = 2;
-    fn f(x:int) -> int{
-        x+1
+    fn f(x:int, y:int) -> bool{
+        x > 0 and y > 0
     };
-    fn g(x:int) -> int{
-        x*3
-    };
-    //println(true)
-    println(f(g(value)))
+    println(f(1,2,-1)) //prints false
 },,

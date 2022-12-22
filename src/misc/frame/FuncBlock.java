@@ -1,6 +1,7 @@
 package src.misc.frame;
 
 import src.misc.Pair;
+import src.misc.TypeFunctions;
 import src.type.TClosure;
 import src.type.Type;
 
@@ -11,6 +12,7 @@ public class FuncBlock {
 
     private static final String TOKEN = "closure_interface_";
     private String interfaceId;
+    private String applySignature;
 
     private TClosure closure;
 
@@ -19,27 +21,32 @@ public class FuncBlock {
 
     public FuncBlock(TClosure closure, DefBlock defBlock){
         this.closure = closure;
-        StringBuilder paramsList = new StringBuilder();
-        //this.defBlock = new DefBlock("closure_" + defBlock.getId(), defBlock);
         this.defBlock = defBlock;
 
+        StringBuilder interfaceParamsList = new StringBuilder();
+        StringBuilder applyParamsList = new StringBuilder();
+
         for (Pair<String, Type> pair: closure.getParams()) {
-            String id = pair.getKey();
             Type type = pair.getValue();
 
-            //String symID = this.defBlock.gensym();
-            //this.defBlock.setType(symID, type);
-            paramsList.append(type.jvmType()).append("_");
+            interfaceParamsList.append(TypeFunctions.convertTypename(type.jvmType())).append("_");
+            applyParamsList.append(type.jvmType());
         }
-        if (!paramsList.isEmpty())
-            paramsList.deleteCharAt(paramsList.length()-1);
+        if (!interfaceParamsList.isEmpty())
+            interfaceParamsList.deleteCharAt(interfaceParamsList.length()-1);
 
-        this.interfaceId = String.format("%s_%s", paramsList, closure.getReturnType().jvmType());
-        this.nLocals = this.closure.getParams().size()+2;
+
+        this.interfaceId = String.format("%s_%s", interfaceParamsList, TypeFunctions.convertTypename(closure.getReturnType().jvmType()));
+        this.applySignature = String.format("(%s)%s", applyParamsList, closure.getReturnType().jvmType());
+        this.nLocals = Math.max(4, this.closure.getParams().size()+3) ;
     }
 
     public String getInterfaceId() {
         return interfaceId;
+    }
+
+    public String getApplySignature() {
+        return applySignature;
     }
 
     public DefBlock getDefBlock() {
@@ -50,15 +57,7 @@ public class FuncBlock {
         out.println(".interface public " + TOKEN + this.getInterfaceId());
         out.println(".super java/lang/Object");
 
-        StringBuilder applyParams = new StringBuilder("(");
-        String[] parts = this.getInterfaceId().split("_");
-        applyParams.append(parts[0]);
-        for (int i = 1; i < parts.length-1; i++) {
-            applyParams.append(parts[i]);
-        }
-        applyParams.append(")").append(parts[parts.length - 1]);
-
-        out.println(".method public abstract apply" + applyParams);
+        out.println(".method public abstract apply" + this.getApplySignature());
         out.println(".end method");
 
         out.close();
@@ -94,16 +93,8 @@ public class FuncBlock {
                 .end method
                 """);
 
-            StringBuilder applyParams = new StringBuilder("(");
-            String[] parts = this.getInterfaceId().split("_");
-            applyParams.append(parts[0]);
-            for (int i = 1; i < parts.length-1; i++) {
-                applyParams.append(parts[i]);
-            }
-            applyParams.append(")").append(parts[parts.length - 1]);
-
-            out.println(".method public apply" + applyParams);
-            out.println("\t.limit locals " + (this.closure.getParams().size() + 3));
+            out.println(".method public apply" + this.getApplySignature());
+            out.println("\t.limit locals " + nLocals);
             out.println("\t.limit stack 256");
 
             //out.println("\taconst_null");

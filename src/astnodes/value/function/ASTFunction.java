@@ -10,8 +10,10 @@ import src.misc.Pair;
 import src.misc.frame.BlockType;
 import src.misc.frame.DefBlock;
 import src.misc.frame.FuncBlock;
+import src.type.TBool;
 import src.type.TClosure;
 import src.misc.TypeFunctions;
+import src.type.TInt;
 import src.type.Type;
 import src.value.Closure;
 import src.value.Value;
@@ -57,12 +59,6 @@ public class ASTFunction extends TypeHolder implements ASTNode {
 
         DefBlock currDefBlock = block.getCurrFrame();
 
-        /*for (Pair<String, Type> param: closure.getParams()) {
-            String id = param.getKey();
-            Type paramType = param.getValue();
-            e.assoc(id, new Coordinates(id, depth, paramType.jvmType()));
-        }*/
-
         String funcFrameID = block.gensym(BlockType.FUNC);
         FuncBlock funcBlock = new FuncBlock(closure, new DefBlock("closure_frame" + funcFrameID, currDefBlock));
         DefBlock newDefBlock = funcBlock.getDefBlock();
@@ -76,9 +72,6 @@ public class ASTFunction extends TypeHolder implements ASTNode {
             block.emit(String.format("%s_%d", JVM.ALOAD, 3));
             block.emit(String.format("%s %s/sl L%s;", JVM.PUTFIELD, "closure_" + funcID, newDefBlock.getPrevious()));
             //block.emit(JVM.DUP.toString());
-
-            block.emit("");
-
 
             funcBlock.defInterface(new PrintWriter("./src/jvm/result/closure_interface_" + funcBlock.getInterfaceId() + ".j"));
 
@@ -98,23 +91,24 @@ public class ASTFunction extends TypeHolder implements ASTNode {
             funcBodyBlock.emit(String.format("%s %s/sl L%s;", JVM.PUTFIELD, newDefBlock, newDefBlock.getPrevious()));
             funcBodyBlock.emit(JVM.DUP.toString());
 
-            System.out.println(this.params);
             if (this.params.size() > 0){
                 for (int i = 0; i < this.params.size()-1; i++) {
                     saveCoordinates(funcBodyBlock, newDefBlock, e, i);
                     funcBodyBlock.emit(JVM.DUP.toString());
                 }
-                funcBodyBlock.emit("");
                 saveCoordinates(funcBodyBlock, newDefBlock, e, this.params.size()-1);
             }
             funcBodyBlock.emit(String.format("%s_%d", JVM.ASTORE, 3));
 
             this.body.compile(funcBodyBlock, e);
 
-            funcBodyBlock.emit("");
-            funcBodyBlock.emit(JVM.IRETURN.toString());
-            funcBodyBlock.emit(".end method");
+            Type bodyType = closure.getBodyType();
+            if (TypeFunctions.sameType(bodyType, new TInt()) || TypeFunctions.sameType(bodyType, new TBool()))
+                funcBodyBlock.emit(JVM.IRETURN.toString());
+            else
+                funcBodyBlock.emit(JVM.ARETURN.toString());
 
+            funcBodyBlock.emit(".end method");
             funcBodyBlock.dump(closureOut);
 
             closureOut.close();
@@ -143,7 +137,11 @@ public class ASTFunction extends TypeHolder implements ASTNode {
         e.assoc(id, coordinates);
 
         funcBlock.emit("");
-        funcBlock.emit(String.format("%s %d", JVM.ILOAD, (index+1)));
+        if (TypeFunctions.sameType(type, new TInt()) || TypeFunctions.sameType(type, new TBool()))
+            funcBlock.emit(String.format("%s %d", JVM.ILOAD, (index+1)));
+        else
+            funcBlock.emit(String.format("%s %d", JVM.ALOAD, (index+1)));
+
         funcBlock.emit(String.format("%s %s/%s %s", JVM.PUTFIELD, defBlock, sym, typename.contains("Ref_of_") ?
                 "L" + typename + ";" :
                 typename ));

@@ -3,6 +3,7 @@ package src.jvm;
 public enum JVM {
     ALOAD,
     ASTORE,
+    ARETURN,
     CHECKCAST,
     DUP,
     GETFIELD,
@@ -33,6 +34,7 @@ public enum JVM {
     LDC_W,
     LOOKUPSWITCH,
     NEW,
+    RETURN,
     POP,
     PUTFIELD,
     SIPUSH;

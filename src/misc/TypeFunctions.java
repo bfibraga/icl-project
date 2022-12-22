@@ -1,5 +1,6 @@
 package src.misc;
 
+import src.jvm.JVMType;
 import src.type.*;
 
 import java.util.ArrayList;
@@ -70,5 +71,24 @@ public class TypeFunctions {
         }
 
         return new TVoid();
+    }
+
+    public static String convertTypename(String typename){
+        String result = "";
+
+        if (typename.contains(JVMType.CLOSURE.name)){
+            String[] parts = typename.replace(",","").split("_");
+            result = "C_";
+            for (int i = 1; i < parts.length; i++) {
+                result += parts[i];
+            }
+        } else if (typename.contains(JVMType.STRING.name)) {
+            result = "S";
+        } else if (typename.contains(JVMType.INT.name) || typename.contains(JVMType.BOOL.name)){
+            result = String.valueOf(typename.charAt(0));
+        }
+
+
+        return result;
     }
 }

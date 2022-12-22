@@ -18,13 +18,6 @@ public class Compiler {
     private static final int CODE_LINE = 31;
 
     public static void main(String[] args) {
-
-        String stackTraceFlag = args.length > 1 ? args[1] : "";
-        boolean stackTrace = stackTraceFlag.equals("true");
-
-        System.out.println(stackTraceFlag);
-        System.out.println(stackTrace);
-
         try {
             String filename = args[0];
             if (!filename.endsWith(".icl")){
@@ -52,9 +45,9 @@ public class Compiler {
             publishCode(code, out, new Scanner(new File("./src/jvm/Dummy.j")));
 
         } catch (LanguageException e) {
-            handleException("Language error encountered!", e, stackTrace);
+            handleException("Language error encountered!", e);
         } catch (ParseException | IOException e)  {
-            handleException("Syntax error encountered!", e, stackTrace);
+            handleException("Syntax error encountered!", e);
         }
     }
 
@@ -78,16 +71,14 @@ public class Compiler {
         in.close();
     }
 
-    private static void handleException(String message, Exception e, boolean stackTrace) {
+    private static void handleException(String message, Exception e) {
         System.out.println(message + "\nExiting...");
 
         System.out.println("Exception message:");
         System.out.println(e.getMessage());
 
-        if (stackTrace){
-            System.out.println("Stack trace on exit:");
-            e.printStackTrace();
-        }
+        System.out.println("Stack trace on exit:");
+        e.printStackTrace();
 
         System.exit(1);
     }

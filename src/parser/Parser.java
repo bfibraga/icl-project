@@ -78,7 +78,7 @@ t1 = new ASTSeq(t1,t2);
         break label_2;
       }
       jj_consume_token(ARROWRIGHT);
-      t2 = SeqE();
+      t2 = BoolAdd();
 t1 = new ASTAssign(t1,t2);
     }
 {if ("" != null) return t1;}
@@ -402,6 +402,7 @@ List<ASTNode> l = new ArrayList<>();
     case BOOL:
     case STRUCT:
     case MINUS:
+    case QMARK:
     case LPAR:
     case LBRACKET:
     case LSBRACKET:
@@ -411,7 +412,6 @@ List<ASTNode> l = new ArrayList<>();
     case FOR:
     case NOT:
     case NEW:
-    case REF:
     case LAMBDA:
     case LEN:
     case PRINT:
@@ -679,6 +679,7 @@ List<ASTNode> a = new ArrayList<>();
           case BOOL:
           case STRUCT:
           case MINUS:
+          case QMARK:
           case LPAR:
           case LBRACKET:
           case LSBRACKET:
@@ -688,7 +689,6 @@ List<ASTNode> a = new ArrayList<>();
           case FOR:
           case NOT:
           case NEW:
-          case REF:
           case LAMBDA:
           case LEN:
           case PRINT:
@@ -753,6 +753,12 @@ t = new ASTNeg(t);
       jj_consume_token(RPAR);
       break;
       }
+    case QMARK:{
+      jj_consume_token(QMARK);
+      t = BoolAdd();
+t = new ASTRef(t);
+      break;
+      }
     case NOT:{
       jj_consume_token(NOT);
       t = Fact();
@@ -802,6 +808,7 @@ t = new ASTNew(t);
         case BOOL:
         case STRUCT:
         case MINUS:
+        case QMARK:
         case LPAR:
         case LBRACKET:
         case LSBRACKET:
@@ -811,7 +818,6 @@ t = new ASTNew(t);
         case FOR:
         case NOT:
         case NEW:
-        case REF:
         case LAMBDA:
         case LEN:
         case PRINT:
@@ -879,14 +885,6 @@ Bind<String, ASTNode> init; ASTNode b;
 t = new ASTFor(init, t, b);
       break;
       }
-    case REF:{
-      jj_consume_token(REF);
-      jj_consume_token(LPAR);
-      t = BoolAdd();
-      jj_consume_token(RPAR);
-t = new ASTRef(t);
-      break;
-      }
     case PRINT:{
 List<ASTNode> l = new ArrayList<>();
       jj_consume_token(PRINT);
@@ -896,6 +894,7 @@ List<ASTNode> l = new ArrayList<>();
       case BOOL:
       case STRUCT:
       case MINUS:
+      case QMARK:
       case LPAR:
       case LBRACKET:
       case LSBRACKET:
@@ -905,7 +904,6 @@ List<ASTNode> l = new ArrayList<>();
       case FOR:
       case NOT:
       case NEW:
-      case REF:
       case LAMBDA:
       case LEN:
       case PRINT:
@@ -974,6 +972,7 @@ List<ASTNode> l = new ArrayList<>();
       case BOOL:
       case STRUCT:
       case MINUS:
+      case QMARK:
       case LPAR:
       case LBRACKET:
       case LSBRACKET:
@@ -983,7 +982,6 @@ List<ASTNode> l = new ArrayList<>();
       case FOR:
       case NOT:
       case NEW:
-      case REF:
       case LAMBDA:
       case LEN:
       case PRINT:
@@ -1053,10 +1051,10 @@ t = new ASTExit();
 	   jj_la1_init_2();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x0,0x20000,0x0,0x0,0x0,0x0,0x300000,0x300000,0x3c00000,0x3c00000,0x20000000,0x0,0x0,0x0,0x0,0x0,0xa8214800,0x0,0x0,0x0,0x0,0x8000000,0x0,0x0,0x0,0x0,0x20000,0x88000000,0x0,0xa8214800,0x88000000,0xa8214800,0x0,0x0,0xa8214800,0x0,0x0,0xa8214800,0xa8214800,};
+	   jj_la1_0 = new int[] {0x0,0x20000,0x0,0x0,0x0,0x0,0x300000,0x300000,0x3c00000,0x3c00000,0x20000000,0x0,0x0,0x0,0x0,0x0,0xac214800,0x0,0x0,0x0,0x0,0x8000000,0x0,0x0,0x0,0x0,0x20000,0x88000000,0x0,0xac214800,0x88000000,0xac214800,0x0,0x0,0xac214800,0x0,0x0,0xac214800,0xac214800,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x20,0x0,0x4000000,0x2000000,0xf80010,0xf80010,0x0,0x0,0x0,0x0,0x100,0x4,0x20000,0x40000002,0x40000002,0x40,0x31006900,0x40000004,0x20,0x40000004,0x40,0x0,0x20000,0x40,0x20000,0x0,0x0,0x80,0x40,0x31006900,0x80,0x31006900,0x1000,0x40,0x31006900,0x40,0x40,0x31006900,0x31006900,};
+	   jj_la1_1 = new int[] {0x20,0x0,0x4000000,0x2000000,0xf80010,0xf80010,0x0,0x0,0x0,0x0,0x100,0x4,0x20000,0x40000002,0x40000002,0x40,0x11006900,0x40000004,0x20,0x40000004,0x40,0x0,0x20000,0x40,0x20000,0x0,0x0,0x80,0x40,0x11006900,0x80,0x11006900,0x1000,0x40,0x11006900,0x40,0x40,0x11006900,0x11006900,};
 	}
 	private static void jj_la1_init_2() {
 	   jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xff,0x80,0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x80,0x0,0x0,0x0,0xff,0x0,0xff,0x0,0x0,0xff,0x0,0x0,0xff,0xff,};

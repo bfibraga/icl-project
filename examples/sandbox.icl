@@ -4,8 +4,12 @@
 {
     // Single comment line
     let value : int = 2;
-    fn f(x:int, y:int) -> bool{
-        x > 0 and y > 0
+    fn f(x:int, y:bool, z:bool) -> str{
+        if x > 0 and y or z {
+            'Sim'
+        } else {
+            'Nao'
+        }
     };
-    println(f(1,2,-1)) //prints false
+    println(f(1, false, true)) //prints false
 },,

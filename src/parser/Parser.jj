@@ -461,6 +461,7 @@ ASTNode Fact() :
         { t = new ASTArrayIndex(t, t2); })*
     | ("-" t = Fact() { t = new ASTNeg(t); })
     | <LPAR> t=BoolAdd() <RPAR>
+    | <QMARK> t=BoolAdd() { t = new ASTRef(t); }
     | <NOT> t=Fact() { t = new ASTNot(t); }
     | <LBRACKET>
         { List<Bind<String, ASTNode>> l; }
@@ -494,7 +495,6 @@ ASTNode Fact() :
             b = Seq()
         <RBRACKET>
      { t = new ASTFor(init, t, b); }
-   | <REF> <LPAR> t=BoolAdd() <RPAR> { t = new ASTRef(t); }
    | { List<ASTNode> l = new ArrayList<>(); }<PRINT> <LPAR> (t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })*)? <RPAR> { t = new ASTPrint(l); }
    | { List<ASTNode> l = new ArrayList<>(); ASTNode str; }<PRINTF> <LPAR> str = BoolAdd() ( <COMMA> t = BoolAdd() { l.add(t); })* <RPAR> { t = new ASTPrintf(str, l); }
    | { List<ASTNode> l = new ArrayList<>(); }<PRINTLN> <LPAR> (t = BoolAdd() { l.add(t); } ( <COMMA> t = BoolAdd() { l.add(t); })*)? <RPAR> { t = new ASTPrintln(l); }

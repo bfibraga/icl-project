@@ -445,7 +445,8 @@ ASTNode Fact() :
 }
 {
    (
-      n=<INT> { t = new ASTInt(Integer.parseInt(n.image)); }
+     <QMARK> t=BoolAdd() { t = new ASTRef(t); }
+    | n=<INT> { t = new ASTInt(Integer.parseInt(n.image)); }
     | n=<BOOL> { t = new ASTBool(Boolean.parseBoolean(n.image)); }
     | n=<STR> { t = new ASTStr(n.image); }
     | <LAMBDA> t = Function(n)
@@ -461,7 +462,6 @@ ASTNode Fact() :
         { t = new ASTArrayIndex(t, t2); })*
     | ("-" t = Fact() { t = new ASTNeg(t); })
     | <LPAR> t=BoolAdd() <RPAR>
-    | <QMARK> t=BoolAdd() { t = new ASTRef(t); }
     | <NOT> t=Fact() { t = new ASTNot(t); }
     | <LBRACKET>
         { List<Bind<String, ASTNode>> l; }

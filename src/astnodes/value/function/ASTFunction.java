@@ -63,7 +63,8 @@ public class ASTFunction extends TypeHolder implements ASTNode {
             e.assoc(id, new Coordinates(id, depth, paramType.jvmType()));
         }*/
 
-        FuncBlock funcBlock = new FuncBlock(closure, new DefBlock("closure_" + currDefBlock.getId()));
+        String funcFrameID = block.gensym(BlockType.FUNC);
+        FuncBlock funcBlock = new FuncBlock(closure, new DefBlock("closure_frame" + funcFrameID, currDefBlock));
         DefBlock newDefBlock = funcBlock.getDefBlock();
 
         try {
@@ -74,6 +75,7 @@ public class ASTFunction extends TypeHolder implements ASTNode {
 
             block.emit(String.format("%s_%d", JVM.ALOAD, 3));
             block.emit(String.format("%s %s/sl L%s;", JVM.PUTFIELD, "closure_" + funcID, newDefBlock.getPrevious()));
+            //block.emit(JVM.DUP.toString());
 
             block.emit("");
 
@@ -96,11 +98,15 @@ public class ASTFunction extends TypeHolder implements ASTNode {
             funcBodyBlock.emit(String.format("%s %s/sl L%s;", JVM.PUTFIELD, newDefBlock, newDefBlock.getPrevious()));
             funcBodyBlock.emit(JVM.DUP.toString());
 
-            for (int i = 0; i < this.params.size()-1; i++) {
-                saveCoordinates(funcBodyBlock, newDefBlock, e, i);
-                funcBodyBlock.emit(JVM.DUP.toString());
+            System.out.println(this.params);
+            if (this.params.size() > 0){
+                for (int i = 0; i < this.params.size()-1; i++) {
+                    saveCoordinates(funcBodyBlock, newDefBlock, e, i);
+                    funcBodyBlock.emit(JVM.DUP.toString());
+                }
+                funcBodyBlock.emit("");
+                saveCoordinates(funcBodyBlock, newDefBlock, e, this.params.size()-1);
             }
-            saveCoordinates(funcBodyBlock, newDefBlock, e, this.params.size()-1);
             funcBodyBlock.emit(String.format("%s_%d", JVM.ASTORE, 3));
 
             this.body.compile(funcBodyBlock, e);
@@ -142,7 +148,6 @@ public class ASTFunction extends TypeHolder implements ASTNode {
                 "L" + typename + ";" :
                 typename ));
 
-        funcBlock.emit("");
     }
 
     @Override

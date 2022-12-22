@@ -2,6 +2,7 @@ package src.type;
 
 import src.misc.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TClosure implements Type {
@@ -14,6 +15,13 @@ public class TClosure implements Type {
     private final Type returnType;
 
     private String JVMID;
+
+    public TClosure(){
+        this.params = new ArrayList<>();
+        this.bodyAbstractType = new TVoid();
+        this.returnType = new TVoid();
+        this.JVMID = "";
+    }
 
     public TClosure(List<Pair<String, Type>> params, Type bodyAbstractType, Type returnType) {
         this.params = params;

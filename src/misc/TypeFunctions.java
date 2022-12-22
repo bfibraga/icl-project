@@ -46,6 +46,8 @@ public class TypeFunctions {
         if (name.contains("func")){
             //TODO Implement type detector in params
 
+            System.out.println(name);
+
             String[] funcParts = name.split(":");
             String mainBody = funcParts[0];
             String returnTypename = funcParts[1];
@@ -60,6 +62,9 @@ public class TypeFunctions {
                 listType.add(new Pair<>(id, paramType));
             }
             Type returnType = TypeFunctions.getType(returnTypename);
+
+            System.out.println(listType);
+            System.out.println(returnType);
 
             return new TClosure(listType, returnType, returnType);
         }

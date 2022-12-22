@@ -15,6 +15,7 @@ public class FuncBlock {
     private TClosure closure;
 
     private DefBlock defBlock;
+    private int nLocals;
 
     public FuncBlock(TClosure closure, DefBlock defBlock){
         this.closure = closure;
@@ -34,6 +35,7 @@ public class FuncBlock {
             paramsList.deleteCharAt(paramsList.length()-1);
 
         this.interfaceId = String.format("%s_%s", paramsList, closure.getReturnType().jvmType());
+        this.nLocals = this.closure.getParams().size()+2;
     }
 
     public String getInterfaceId() {
@@ -104,8 +106,8 @@ public class FuncBlock {
             out.println("\t.limit locals " + (this.closure.getParams().size() + 3));
             out.println("\t.limit stack 256");
 
-            out.println("aconst_null");
-            out.println("astore_3");
+            //out.println("\taconst_null");
+            //out.println("\tastore_3");
 
             return out;
 

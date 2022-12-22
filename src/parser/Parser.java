@@ -616,6 +616,12 @@ p.add(new Pair<>(node.image, type.image));
   static final public ASTNode Fact() throws ParseException {Token n = new Token();
     ASTNode t;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case QMARK:{
+      jj_consume_token(QMARK);
+      t = BoolAdd();
+t = new ASTRef(t);
+      break;
+      }
     case INT:{
       n = jj_consume_token(INT);
 t = new ASTInt(Integer.parseInt(n.image));
@@ -751,12 +757,6 @@ t = new ASTNeg(t);
       jj_consume_token(LPAR);
       t = BoolAdd();
       jj_consume_token(RPAR);
-      break;
-      }
-    case QMARK:{
-      jj_consume_token(QMARK);
-      t = BoolAdd();
-t = new ASTRef(t);
       break;
       }
     case NOT:{
